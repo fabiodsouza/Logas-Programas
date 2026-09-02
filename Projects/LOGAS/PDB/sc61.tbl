@@ -1,0 +1,19 @@
+// SC block conversion table
+// v6.1-> 7.0
+
+   SCHDR	//shdr;		/* secondary block header */
+
+   LBI		//add;		/* 'add to' info */
+   
+   UINT16	//delay;		/* deadtime delay */
+
+   FCONST	//slocon;		/* slope scale constant */
+   FCONST	//devcon;		/* deviation scale constant */
+   EGUREC	//addegu;		/* egu of addtag */
+   UCHAR	//status;		/* block operation status:  nv, done */
+   UCHAR	//spare;		/* to force next field onto even boundary */
+   
+   INT32	//cdelay;		/* deadtime counter cpi110889*/
+   PDATA	//ladj;		/* last adjust calculated */
+   PDATA	//aadj;		/* last adjust sent */
+   #DESC	//desc;		//jss022097

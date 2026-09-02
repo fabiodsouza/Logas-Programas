@@ -1,0 +1,16 @@
+// BPL 
+// iFIX40 -> iFIX45
+
+	VERSION	0x092995
+	SCHDR	// shdr		 secondary block header  
+	DESC	// desc															
+
+//  parameter constants
+
+	EGUREC		// egurec;	egu info (analog)  
+	EGU_DESC	 //LongEguDesc			
+	CHAR[126]  //FCONST[21] inputs	
+	CHAR[120]	 //FCONST[20] outputs
+	CHAR[120]  //FCONST[20]	Slopes
+	PDATA		// pdata
+

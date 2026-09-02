@@ -1,0 +1,53 @@
+03/11/2023 08:02:48 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  03/11/2023 08:06:13
+--------------------------------------------------------
+
+03/11/2023 08:06:18 [fix.exe] Proficy iFIX Software is running!
+
+03/11/2023 15:42:24 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  03/11/2023 15:42:36
+--------------------------------------------------------
+
+03/11/2023 15:42:41 [fix.exe] Proficy iFIX Demo System Running!
+
+03/11/2023 15:43:14 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  03/11/2023 15:43:14
+--------------------------------------------------------
+
+03/11/2023 15:43:19 [fix.exe] Proficy iFIX Demo System Running!
+
+03/11/2023 15:43:24 [IOCNTRL.EXE] Failed to launch driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+03/11/2023 15:44:26 [IOCNTRL.EXE] Failed to destroy driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+03/11/2023 15:44:29 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  03/11/2023 15:44:40
+--------------------------------------------------------
+
+03/11/2023 15:44:44 [fix.exe] Proficy iFIX Demo System Running!
+
+03/11/2023 16:35:09 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  03/11/2023 16:35:26
+--------------------------------------------------------
+
+03/11/2023 16:35:31 [fix.exe] Proficy iFIX Software is running!
+

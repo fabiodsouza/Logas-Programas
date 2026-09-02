@@ -1,0 +1,50 @@
+PAINEL TELEMETRIA - versao portatil
+====================================
+
+COMO USAR
+---------
+Dê dois cliques em  "Painel Telemetria.exe"  e o painel abre numa janela
+própria (sem barra de navegador). Só isso.
+
+Funciona em qualquer Windows (10/11) sem instalar NADA: nem Python, nem
+navegador extra. O programa usa o Edge (que já vem no Windows) ou o Chrome/
+Brave, caso estejam instalados. Se por algum motivo não achar nenhum deles,
+abre no navegador padrão do sistema.
+
+
+LEVAR PARA OUTRO COMPUTADOR
+---------------------------
+Copie a PASTA INTEIRA "Painel_Telemetria" (com tudo dentro) para o outro PC,
+num pen drive ou na rede. Depois é só dar dois cliques no .exe. Não separe o
+.exe da subpasta "painel" — os dois precisam ficar juntos.
+
+
+ATUALIZAR OS DADOS DO PAINEL
+----------------------------
+O painel mostra o que está gravado em:
+   painel\dados.js    (as leituras de pressão)
+   painel\viagem.js   (os tempos de viagem)
+
+Esses dois arquivos são gerados pelo leitor (ler_painel.py / viagem_tomtom.py)
+na máquina que captura os prints. Para o painel mostrar dados novos, basta
+substituir esses dois arquivos pelos mais recentes (ou recopiar a pasta toda
+a partir da máquina de captura). O programa em si não muda.
+
+
+INTERNET
+--------
+O quadro principal (pressões, gráficos, alertas) funciona 100% OFFLINE — todas
+as bibliotecas já estão dentro da pasta "painel\libs".
+Só precisam de internet os recursos de MAPA e "Ver rota" (TomTom): sem conexão,
+o painel continua funcionando, apenas o mapa não carrega.
+
+
+O QUE É CADA COISA
+------------------
+Painel Telemetria.exe .... o programa (só dar dois cliques)
+painel\ ................. o painel e seus arquivos
+   painel-pressao-v6.html   a tela em si
+   dados.js / viagem.js     os dados (substituíveis)
+   libs\                    as bibliotecas embutidas (offline)
+_dados_navegador\ ........ criada sozinha na 1ª execução (perfil isolado do
+                           navegador). Pode apagar; será recriada.

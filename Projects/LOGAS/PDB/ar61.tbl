@@ -1,0 +1,17 @@
+// AR block conversion table
+// v6.1 -> 7.0
+
+   SCHDR	    //shdr;		/* secondary block header */
+   DESC		    //desc;		/* block descriptor */
+   EGUREC	    //egu;		/* egu info (analog) */
+   IO_INFO	    //ar_io;		/* IOREC and IODNAME */
+   CHAR[128]	    //addr_str[CIOAD];	/* raw io address in string */	
+   UCHAR 	    //out_enable;    	/* UCHAR to decide if output is allowed */
+
+   UCHAR	    //wld_no;		/* no of wld characters */
+   UCHAR	    //wld_base;		/* base of the I/O address ( dec, hex ) */
+   UCHAR 	    //wld_ptr;		/* no indicating position of the wild 
+//					string	in the I/O address */
+   #EGU_DESC	    //LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+   #SCALE_FACTOR    //ScaleFactor;	    /* for more precious scalling - new to raptor*/
+

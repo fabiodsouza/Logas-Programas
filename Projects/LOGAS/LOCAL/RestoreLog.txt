@@ -1,0 +1,1116 @@
+Proficy iFIX Backup Restore Utility Generated Logfile 
+©Copyright 2013 GE Intelligent Platforms, Inc.
+All Rights Reserved.. Version 5.8 Build10383 
+ 
+Restoring files from FactoryDefault file [C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\FactoryDefault.IFD]
+
+Restore Options :
+		Restore Destination : Create new Project
+		Destination Project path : C:\IFIX\LOGAS
+		Delete all existing files? : No
+		FactoryDefault enabled? : No
+		FactoryDefault file: N/A
+		Security Option : No action
+
+
+
+Uncompressing archive file [C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\FactoryDefault.IFD]...
+Action:File [ C:\IFIX\LOGAS\APP\BuildDynamoInstall.grf ] already exists. Replace existing file ?  Yes To All
+
+
+File [ C:\IFIX\LOGAS\APP\BuildDynamoInstall.grf ] already exists. Replace existing file ? Yes
+1. Expanding file [C:\IFIX\LOGAS\APP\BuildDynamoInstall.grf] Original CRC = [88827764] Uncompressed CRC = [88827764]
+Option Number: #202
+
+File [ C:\IFIX\LOGAS\APP\ChartGroupInstall.grf ] already exists. Replace existing file ? Yes
+2. Expanding file [C:\IFIX\LOGAS\APP\ChartGroupInstall.grf] Original CRC = [d9ef5949] Uncompressed CRC = [d9ef5949]
+Option Number: #202
+
+File [ C:\IFIX\LOGAS\APP\iDetective.tbx ] already exists. Replace existing file ? Yes
+3. Expanding file [C:\IFIX\LOGAS\APP\iDetective.tbx] Original CRC = [fdf9cb34] Uncompressed CRC = [fdf9cb34]
+Option Number: #202
+
+File [ C:\IFIX\LOGAS\APP\sqlerr.txt ] already exists. Replace existing file ? Yes
+4. Expanding file [C:\IFIX\LOGAS\APP\sqlerr.txt] Original CRC = [9ff9757c] Uncompressed CRC = [9ff9757c]
+Option Number: #202
+
+File [ C:\IFIX\LOGAS\HTR\ChartGroup1.csv ] already exists. Replace existing file ? Yes
+5. Expanding file [C:\IFIX\LOGAS\HTR\ChartGroup1.csv] Original CRC = [31007abd] Uncompressed CRC = [31007abd]
+Option Number: #203
+
+File [ C:\IFIX\LOGAS\HTR\ChartGroup2.csv ] already exists. Replace existing file ? Yes
+6. Expanding file [C:\IFIX\LOGAS\HTR\ChartGroup2.csv] Original CRC = [10fd9a97] Uncompressed CRC = [10fd9a97]
+Option Number: #203
+
+File [ C:\IFIX\LOGAS\HTR\ChartGroup3.csv ] already exists. Replace existing file ? Yes
+7. Expanding file [C:\IFIX\LOGAS\HTR\ChartGroup3.csv] Original CRC = [d2f84e9d] Uncompressed CRC = [d2f84e9d]
+Option Number: #203
+
+File [ C:\IFIX\LOGAS\LOCAL\Association.dat ] already exists. Replace existing file ? Yes
+8. Expanding file [C:\IFIX\LOGAS\LOCAL\Association.dat] Original CRC = [f4576ca7] Uncompressed CRC = [f4576ca7]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\default.fmt ] already exists. Replace existing file ? Yes
+9. Expanding file [C:\IFIX\LOGAS\LOCAL\default.fmt] Original CRC = [4659073] Uncompressed CRC = [4659073]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\FindReplace.csv ] already exists. Replace existing file ? Yes
+10. Expanding file [C:\IFIX\LOGAS\LOCAL\FindReplace.csv] Original CRC = [8ef7b13e] Uncompressed CRC = [8ef7b13e]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\SystemTree.csv ] already exists. Replace existing file ? Yes
+11. Expanding file [C:\IFIX\LOGAS\LOCAL\SystemTree.csv] Original CRC = [d7b4032a] Uncompressed CRC = [d7b4032a]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\default.qry ] already exists. Replace existing file ? Yes
+12. Expanding file [C:\IFIX\LOGAS\LOCAL\default.qry] Original CRC = [8727af47] Uncompressed CRC = [8727af47]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\default.rft ] already exists. Replace existing file ? Yes
+13. Expanding file [C:\IFIX\LOGAS\LOCAL\default.rft] Original CRC = [eee7d804] Uncompressed CRC = [eee7d804]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\default.srt ] already exists. Replace existing file ? Yes
+14. Expanding file [C:\IFIX\LOGAS\LOCAL\default.srt] Original CRC = [c05d0a0] Uncompressed CRC = [c05d0a0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\logmsg.tov ] already exists. Replace existing file ? Yes
+15. Expanding file [C:\IFIX\LOGAS\LOCAL\logmsg.tov] Original CRC = [b9e212e] Uncompressed CRC = [b9e212e]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\StandardCategories.txt ] already exists. Replace existing file ? Yes
+16. Expanding file [C:\IFIX\LOGAS\LOCAL\StandardCategories.txt] Original CRC = [a1d823f7] Uncompressed CRC = [a1d823f7]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\AnimationTasks.tbc ] already exists. Replace existing file ? Yes
+17. Expanding file [C:\IFIX\LOGAS\LOCAL\AnimationTasks.tbc] Original CRC = [c8cf9abb] Uncompressed CRC = [c8cf9abb]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Applications.tbc ] already exists. Replace existing file ? Yes
+18. Expanding file [C:\IFIX\LOGAS\LOCAL\Applications.tbc] Original CRC = [8689504c] Uncompressed CRC = [8689504c]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CADTools.tbc ] already exists. Replace existing file ? Yes
+19. Expanding file [C:\IFIX\LOGAS\LOCAL\CADTools.tbc] Original CRC = [2baeda7d] Uncompressed CRC = [2baeda7d]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ChartGroups.tbc ] already exists. Replace existing file ? Yes
+20. Expanding file [C:\IFIX\LOGAS\LOCAL\ChartGroups.tbc] Original CRC = [fbaddf7f] Uncompressed CRC = [fbaddf7f]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CommandTasks.tbc ] already exists. Replace existing file ? Yes
+21. Expanding file [C:\IFIX\LOGAS\LOCAL\CommandTasks.tbc] Original CRC = [334645d2] Uncompressed CRC = [334645d2]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CreateObjects.tbc ] already exists. Replace existing file ? Yes
+22. Expanding file [C:\IFIX\LOGAS\LOCAL\CreateObjects.tbc] Original CRC = [9cbc6de2] Uncompressed CRC = [9cbc6de2]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\DatabaseTasks.tbc ] already exists. Replace existing file ? Yes
+23. Expanding file [C:\IFIX\LOGAS\LOCAL\DatabaseTasks.tbc] Original CRC = [2d37bd04] Uncompressed CRC = [2d37bd04]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\DataEntryTasks.tbc ] already exists. Replace existing file ? Yes
+24. Expanding file [C:\IFIX\LOGAS\LOCAL\DataEntryTasks.tbc] Original CRC = [62f40131] Uncompressed CRC = [62f40131]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\DynamoTools.tbc ] already exists. Replace existing file ? Yes
+25. Expanding file [C:\IFIX\LOGAS\LOCAL\DynamoTools.tbc] Original CRC = [da88a199] Uncompressed CRC = [da88a199]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\FormatObjects.tbc ] already exists. Replace existing file ? Yes
+26. Expanding file [C:\IFIX\LOGAS\LOCAL\FormatObjects.tbc] Original CRC = [d34c2e04] Uncompressed CRC = [d34c2e04]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\GraphicConnections.tbc ] already exists. Replace existing file ? Yes
+27. Expanding file [C:\IFIX\LOGAS\LOCAL\GraphicConnections.tbc] Original CRC = [2418375d] Uncompressed CRC = [2418375d]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\PictureExporter.tbc ] already exists. Replace existing file ? Yes
+28. Expanding file [C:\IFIX\LOGAS\LOCAL\PictureExporter.tbc] Original CRC = [b24aef33] Uncompressed CRC = [b24aef33]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\PictureTasks.tbc ] already exists. Replace existing file ? Yes
+29. Expanding file [C:\IFIX\LOGAS\LOCAL\PictureTasks.tbc] Original CRC = [6d7dac89] Uncompressed CRC = [6d7dac89]
+Option Number: #205
+
+30. Expanding file [C:\IFIX\LOGAS\LOCAL\ProficyHistorianCat.tbc] Original CRC = [397d2d23] Uncompressed CRC = [397d2d23]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ReportTasks.tbc ] already exists. Replace existing file ? Yes
+31. Expanding file [C:\IFIX\LOGAS\LOCAL\ReportTasks.tbc] Original CRC = [5d67cc52] Uncompressed CRC = [5d67cc52]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Scheduler.tbc ] already exists. Replace existing file ? Yes
+32. Expanding file [C:\IFIX\LOGAS\LOCAL\Scheduler.tbc] Original CRC = [3eab88c0] Uncompressed CRC = [3eab88c0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Standard.tbc ] already exists. Replace existing file ? Yes
+33. Expanding file [C:\IFIX\LOGAS\LOCAL\Standard.tbc] Original CRC = [8fa04bc2] Uncompressed CRC = [8fa04bc2]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\VisiconXControls.tbc ] already exists. Replace existing file ? Yes
+34. Expanding file [C:\IFIX\LOGAS\LOCAL\VisiconXControls.tbc] Original CRC = [3d64671c] Uncompressed CRC = [3d64671c]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ApplicationToolbar.tbx ] already exists. Replace existing file ? Yes
+35. Expanding file [C:\IFIX\LOGAS\LOCAL\ApplicationToolbar.tbx] Original CRC = [d25a4473] Uncompressed CRC = [d25a4473]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CADToolbar.tbx ] already exists. Replace existing file ? Yes
+36. Expanding file [C:\IFIX\LOGAS\LOCAL\CADToolbar.tbx] Original CRC = [4ea3698b] Uncompressed CRC = [4ea3698b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ChartGroupToolbar.tbx ] already exists. Replace existing file ? Yes
+37. Expanding file [C:\IFIX\LOGAS\LOCAL\ChartGroupToolbar.tbx] Original CRC = [4514b0dc] Uncompressed CRC = [4514b0dc]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\DynamoToolbar.tbx ] already exists. Replace existing file ? Yes
+38. Expanding file [C:\IFIX\LOGAS\LOCAL\DynamoToolbar.tbx] Original CRC = [bf32576b] Uncompressed CRC = [bf32576b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Edit.tbx ] already exists. Replace existing file ? Yes
+39. Expanding file [C:\IFIX\LOGAS\LOCAL\Edit.tbx] Original CRC = [596686d0] Uncompressed CRC = [596686d0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Experts.tbx ] already exists. Replace existing file ? Yes
+40. Expanding file [C:\IFIX\LOGAS\LOCAL\Experts.tbx] Original CRC = [245f1fad] Uncompressed CRC = [245f1fad]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\FixGraphicConnectionObjects.tbx ] already exists. Replace existing file ? Yes
+41. Expanding file [C:\IFIX\LOGAS\LOCAL\FixGraphicConnectionObjects.tbx] Original CRC = [70480031] Uncompressed CRC = [70480031]
+Option Number: #205
+
+42. Expanding file [C:\IFIX\LOGAS\LOCAL\ProficyHistorian.tbx] Original CRC = [397d2d23] Uncompressed CRC = [397d2d23]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Shapes.tbx ] already exists. Replace existing file ? Yes
+43. Expanding file [C:\IFIX\LOGAS\LOCAL\Shapes.tbx] Original CRC = [e6781c44] Uncompressed CRC = [e6781c44]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\StandardToolbar.tbx ] already exists. Replace existing file ? Yes
+44. Expanding file [C:\IFIX\LOGAS\LOCAL\StandardToolbar.tbx] Original CRC = [d87634b0] Uncompressed CRC = [d87634b0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Toolbox.tbx ] already exists. Replace existing file ? Yes
+45. Expanding file [C:\IFIX\LOGAS\LOCAL\Toolbox.tbx] Original CRC = [a5e40679] Uncompressed CRC = [a5e40679]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Tools.tbx ] already exists. Replace existing file ? Yes
+46. Expanding file [C:\IFIX\LOGAS\LOCAL\Tools.tbx] Original CRC = [4812d73e] Uncompressed CRC = [4812d73e]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\TranslationToolbar.tbx ] already exists. Replace existing file ? Yes
+47. Expanding file [C:\IFIX\LOGAS\LOCAL\TranslationToolbar.tbx] Original CRC = [1d9bd472] Uncompressed CRC = [1d9bd472]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Utilities.tbx ] already exists. Replace existing file ? Yes
+48. Expanding file [C:\IFIX\LOGAS\LOCAL\Utilities.tbx] Original CRC = [3e06f174] Uncompressed CRC = [3e06f174]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\VisiconXToolbar.tbx ] already exists. Replace existing file ? Yes
+49. Expanding file [C:\IFIX\LOGAS\LOCAL\VisiconXToolbar.tbx] Original CRC = [6a4b9246] Uncompressed CRC = [6a4b9246]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ApplicationToolbar.xbt ] already exists. Replace existing file ? Yes
+50. Expanding file [C:\IFIX\LOGAS\LOCAL\ApplicationToolbar.xbt] Original CRC = [d25a4473] Uncompressed CRC = [d25a4473]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CADToolbar.xbt ] already exists. Replace existing file ? Yes
+51. Expanding file [C:\IFIX\LOGAS\LOCAL\CADToolbar.xbt] Original CRC = [4ea3698b] Uncompressed CRC = [4ea3698b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ChartGroupToolbar.xbt ] already exists. Replace existing file ? Yes
+52. Expanding file [C:\IFIX\LOGAS\LOCAL\ChartGroupToolbar.xbt] Original CRC = [4514b0dc] Uncompressed CRC = [4514b0dc]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\DynamoToolbar.xbt ] already exists. Replace existing file ? Yes
+53. Expanding file [C:\IFIX\LOGAS\LOCAL\DynamoToolbar.xbt] Original CRC = [bf32576b] Uncompressed CRC = [bf32576b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Edit.xbt ] already exists. Replace existing file ? Yes
+54. Expanding file [C:\IFIX\LOGAS\LOCAL\Edit.xbt] Original CRC = [596686d0] Uncompressed CRC = [596686d0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Experts.xbt ] already exists. Replace existing file ? Yes
+55. Expanding file [C:\IFIX\LOGAS\LOCAL\Experts.xbt] Original CRC = [245f1fad] Uncompressed CRC = [245f1fad]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\FixGraphicConnectionObjects.xbt ] already exists. Replace existing file ? Yes
+56. Expanding file [C:\IFIX\LOGAS\LOCAL\FixGraphicConnectionObjects.xbt] Original CRC = [70480031] Uncompressed CRC = [70480031]
+Option Number: #205
+
+57. Expanding file [C:\IFIX\LOGAS\LOCAL\ProficyHistorian.xbt] Original CRC = [397d2d23] Uncompressed CRC = [397d2d23]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Shapes.xbt ] already exists. Replace existing file ? Yes
+58. Expanding file [C:\IFIX\LOGAS\LOCAL\Shapes.xbt] Original CRC = [e6781c44] Uncompressed CRC = [e6781c44]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\StandardToolbar.xbt ] already exists. Replace existing file ? Yes
+59. Expanding file [C:\IFIX\LOGAS\LOCAL\StandardToolbar.xbt] Original CRC = [d87634b0] Uncompressed CRC = [d87634b0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Toolbox.xbt ] already exists. Replace existing file ? Yes
+60. Expanding file [C:\IFIX\LOGAS\LOCAL\Toolbox.xbt] Original CRC = [a5e40679] Uncompressed CRC = [a5e40679]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Tools.xbt ] already exists. Replace existing file ? Yes
+61. Expanding file [C:\IFIX\LOGAS\LOCAL\Tools.xbt] Original CRC = [4812d73e] Uncompressed CRC = [4812d73e]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\TranslationToolbar.xbt ] already exists. Replace existing file ? Yes
+62. Expanding file [C:\IFIX\LOGAS\LOCAL\TranslationToolbar.xbt] Original CRC = [1d9bd472] Uncompressed CRC = [1d9bd472]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Utilities.xbt ] already exists. Replace existing file ? Yes
+63. Expanding file [C:\IFIX\LOGAS\LOCAL\Utilities.xbt] Original CRC = [3e06f174] Uncompressed CRC = [3e06f174]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\VisiconXToolbar.xbt ] already exists. Replace existing file ? Yes
+64. Expanding file [C:\IFIX\LOGAS\LOCAL\VisiconXToolbar.xbt] Original CRC = [6a4b9246] Uncompressed CRC = [6a4b9246]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\dwnarrow.ico ] already exists. Replace existing file ? Yes
+65. Expanding file [C:\IFIX\LOGAS\LOCAL\dwnarrow.ico] Original CRC = [143839b] Uncompressed CRC = [143839b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\dwndwnarrow.ico ] already exists. Replace existing file ? Yes
+66. Expanding file [C:\IFIX\LOGAS\LOCAL\dwndwnarrow.ico] Original CRC = [c6a27247] Uncompressed CRC = [c6a27247]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Horn.ico ] already exists. Replace existing file ? Yes
+67. Expanding file [C:\IFIX\LOGAS\LOCAL\Horn.ico] Original CRC = [3ce7c5fa] Uncompressed CRC = [3ce7c5fa]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\NoHorn.ico ] already exists. Replace existing file ? Yes
+68. Expanding file [C:\IFIX\LOGAS\LOCAL\NoHorn.ico] Original CRC = [13c23a6b] Uncompressed CRC = [13c23a6b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\uparrow.ico ] already exists. Replace existing file ? Yes
+69. Expanding file [C:\IFIX\LOGAS\LOCAL\uparrow.ico] Original CRC = [972b6312] Uncompressed CRC = [972b6312]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\upuparrow.ico ] already exists. Replace existing file ? Yes
+70. Expanding file [C:\IFIX\LOGAS\LOCAL\upuparrow.ico] Original CRC = [c948126b] Uncompressed CRC = [c948126b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\BuildDynamo.bmp ] already exists. Replace existing file ? Yes
+71. Expanding file [C:\IFIX\LOGAS\LOCAL\BuildDynamo.bmp] Original CRC = [5b82c78] Uncompressed CRC = [5b82c78]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton1.bmp ] already exists. Replace existing file ? Yes
+72. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton1.bmp] Original CRC = [714438f6] Uncompressed CRC = [714438f6]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton10.bmp ] already exists. Replace existing file ? Yes
+73. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton10.bmp] Original CRC = [87443fec] Uncompressed CRC = [87443fec]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton2.bmp ] already exists. Replace existing file ? Yes
+74. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton2.bmp] Original CRC = [eaa8528e] Uncompressed CRC = [eaa8528e]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton3.bmp ] already exists. Replace existing file ? Yes
+75. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton3.bmp] Original CRC = [a75e67b2] Uncompressed CRC = [a75e67b2]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton4.bmp ] already exists. Replace existing file ? Yes
+76. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton4.bmp] Original CRC = [d1fa419a] Uncompressed CRC = [d1fa419a]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton5.bmp ] already exists. Replace existing file ? Yes
+77. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton5.bmp] Original CRC = [4a162be2] Uncompressed CRC = [4a162be2]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton6.bmp ] already exists. Replace existing file ? Yes
+78. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton6.bmp] Original CRC = [d01bdf7b] Uncompressed CRC = [d01bdf7b]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton7.bmp ] already exists. Replace existing file ? Yes
+79. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton7.bmp] Original CRC = [bc162cf8] Uncompressed CRC = [bc162cf8]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton8.bmp ] already exists. Replace existing file ? Yes
+80. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton8.bmp] Original CRC = [6a0c73bc] Uncompressed CRC = [6a0c73bc]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CustomButton9.bmp ] already exists. Replace existing file ? Yes
+81. Expanding file [C:\IFIX\LOGAS\LOCAL\CustomButton9.bmp] Original CRC = [1ca85594] Uncompressed CRC = [1ca85594]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\iFixScreenSaver.bmp ] already exists. Replace existing file ? Yes
+82. Expanding file [C:\IFIX\LOGAS\LOCAL\iFixScreenSaver.bmp] Original CRC = [8d9adc62] Uncompressed CRC = [8d9adc62]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\alarm.ini ] already exists. Replace existing file ? Yes
+83. Expanding file [C:\IFIX\LOGAS\LOCAL\alarm.ini] Original CRC = [81bfca29] Uncompressed CRC = [81bfca29]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\BackupRestore.ini ] already exists. Replace existing file ? Yes
+84. Expanding file [C:\IFIX\LOGAS\LOCAL\BackupRestore.ini] Original CRC = [e0eb3c85] Uncompressed CRC = [e0eb3c85]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\CrossReference.ini ] already exists. Replace existing file ? Yes
+85. Expanding file [C:\IFIX\LOGAS\LOCAL\CrossReference.ini] Original CRC = [aeffa87c] Uncompressed CRC = [aeffa87c]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\databasemanager.ini ] already exists. Replace existing file ? Yes
+86. Expanding file [C:\IFIX\LOGAS\LOCAL\databasemanager.ini] Original CRC = [75a9bee4] Uncompressed CRC = [75a9bee4]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\filterederrors.ini ] already exists. Replace existing file ? Yes
+87. Expanding file [C:\IFIX\LOGAS\LOCAL\filterederrors.ini] Original CRC = [51a94fd3] Uncompressed CRC = [51a94fd3]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\fix.ini ] already exists. Replace existing file ? Yes
+88. Expanding file [C:\IFIX\LOGAS\LOCAL\fix.ini] Original CRC = [fdeb4034] Uncompressed CRC = [fdeb4034]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\fixodbc.ini ] already exists. Replace existing file ? Yes
+89. Expanding file [C:\IFIX\LOGAS\LOCAL\fixodbc.ini] Original CRC = [d8c51ae3] Uncompressed CRC = [d8c51ae3]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\FixUserPreferences.ini ] already exists. Replace existing file ? Yes
+90. Expanding file [C:\IFIX\LOGAS\LOCAL\FixUserPreferences.ini] Original CRC = [b401ebe9] Uncompressed CRC = [b401ebe9]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\iFIXSysMgmt.ini ] already exists. Replace existing file ? Yes
+91. Expanding file [C:\IFIX\LOGAS\LOCAL\iFIXSysMgmt.ini] Original CRC = [e94e39e9] Uncompressed CRC = [e94e39e9]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\Ribbon.ini ] already exists. Replace existing file ? Yes
+92. Expanding file [C:\IFIX\LOGAS\LOCAL\Ribbon.ini] Original CRC = [b86e8317] Uncompressed CRC = [b86e8317]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ScadaSync.ini ] already exists. Replace existing file ? Yes
+93. Expanding file [C:\IFIX\LOGAS\LOCAL\ScadaSync.ini] Original CRC = [14a4ace8] Uncompressed CRC = [14a4ace8]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\SECNET.ini ] already exists. Replace existing file ? Yes
+94. Expanding file [C:\IFIX\LOGAS\LOCAL\SECNET.ini] Original CRC = [d5418924] Uncompressed CRC = [d5418924]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\SetupComServerApp.ini ] already exists. Replace existing file ? Yes
+95. Expanding file [C:\IFIX\LOGAS\LOCAL\SetupComServerApp.ini] Original CRC = [7268f1f0] Uncompressed CRC = [7268f1f0]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\StandardToolbars.ini ] already exists. Replace existing file ? Yes
+96. Expanding file [C:\IFIX\LOGAS\LOCAL\StandardToolbars.ini] Original CRC = [7614cbed] Uncompressed CRC = [7614cbed]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\LOCAL\ImportToolbars.txt ] already exists. Replace existing file ? Yes
+97. Expanding file [C:\IFIX\LOGAS\LOCAL\ImportToolbars.txt] Original CRC = [42a85c42] Uncompressed CRC = [42a85c42]
+Option Number: #205
+
+File [ C:\IFIX\LOGAS\PDB\CGW.csv ] already exists. Replace existing file ? Yes
+98. Expanding file [C:\IFIX\LOGAS\PDB\CGW.csv] Original CRC = [c197c58b] Uncompressed CRC = [c197c58b]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\DEFAULT.SM2 ] already exists. Replace existing file ? Yes
+99. Expanding file [C:\IFIX\LOGAS\PDB\DEFAULT.SM2] Original CRC = [da145e75] Uncompressed CRC = [da145e75]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\empty.pdb ] already exists. Replace existing file ? Yes
+100. Expanding file [C:\IFIX\LOGAS\PDB\empty.pdb] Original CRC = [3dbda69e] Uncompressed CRC = [3dbda69e]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\aa61.tbl ] already exists. Replace existing file ? Yes
+101. Expanding file [C:\IFIX\LOGAS\PDB\aa61.tbl] Original CRC = [a3ec607c] Uncompressed CRC = [a3ec607c]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ai61.tbl ] already exists. Replace existing file ? Yes
+102. Expanding file [C:\IFIX\LOGAS\PDB\ai61.tbl] Original CRC = [8c919c8] Uncompressed CRC = [8c919c8]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\AIS73.TBL ] already exists. Replace existing file ? Yes
+103. Expanding file [C:\IFIX\LOGAS\PDB\AIS73.TBL] Original CRC = [627419ca] Uncompressed CRC = [627419ca]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ao61.tbl ] already exists. Replace existing file ? Yes
+104. Expanding file [C:\IFIX\LOGAS\PDB\ao61.tbl] Original CRC = [9e174270] Uncompressed CRC = [9e174270]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\AR261.TBL ] already exists. Replace existing file ? Yes
+105. Expanding file [C:\IFIX\LOGAS\PDB\AR261.TBL] Original CRC = [10018db] Uncompressed CRC = [10018db]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ar61.tbl ] already exists. Replace existing file ? Yes
+106. Expanding file [C:\IFIX\LOGAS\PDB\ar61.tbl] Original CRC = [e49f91ec] Uncompressed CRC = [e49f91ec]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\bb61.tbl ] already exists. Replace existing file ? Yes
+107. Expanding file [C:\IFIX\LOGAS\PDB\bb61.tbl] Original CRC = [8082944d] Uncompressed CRC = [8082944d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\bl61.tbl ] already exists. Replace existing file ? Yes
+108. Expanding file [C:\IFIX\LOGAS\PDB\bl61.tbl] Original CRC = [2f661175] Uncompressed CRC = [2f661175]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\BPL61.TBL ] already exists. Replace existing file ? Yes
+109. Expanding file [C:\IFIX\LOGAS\PDB\BPL61.TBL] Original CRC = [d286c947] Uncompressed CRC = [d286c947]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\BPL73.tbl ] already exists. Replace existing file ? Yes
+110. Expanding file [C:\IFIX\LOGAS\PDB\BPL73.tbl] Original CRC = [e2cd657d] Uncompressed CRC = [e2cd657d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ca61.tbl ] already exists. Replace existing file ? Yes
+111. Expanding file [C:\IFIX\LOGAS\PDB\ca61.tbl] Original CRC = [fea4f10b] Uncompressed CRC = [fea4f10b]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\CTR61.TBL ] already exists. Replace existing file ? Yes
+112. Expanding file [C:\IFIX\LOGAS\PDB\CTR61.TBL] Original CRC = [3b7eb1c5] Uncompressed CRC = [3b7eb1c5]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\CTR73.tbl ] already exists. Replace existing file ? Yes
+113. Expanding file [C:\IFIX\LOGAS\PDB\CTR73.tbl] Original CRC = [c275109c] Uncompressed CRC = [c275109c]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\D1661.TBL ] already exists. Replace existing file ? Yes
+114. Expanding file [C:\IFIX\LOGAS\PDB\D1661.TBL] Original CRC = [81809617] Uncompressed CRC = [81809617]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\D1673.tbl ] already exists. Replace existing file ? Yes
+115. Expanding file [C:\IFIX\LOGAS\PDB\D1673.tbl] Original CRC = [8dc9b937] Uncompressed CRC = [8dc9b937]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\da61.tbl ] already exists. Replace existing file ? Yes
+116. Expanding file [C:\IFIX\LOGAS\PDB\da61.tbl] Original CRC = [7c21a0dc] Uncompressed CRC = [7c21a0dc]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\dc61.tbl ] already exists. Replace existing file ? Yes
+117. Expanding file [C:\IFIX\LOGAS\PDB\dc61.tbl] Original CRC = [61e6b2f5] Uncompressed CRC = [61e6b2f5]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\di61.tbl ] already exists. Replace existing file ? Yes
+118. Expanding file [C:\IFIX\LOGAS\PDB\di61.tbl] Original CRC = [f4f7a1fd] Uncompressed CRC = [f4f7a1fd]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\do61.tbl ] already exists. Replace existing file ? Yes
+119. Expanding file [C:\IFIX\LOGAS\PDB\do61.tbl] Original CRC = [87085d13] Uncompressed CRC = [87085d13]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\DR261.tbl ] already exists. Replace existing file ? Yes
+120. Expanding file [C:\IFIX\LOGAS\PDB\DR261.tbl] Original CRC = [e2b8a8ff] Uncompressed CRC = [e2b8a8ff]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\DR273.tbl ] already exists. Replace existing file ? Yes
+121. Expanding file [C:\IFIX\LOGAS\PDB\DR273.tbl] Original CRC = [398eb1ca] Uncompressed CRC = [398eb1ca]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\dr61.tbl ] already exists. Replace existing file ? Yes
+122. Expanding file [C:\IFIX\LOGAS\PDB\dr61.tbl] Original CRC = [e2b8a8ff] Uncompressed CRC = [e2b8a8ff]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\dt61.tbl ] already exists. Replace existing file ? Yes
+123. Expanding file [C:\IFIX\LOGAS\PDB\dt61.tbl] Original CRC = [ef16d5ee] Uncompressed CRC = [ef16d5ee]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\etr61.tbl ] already exists. Replace existing file ? Yes
+124. Expanding file [C:\IFIX\LOGAS\PDB\etr61.tbl] Original CRC = [e18cfc1d] Uncompressed CRC = [e18cfc1d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\etr73.tbl ] already exists. Replace existing file ? Yes
+125. Expanding file [C:\IFIX\LOGAS\PDB\etr73.tbl] Original CRC = [4fe3c531] Uncompressed CRC = [4fe3c531]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ev61.tbl ] already exists. Replace existing file ? Yes
+126. Expanding file [C:\IFIX\LOGAS\PDB\ev61.tbl] Original CRC = [b9bef7e4] Uncompressed CRC = [b9bef7e4]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\fn61.tbl ] already exists. Replace existing file ? Yes
+127. Expanding file [C:\IFIX\LOGAS\PDB\fn61.tbl] Original CRC = [5ffc0f96] Uncompressed CRC = [5ffc0f96]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\GAB61.TBL ] already exists. Replace existing file ? Yes
+128. Expanding file [C:\IFIX\LOGAS\PDB\GAB61.TBL] Original CRC = [c9190683] Uncompressed CRC = [c9190683]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\GAB73.tbl ] already exists. Replace existing file ? Yes
+129. Expanding file [C:\IFIX\LOGAS\PDB\GAB73.tbl] Original CRC = [51d62569] Uncompressed CRC = [51d62569]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\GEN61.TBL ] already exists. Replace existing file ? Yes
+130. Expanding file [C:\IFIX\LOGAS\PDB\GEN61.TBL] Original CRC = [ad156c54] Uncompressed CRC = [ad156c54]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\GEN73.tbl ] already exists. Replace existing file ? Yes
+131. Expanding file [C:\IFIX\LOGAS\PDB\GEN73.tbl] Original CRC = [c944b66d] Uncompressed CRC = [c944b66d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\hs61.tbl ] already exists. Replace existing file ? Yes
+132. Expanding file [C:\IFIX\LOGAS\PDB\hs61.tbl] Original CRC = [968a2020] Uncompressed CRC = [968a2020]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\itm61.tbl ] already exists. Replace existing file ? Yes
+133. Expanding file [C:\IFIX\LOGAS\PDB\itm61.tbl] Original CRC = [534fe52] Uncompressed CRC = [534fe52]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\itm73.tbl ] already exists. Replace existing file ? Yes
+134. Expanding file [C:\IFIX\LOGAS\PDB\itm73.tbl] Original CRC = [d66a7469] Uncompressed CRC = [d66a7469]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ll61.tbl ] already exists. Replace existing file ? Yes
+135. Expanding file [C:\IFIX\LOGAS\PDB\ll61.tbl] Original CRC = [748c1bb9] Uncompressed CRC = [748c1bb9]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\mdi61.tbl ] already exists. Replace existing file ? Yes
+136. Expanding file [C:\IFIX\LOGAS\PDB\mdi61.tbl] Original CRC = [a90901d4] Uncompressed CRC = [a90901d4]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\MDO61.TBL ] already exists. Replace existing file ? Yes
+137. Expanding file [C:\IFIX\LOGAS\PDB\MDO61.TBL] Original CRC = [4fdca2] Uncompressed CRC = [4fdca2]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\MDO73.tbl ] already exists. Replace existing file ? Yes
+138. Expanding file [C:\IFIX\LOGAS\PDB\MDO73.tbl] Original CRC = [a7990515] Uncompressed CRC = [a7990515]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ODO61.tbl ] already exists. Replace existing file ? Yes
+139. Expanding file [C:\IFIX\LOGAS\PDB\ODO61.tbl] Original CRC = [28834a32] Uncompressed CRC = [28834a32]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\pa61.tbl ] already exists. Replace existing file ? Yes
+140. Expanding file [C:\IFIX\LOGAS\PDB\pa61.tbl] Original CRC = [47b61803] Uncompressed CRC = [47b61803]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\PAR73.TBL ] already exists. Replace existing file ? Yes
+141. Expanding file [C:\IFIX\LOGAS\PDB\PAR73.TBL] Original CRC = [471622d9] Uncompressed CRC = [471622d9]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\pg61.tbl ] already exists. Replace existing file ? Yes
+142. Expanding file [C:\IFIX\LOGAS\PDB\pg61.tbl] Original CRC = [d80123ae] Uncompressed CRC = [d80123ae]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\PI261.TBL ] already exists. Replace existing file ? Yes
+143. Expanding file [C:\IFIX\LOGAS\PDB\PI261.TBL] Original CRC = [2e910e79] Uncompressed CRC = [2e910e79]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\PI273.tbl ] already exists. Replace existing file ? Yes
+144. Expanding file [C:\IFIX\LOGAS\PDB\PI273.tbl] Original CRC = [abfce47c] Uncompressed CRC = [abfce47c]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\pid61.tbl ] already exists. Replace existing file ? Yes
+145. Expanding file [C:\IFIX\LOGAS\PDB\pid61.tbl] Original CRC = [815b8137] Uncompressed CRC = [815b8137]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\rb61.tbl ] already exists. Replace existing file ? Yes
+146. Expanding file [C:\IFIX\LOGAS\PDB\rb61.tbl] Original CRC = [b614ddba] Uncompressed CRC = [b614ddba]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\rm61.tbl ] already exists. Replace existing file ? Yes
+147. Expanding file [C:\IFIX\LOGAS\PDB\rm61.tbl] Original CRC = [884f502a] Uncompressed CRC = [884f502a]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\sc61.tbl ] already exists. Replace existing file ? Yes
+148. Expanding file [C:\IFIX\LOGAS\PDB\sc61.tbl] Original CRC = [2fc0b081] Uncompressed CRC = [2fc0b081]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\sd61.tbl ] already exists. Replace existing file ? Yes
+149. Expanding file [C:\IFIX\LOGAS\PDB\sd61.tbl] Original CRC = [2abc7653] Uncompressed CRC = [2abc7653]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\sqd61.tbl ] already exists. Replace existing file ? Yes
+150. Expanding file [C:\IFIX\LOGAS\PDB\sqd61.tbl] Original CRC = [2d9628c0] Uncompressed CRC = [2d9628c0]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\sqt61.tbl ] already exists. Replace existing file ? Yes
+151. Expanding file [C:\IFIX\LOGAS\PDB\sqt61.tbl] Original CRC = [725849dc] Uncompressed CRC = [725849dc]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\ss61.tbl ] already exists. Replace existing file ? Yes
+152. Expanding file [C:\IFIX\LOGAS\PDB\ss61.tbl] Original CRC = [6dc3084] Uncompressed CRC = [6dc3084]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TDS61.TBL ] already exists. Replace existing file ? Yes
+153. Expanding file [C:\IFIX\LOGAS\PDB\TDS61.TBL] Original CRC = [9bcec08d] Uncompressed CRC = [9bcec08d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TDS73.tbl ] already exists. Replace existing file ? Yes
+154. Expanding file [C:\IFIX\LOGAS\PDB\TDS73.tbl] Original CRC = [9e01dc05] Uncompressed CRC = [9e01dc05]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\tm61.tbl ] already exists. Replace existing file ? Yes
+155. Expanding file [C:\IFIX\LOGAS\PDB\tm61.tbl] Original CRC = [b8b29163] Uncompressed CRC = [b8b29163]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\tr61.tbl ] already exists. Replace existing file ? Yes
+156. Expanding file [C:\IFIX\LOGAS\PDB\tr61.tbl] Original CRC = [c05203a3] Uncompressed CRC = [c05203a3]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\tt61.tbl ] already exists. Replace existing file ? Yes
+157. Expanding file [C:\IFIX\LOGAS\PDB\tt61.tbl] Original CRC = [6136d6e3] Uncompressed CRC = [6136d6e3]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\tx61.tbl ] already exists. Replace existing file ? Yes
+158. Expanding file [C:\IFIX\LOGAS\PDB\tx61.tbl] Original CRC = [a3309188] Uncompressed CRC = [a3309188]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TXR61.TBL ] already exists. Replace existing file ? Yes
+159. Expanding file [C:\IFIX\LOGAS\PDB\TXR61.TBL] Original CRC = [2b4e136b] Uncompressed CRC = [2b4e136b]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TXR73.tbl ] already exists. Replace existing file ? Yes
+160. Expanding file [C:\IFIX\LOGAS\PDB\TXR73.tbl] Original CRC = [67a5910d] Uncompressed CRC = [67a5910d]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TXT61.TBL ] already exists. Replace existing file ? Yes
+161. Expanding file [C:\IFIX\LOGAS\PDB\TXT61.TBL] Original CRC = [1a5b2249] Uncompressed CRC = [1a5b2249]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PDB\TXT73.tbl ] already exists. Replace existing file ? Yes
+162. Expanding file [C:\IFIX\LOGAS\PDB\TXT73.tbl] Original CRC = [5b3047a7] Uncompressed CRC = [5b3047a7]
+Option Number: #206
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Aa_TS.Grf ] already exists. Replace existing file ? Yes
+163. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Aa_TS.Grf] Original CRC = [9a242734] Uncompressed CRC = [9a242734]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\AI_TS.grf ] already exists. Replace existing file ? Yes
+164. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\AI_TS.grf] Original CRC = [622ab605] Uncompressed CRC = [622ab605]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\AO_TS.Grf ] already exists. Replace existing file ? Yes
+165. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\AO_TS.Grf] Original CRC = [e600dce3] Uncompressed CRC = [e600dce3]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Ar_TS.Grf ] already exists. Replace existing file ? Yes
+166. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Ar_TS.Grf] Original CRC = [5abfc7e6] Uncompressed CRC = [5abfc7e6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Bb_TS.Grf ] already exists. Replace existing file ? Yes
+167. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Bb_TS.Grf] Original CRC = [9ec0fce8] Uncompressed CRC = [9ec0fce8]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Bl_TS.Grf ] already exists. Replace existing file ? Yes
+168. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Bl_TS.Grf] Original CRC = [82fde4f0] Uncompressed CRC = [82fde4f0]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Ca_TS.Grf ] already exists. Replace existing file ? Yes
+169. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Ca_TS.Grf] Original CRC = [13267d7] Uncompressed CRC = [13267d7]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\D16_TS.grf ] already exists. Replace existing file ? Yes
+170. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\D16_TS.grf] Original CRC = [779d9e3e] Uncompressed CRC = [779d9e3e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Da_TS.Grf ] already exists. Replace existing file ? Yes
+171. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Da_TS.Grf] Original CRC = [ddf50ef] Uncompressed CRC = [ddf50ef]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\DI_TS.Grf ] already exists. Replace existing file ? Yes
+172. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\DI_TS.Grf] Original CRC = [c78abaf3] Uncompressed CRC = [c78abaf3]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Do_TS.Grf ] already exists. Replace existing file ? Yes
+173. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Do_TS.Grf] Original CRC = [7b09bee6] Uncompressed CRC = [7b09bee6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Dr_TS.Grf ] already exists. Replace existing file ? Yes
+174. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Dr_TS.Grf] Original CRC = [b0fe1f52] Uncompressed CRC = [b0fe1f52]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Dt_TS.Grf ] already exists. Replace existing file ? Yes
+175. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Dt_TS.Grf] Original CRC = [cda89333] Uncompressed CRC = [cda89333]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Etr_TS.grf ] already exists. Replace existing file ? Yes
+176. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Etr_TS.grf] Original CRC = [a5d7fab4] Uncompressed CRC = [a5d7fab4]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Ev_TS.Grf ] already exists. Replace existing file ? Yes
+177. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Ev_TS.Grf] Original CRC = [945d0a00] Uncompressed CRC = [945d0a00]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Fn_TS.Grf ] already exists. Replace existing file ? Yes
+178. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Fn_TS.Grf] Original CRC = [acdb7ecf] Uncompressed CRC = [acdb7ecf]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Hs_TS.Grf ] already exists. Replace existing file ? Yes
+179. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Hs_TS.Grf] Original CRC = [d2307ebd] Uncompressed CRC = [d2307ebd]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Ll_TS.Grf ] already exists. Replace existing file ? Yes
+180. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Ll_TS.Grf] Original CRC = [1a6ceef6] Uncompressed CRC = [1a6ceef6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Mdi_TS.grf ] already exists. Replace existing file ? Yes
+181. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Mdi_TS.grf] Original CRC = [148bf74e] Uncompressed CRC = [148bf74e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Pa_TS.Grf ] already exists. Replace existing file ? Yes
+182. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Pa_TS.Grf] Original CRC = [1213324e] Uncompressed CRC = [1213324e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Pg_TS.Grf ] already exists. Replace existing file ? Yes
+183. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Pg_TS.Grf] Original CRC = [8c7e1f44] Uncompressed CRC = [8c7e1f44]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Pid_TS.grf ] already exists. Replace existing file ? Yes
+184. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Pid_TS.grf] Original CRC = [259c3b87] Uncompressed CRC = [259c3b87]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\QuickTrend.grf ] already exists. Replace existing file ? Yes
+185. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\QuickTrend.grf] Original CRC = [21eb437c] Uncompressed CRC = [21eb437c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Rb_TS.Grf ] already exists. Replace existing file ? Yes
+186. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Rb_TS.Grf] Original CRC = [68139679] Uncompressed CRC = [68139679]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Rm_TS.Grf ] already exists. Replace existing file ? Yes
+187. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Rm_TS.Grf] Original CRC = [202115e6] Uncompressed CRC = [202115e6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Sc_TS.Grf ] already exists. Replace existing file ? Yes
+188. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Sc_TS.Grf] Original CRC = [7d8d894e] Uncompressed CRC = [7d8d894e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Sd_TS.Grf ] already exists. Replace existing file ? Yes
+189. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Sd_TS.Grf] Original CRC = [8e1308e6] Uncompressed CRC = [8e1308e6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Sqd_TS.grf ] already exists. Replace existing file ? Yes
+190. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Sqd_TS.grf] Original CRC = [f1c6c8f5] Uncompressed CRC = [f1c6c8f5]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Sqt_TS.grf ] already exists. Replace existing file ? Yes
+191. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Sqt_TS.grf] Original CRC = [6978f791] Uncompressed CRC = [6978f791]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Ss_TS.Grf ] already exists. Replace existing file ? Yes
+192. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Ss_TS.Grf] Original CRC = [a63b8486] Uncompressed CRC = [a63b8486]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\TagControlPanel.grf ] already exists. Replace existing file ? Yes
+193. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\TagControlPanel.grf] Original CRC = [abe6624a] Uncompressed CRC = [abe6624a]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Tm_TS.Grf ] already exists. Replace existing file ? Yes
+194. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Tm_TS.Grf] Original CRC = [fe305c49] Uncompressed CRC = [fe305c49]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Tr_TS.Grf ] already exists. Replace existing file ? Yes
+195. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Tr_TS.Grf] Original CRC = [6312a31d] Uncompressed CRC = [6312a31d]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Tt_TS.Grf ] already exists. Replace existing file ? Yes
+196. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Tt_TS.Grf] Original CRC = [13dd002] Uncompressed CRC = [13dd002]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\Tx_TS.Grf ] already exists. Replace existing file ? Yes
+197. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\Tx_TS.Grf] Original CRC = [f80b06db] Uncompressed CRC = [f80b06db]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TagStatus\TS.ini ] already exists. Replace existing file ? Yes
+198. Expanding file [C:\IFIX\LOGAS\PIC\TagStatus\TS.ini] Original CRC = [fb76058f] Uncompressed CRC = [fb76058f]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\WizLayouts.tpl ] already exists. Replace existing file ? Yes
+199. Expanding file [C:\IFIX\LOGAS\PIC\WizLayouts.tpl] Original CRC = [c3a3822e] Uncompressed CRC = [c3a3822e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_Bar.fds ] already exists. Replace existing file ? Yes
+200. Expanding file [C:\IFIX\LOGAS\PIC\Chart_Bar.fds] Original CRC = [892a9651] Uncompressed CRC = [892a9651]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_LineHist.fds ] already exists. Replace existing file ? Yes
+201. Expanding file [C:\IFIX\LOGAS\PIC\Chart_LineHist.fds] Original CRC = [1b433436] Uncompressed CRC = [1b433436]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_LineRealTime.fds ] already exists. Replace existing file ? Yes
+202. Expanding file [C:\IFIX\LOGAS\PIC\Chart_LineRealTime.fds] Original CRC = [a2b13d00] Uncompressed CRC = [a2b13d00]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_Pie.fds ] already exists. Replace existing file ? Yes
+203. Expanding file [C:\IFIX\LOGAS\PIC\Chart_Pie.fds] Original CRC = [f783091b] Uncompressed CRC = [f783091b]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_PieHist.fds ] already exists. Replace existing file ? Yes
+204. Expanding file [C:\IFIX\LOGAS\PIC\Chart_PieHist.fds] Original CRC = [a36f6e4] Uncompressed CRC = [a36f6e4]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_Table.fds ] already exists. Replace existing file ? Yes
+205. Expanding file [C:\IFIX\LOGAS\PIC\Chart_Table.fds] Original CRC = [96f959f3] Uncompressed CRC = [96f959f3]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Chart_TableHist.fds ] already exists. Replace existing file ? Yes
+206. Expanding file [C:\IFIX\LOGAS\PIC\Chart_TableHist.fds] Original CRC = [cb784dd5] Uncompressed CRC = [cb784dd5]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\EmergencyStopButtons.fds ] already exists. Replace existing file ? Yes
+207. Expanding file [C:\IFIX\LOGAS\PIC\EmergencyStopButtons.fds] Original CRC = [3dea4a24] Uncompressed CRC = [3dea4a24]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesHorizontalLarge.fds ] already exists. Replace existing file ? Yes
+208. Expanding file [C:\IFIX\LOGAS\PIC\GaugesHorizontalLarge.fds] Original CRC = [f0b9c2dc] Uncompressed CRC = [f0b9c2dc]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesHorizontalMedium.fds ] already exists. Replace existing file ? Yes
+209. Expanding file [C:\IFIX\LOGAS\PIC\GaugesHorizontalMedium.fds] Original CRC = [a25aaffa] Uncompressed CRC = [a25aaffa]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesHorizontalSmall.fds ] already exists. Replace existing file ? Yes
+210. Expanding file [C:\IFIX\LOGAS\PIC\GaugesHorizontalSmall.fds] Original CRC = [3d26a46c] Uncompressed CRC = [3d26a46c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesRoundLarge.fds ] already exists. Replace existing file ? Yes
+211. Expanding file [C:\IFIX\LOGAS\PIC\GaugesRoundLarge.fds] Original CRC = [ca47d648] Uncompressed CRC = [ca47d648]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesRoundMedium.fds ] already exists. Replace existing file ? Yes
+212. Expanding file [C:\IFIX\LOGAS\PIC\GaugesRoundMedium.fds] Original CRC = [437f243c] Uncompressed CRC = [437f243c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesRoundSmall.fds ] already exists. Replace existing file ? Yes
+213. Expanding file [C:\IFIX\LOGAS\PIC\GaugesRoundSmall.fds] Original CRC = [14df327c] Uncompressed CRC = [14df327c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesVerticalLarge.fds ] already exists. Replace existing file ? Yes
+214. Expanding file [C:\IFIX\LOGAS\PIC\GaugesVerticalLarge.fds] Original CRC = [65816697] Uncompressed CRC = [65816697]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesVerticalMedium.fds ] already exists. Replace existing file ? Yes
+215. Expanding file [C:\IFIX\LOGAS\PIC\GaugesVerticalMedium.fds] Original CRC = [3f86da34] Uncompressed CRC = [3f86da34]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\GaugesVerticalSmall.fds ] already exists. Replace existing file ? Yes
+216. Expanding file [C:\IFIX\LOGAS\PIC\GaugesVerticalSmall.fds] Original CRC = [2db58f88] Uncompressed CRC = [2db58f88]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Historical.fds ] already exists. Replace existing file ? Yes
+217. Expanding file [C:\IFIX\LOGAS\PIC\Historical.fds] Original CRC = [b357218c] Uncompressed CRC = [b357218c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\HistoricalLineChart.fds ] already exists. Replace existing file ? Yes
+218. Expanding file [C:\IFIX\LOGAS\PIC\HistoricalLineChart.fds] Original CRC = [b5f70067] Uncompressed CRC = [b5f70067]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\HistWizardDynamos.fds ] already exists. Replace existing file ? Yes
+219. Expanding file [C:\IFIX\LOGAS\PIC\HistWizardDynamos.fds] Original CRC = [2d870a19] Uncompressed CRC = [2d870a19]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Miscellaneous.fds ] already exists. Replace existing file ? Yes
+220. Expanding file [C:\IFIX\LOGAS\PIC\Miscellaneous.fds] Original CRC = [219f1924] Uncompressed CRC = [219f1924]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Motors.fds ] already exists. Replace existing file ? Yes
+221. Expanding file [C:\IFIX\LOGAS\PIC\Motors.fds] Original CRC = [e08870e2] Uncompressed CRC = [e08870e2]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PanelButtonsLarge.fds ] already exists. Replace existing file ? Yes
+222. Expanding file [C:\IFIX\LOGAS\PIC\PanelButtonsLarge.fds] Original CRC = [e62fb9d] Uncompressed CRC = [e62fb9d]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PanelButtonsMedium.fds ] already exists. Replace existing file ? Yes
+223. Expanding file [C:\IFIX\LOGAS\PIC\PanelButtonsMedium.fds] Original CRC = [8608de72] Uncompressed CRC = [8608de72]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PanelButtonsSmall.fds ] already exists. Replace existing file ? Yes
+224. Expanding file [C:\IFIX\LOGAS\PIC\PanelButtonsSmall.fds] Original CRC = [7086cd83] Uncompressed CRC = [7086cd83]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PilotLightsLarge.fds ] already exists. Replace existing file ? Yes
+225. Expanding file [C:\IFIX\LOGAS\PIC\PilotLightsLarge.fds] Original CRC = [7e18435a] Uncompressed CRC = [7e18435a]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PilotLightsMedium.fds ] already exists. Replace existing file ? Yes
+226. Expanding file [C:\IFIX\LOGAS\PIC\PilotLightsMedium.fds] Original CRC = [2742cd] Uncompressed CRC = [2742cd]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PilotLightsSmall.fds ] already exists. Replace existing file ? Yes
+227. Expanding file [C:\IFIX\LOGAS\PIC\PilotLightsSmall.fds] Original CRC = [8da5f375] Uncompressed CRC = [8da5f375]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Pipes.fds ] already exists. Replace existing file ? Yes
+228. Expanding file [C:\IFIX\LOGAS\PIC\Pipes.fds] Original CRC = [8709607e] Uncompressed CRC = [8709607e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PipesAnim.fds ] already exists. Replace existing file ? Yes
+229. Expanding file [C:\IFIX\LOGAS\PIC\PipesAnim.fds] Original CRC = [68f3d95] Uncompressed CRC = [68f3d95]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PipesLarge.fds ] already exists. Replace existing file ? Yes
+230. Expanding file [C:\IFIX\LOGAS\PIC\PipesLarge.fds] Original CRC = [866cd236] Uncompressed CRC = [866cd236]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PipesSmall.fds ] already exists. Replace existing file ? Yes
+231. Expanding file [C:\IFIX\LOGAS\PIC\PipesSmall.fds] Original CRC = [b5392f98] Uncompressed CRC = [b5392f98]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PlantApplications.fds ] already exists. Replace existing file ? Yes
+232. Expanding file [C:\IFIX\LOGAS\PIC\PlantApplications.fds] Original CRC = [4593439e] Uncompressed CRC = [4593439e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Pumps.fds ] already exists. Replace existing file ? Yes
+233. Expanding file [C:\IFIX\LOGAS\PIC\Pumps.fds] Original CRC = [2dc4c650] Uncompressed CRC = [2dc4c650]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PumpsAnim.fds ] already exists. Replace existing file ? Yes
+234. Expanding file [C:\IFIX\LOGAS\PIC\PumpsAnim.fds] Original CRC = [efbe826e] Uncompressed CRC = [efbe826e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PumpsLarge.fds ] already exists. Replace existing file ? Yes
+235. Expanding file [C:\IFIX\LOGAS\PIC\PumpsLarge.fds] Original CRC = [753b029f] Uncompressed CRC = [753b029f]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PumpsSmall.fds ] already exists. Replace existing file ? Yes
+236. Expanding file [C:\IFIX\LOGAS\PIC\PumpsSmall.fds] Original CRC = [98a05076] Uncompressed CRC = [98a05076]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\StorageTanks.fds ] already exists. Replace existing file ? Yes
+237. Expanding file [C:\IFIX\LOGAS\PIC\StorageTanks.fds] Original CRC = [fb12e25] Uncompressed CRC = [fb12e25]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\StorageTanksAnim.fds ] already exists. Replace existing file ? Yes
+238. Expanding file [C:\IFIX\LOGAS\PIC\StorageTanksAnim.fds] Original CRC = [59259474] Uncompressed CRC = [59259474]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\SwitchesLarge.fds ] already exists. Replace existing file ? Yes
+239. Expanding file [C:\IFIX\LOGAS\PIC\SwitchesLarge.fds] Original CRC = [2f551bb2] Uncompressed CRC = [2f551bb2]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\SwitchesMedium.fds ] already exists. Replace existing file ? Yes
+240. Expanding file [C:\IFIX\LOGAS\PIC\SwitchesMedium.fds] Original CRC = [5fc0c257] Uncompressed CRC = [5fc0c257]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\SwitchesSmall.fds ] already exists. Replace existing file ? Yes
+241. Expanding file [C:\IFIX\LOGAS\PIC\SwitchesSmall.fds] Original CRC = [9d9209dc] Uncompressed CRC = [9d9209dc]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Tanks.fds ] already exists. Replace existing file ? Yes
+242. Expanding file [C:\IFIX\LOGAS\PIC\Tanks.fds] Original CRC = [452ecfbd] Uncompressed CRC = [452ecfbd]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TanksAnim1.fds ] already exists. Replace existing file ? Yes
+243. Expanding file [C:\IFIX\LOGAS\PIC\TanksAnim1.fds] Original CRC = [dab7f516] Uncompressed CRC = [dab7f516]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\TanksAnim2.fds ] already exists. Replace existing file ? Yes
+244. Expanding file [C:\IFIX\LOGAS\PIC\TanksAnim2.fds] Original CRC = [5787f766] Uncompressed CRC = [5787f766]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\UpDownButtons.fds ] already exists. Replace existing file ? Yes
+245. Expanding file [C:\IFIX\LOGAS\PIC\UpDownButtons.fds] Original CRC = [636c5acf] Uncompressed CRC = [636c5acf]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Valves.fds ] already exists. Replace existing file ? Yes
+246. Expanding file [C:\IFIX\LOGAS\PIC\Valves.fds] Original CRC = [a5f4462e] Uncompressed CRC = [a5f4462e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesAnim.fds ] already exists. Replace existing file ? Yes
+247. Expanding file [C:\IFIX\LOGAS\PIC\ValvesAnim.fds] Original CRC = [efeed0fb] Uncompressed CRC = [efeed0fb]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesControlHand.fds ] already exists. Replace existing file ? Yes
+248. Expanding file [C:\IFIX\LOGAS\PIC\ValvesControlHand.fds] Original CRC = [82010ba8] Uncompressed CRC = [82010ba8]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesISAHorizLarge.fds ] already exists. Replace existing file ? Yes
+249. Expanding file [C:\IFIX\LOGAS\PIC\ValvesISAHorizLarge.fds] Original CRC = [ee4b3b5c] Uncompressed CRC = [ee4b3b5c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesISAHorizSmall.fds ] already exists. Replace existing file ? Yes
+250. Expanding file [C:\IFIX\LOGAS\PIC\ValvesISAHorizSmall.fds] Original CRC = [9a0ce4d1] Uncompressed CRC = [9a0ce4d1]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesISAVertLarge.fds ] already exists. Replace existing file ? Yes
+251. Expanding file [C:\IFIX\LOGAS\PIC\ValvesISAVertLarge.fds] Original CRC = [3d31314d] Uncompressed CRC = [3d31314d]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ValvesISAVertSmall.fds ] already exists. Replace existing file ? Yes
+252. Expanding file [C:\IFIX\LOGAS\PIC\ValvesISAVertSmall.fds] Original CRC = [984ad669] Uncompressed CRC = [984ad669]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Blue.ftb ] already exists. Replace existing file ? Yes
+253. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Blue.ftb] Original CRC = [4d076bb4] Uncompressed CRC = [4d076bb4]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Cyan.ftb ] already exists. Replace existing file ? Yes
+254. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Cyan.ftb] Original CRC = [6787aa14] Uncompressed CRC = [6787aa14]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Gray.ftb ] already exists. Replace existing file ? Yes
+255. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Gray.ftb] Original CRC = [c0b4ef00] Uncompressed CRC = [c0b4ef00]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Green.ftb ] already exists. Replace existing file ? Yes
+256. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Green.ftb] Original CRC = [595444bc] Uncompressed CRC = [595444bc]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Magenta.ftb ] already exists. Replace existing file ? Yes
+257. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Magenta.ftb] Original CRC = [308926ab] Uncompressed CRC = [308926ab]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Red.ftb ] already exists. Replace existing file ? Yes
+258. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Red.ftb] Original CRC = [66d93c68] Uncompressed CRC = [66d93c68]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\Shades Of Yellow.ftb ] already exists. Replace existing file ? Yes
+259. Expanding file [C:\IFIX\LOGAS\PIC\Shades Of Yellow.ftb] Original CRC = [b6fbed60] Uncompressed CRC = [b6fbed60]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\System Default.ftb ] already exists. Replace existing file ? Yes
+260. Expanding file [C:\IFIX\LOGAS\PIC\System Default.ftb] Original CRC = [1ff41f2c] Uncompressed CRC = [1ff41f2c]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ExpertGlobal.fxg ] already exists. Replace existing file ? Yes
+261. Expanding file [C:\IFIX\LOGAS\PIC\ExpertGlobal.fxg] Original CRC = [1e407eb4] Uncompressed CRC = [1e407eb4]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ExpertGlobals2.fxg ] already exists. Replace existing file ? Yes
+262. Expanding file [C:\IFIX\LOGAS\PIC\ExpertGlobals2.fxg] Original CRC = [ff6afca3] Uncompressed CRC = [ff6afca3]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\FactoryGlobals.fxg ] already exists. Replace existing file ? Yes
+263. Expanding file [C:\IFIX\LOGAS\PIC\FactoryGlobals.fxg] Original CRC = [bab49fb] Uncompressed CRC = [bab49fb]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\PlugandSolve.fxg ] already exists. Replace existing file ? Yes
+264. Expanding file [C:\IFIX\LOGAS\PIC\PlugandSolve.fxg] Original CRC = [83dd29ad] Uncompressed CRC = [83dd29ad]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\ChartGroupDemo.grf ] already exists. Replace existing file ? Yes
+265. Expanding file [C:\IFIX\LOGAS\PIC\ChartGroupDemo.grf] Original CRC = [6ca937b8] Uncompressed CRC = [6ca937b8]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\DynamoPopupHist.grf ] already exists. Replace existing file ? Yes
+266. Expanding file [C:\IFIX\LOGAS\PIC\DynamoPopupHist.grf] Original CRC = [8f755ca4] Uncompressed CRC = [8f755ca4]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\HistorianDataEntryWizard.grf ] already exists. Replace existing file ? Yes
+267. Expanding file [C:\IFIX\LOGAS\PIC\HistorianDataEntryWizard.grf] Original CRC = [dcb6583e] Uncompressed CRC = [dcb6583e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\HistorianDataExportWizard.grf ] already exists. Replace existing file ? Yes
+268. Expanding file [C:\IFIX\LOGAS\PIC\HistorianDataExportWizard.grf] Original CRC = [7638e01a] Uncompressed CRC = [7638e01a]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\LineChartPopupHist.grf ] already exists. Replace existing file ? Yes
+269. Expanding file [C:\IFIX\LOGAS\PIC\LineChartPopupHist.grf] Original CRC = [6d386126] Uncompressed CRC = [6d386126]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\LineChartPopupReal.grf ] already exists. Replace existing file ? Yes
+270. Expanding file [C:\IFIX\LOGAS\PIC\LineChartPopupReal.grf] Original CRC = [714e8294] Uncompressed CRC = [714e8294]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\LocalAsBackup.grf ] already exists. Replace existing file ? Yes
+271. Expanding file [C:\IFIX\LOGAS\PIC\LocalAsBackup.grf] Original CRC = [5323695e] Uncompressed CRC = [5323695e]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\LocalAsPrimary.grf ] already exists. Replace existing file ? Yes
+272. Expanding file [C:\IFIX\LOGAS\PIC\LocalAsPrimary.grf] Original CRC = [9e217ee6] Uncompressed CRC = [9e217ee6]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\NetworkStatusDisplay.grf ] already exists. Replace existing file ? Yes
+273. Expanding file [C:\IFIX\LOGAS\PIC\NetworkStatusDisplay.grf] Original CRC = [3701def2] Uncompressed CRC = [3701def2]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\NetworkStatusOverview.grf ] already exists. Replace existing file ? Yes
+274. Expanding file [C:\IFIX\LOGAS\PIC\NetworkStatusOverview.grf] Original CRC = [bfe9a98f] Uncompressed CRC = [bfe9a98f]
+Option Number: #207
+
+File [ C:\IFIX\LOGAS\PIC\NetworkStatusRedundancyDisplay.grf ] already exists. Replace existing file ? Yes
+275. Expanding file [C:\IFIX\LOGAS\PIC\NetworkStatusRedundancyDisplay.grf] Original CRC = [190d0f54] Uncompressed CRC = [190d0f54]
+Option Number: #207

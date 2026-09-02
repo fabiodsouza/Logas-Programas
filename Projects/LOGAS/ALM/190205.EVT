@@ -1,0 +1,132 @@
+05/02/2019 10:32:51 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 10:35:21
+--------------------------------------------------------
+
+05/02/2019 10:35:26 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 10:35:26 [FIXTOHIST.EXE] 10:35:26 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:39:36 [WorkSpace.exe] 10:39:36 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:41:55 [WorkSpace.exe] 10:41:55 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:27 [WorkSpace.exe] 10:43:27 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:27 [WorkSpace.exe] 10:43:27 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:34 [WorkSpace.exe] 10:43:34 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:34 [WorkSpace.exe] 10:43:34 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:36 [WorkSpace.exe] 10:43:36 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:36 [WorkSpace.exe] 10:43:36 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:50 [WorkSpace.exe] 10:43:50 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:50 [WorkSpace.exe] 10:43:50 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:43:56 [WorkSpace.exe] 10:43:56 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 10:56:19 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 10:57:12
+--------------------------------------------------------
+
+05/02/2019 10:57:16 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 10:57:17 [FIXTOHIST.EXE] 10:57:17 05/02/2019 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+05/02/2019 11:00:48 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 11:09:35
+--------------------------------------------------------
+
+05/02/2019 11:09:59 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 11:14:08 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 11:14:29
+--------------------------------------------------------
+
+05/02/2019 11:14:34 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 13:17:29 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 13:29:23
+--------------------------------------------------------
+
+05/02/2019 13:29:28 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 13:32:38 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 13:33:55
+--------------------------------------------------------
+
+05/02/2019 13:34:00 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 13:37:22 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 13:37:32
+--------------------------------------------------------
+
+05/02/2019 13:37:36 [fix.exe] Proficy iFIX Demo System Running!
+
+05/02/2019 13:55:56 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/02/2019 13:56:51
+--------------------------------------------------------
+
+05/02/2019 13:56:55 [fix.exe] Proficy iFIX Software is running!
+

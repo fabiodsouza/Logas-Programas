@@ -1,0 +1,15 @@
+// LL block conversion table
+// v6.1->7.0
+
+   SCHDR	//shdr;		/* secondary block header */
+
+   EGUREC	//egurec;	/* egu info (analog) */
+   
+   FCONST	//k;		/* multiplier */
+   FCONST	//lead;		/* lead time */
+   FCONST	//lag;		/* lag time */
+    
+   FLOAT	//lin;		/* last input */
+   PDATA	//pdata;	/* current absolute output */
+   #DESC	//desc;		//jss022097
+   #EGU_DESC	//LongEguDesc;	/* for longer egu tagnames - new to raptor*/

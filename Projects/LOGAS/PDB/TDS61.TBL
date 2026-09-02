@@ -1,0 +1,24 @@
+// TDS 6.1->7.0
+
+//#define		TDS_CV_SIZE	22	/* date and time (+ 2 spares) */
+	VERSION	0x110395
+	SCHDR	// shdr;		/* secondary block header */
+	DESC	// desc;		/* block descriptor */
+	
+	EGUREC	// egu;		/* egu info (unused for now) */
+	INT16	// current;
+	INT16	// previous;
+	INT16	// mode;		/* mode of operation */
+
+	INT16	// year;		/* 'raw' values... */
+	CHAR	// month;
+	CHAR	// day;
+	CHAR	// hour;
+	CHAR	// minute;
+	CHAR	// second;
+	CHAR	// spare;
+	CHAR[22]	// date[TDS_CV_SIZE];	/* mm/dd/yy hh:mm:ss */
+	CHAR	// separator;
+	CHAR	// format;
+	#UINT32[2]	// spare2
+

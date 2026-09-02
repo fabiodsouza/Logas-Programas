@@ -1,0 +1,19 @@
+//DT block conversion table
+// v6.1->7.0
+//#define 	DTSIZ	60			/* entries in data block */
+//#define	DTERR	(DTSIZ / 8 + 1)		/* error fields needed */
+
+   SCHDR	//shdr;		/* secondary block header */
+
+   EGUREC	//egurec;	/* egu info (analog) */
+   
+   UINT16	//time;		/* dead time requested (in secs) */
+		     
+   UINT16	//dt_cnt;	/* dead time counter */
+   UINT16	//next_ptr;	/* next data pointer */
+   FLOAT[60]	//data[DTSIZ];	/* data */
+   UCHAR[8]	//err[DTERR];	/* errors to go along with each data entry */
+   PDATA	//average;	/* running average */
+   PDATA	//pdata;	/* current absolute output */
+   #DESC	//desc;		/* jss022097 */
+   #EGU_DESC	//LongEguDesc;	/* for longer egu tagnames - new to raptor*/

@@ -1,0 +1,19 @@
+// TXT 6.1->7.0
+
+//#define TXT_N		16
+//#define TXT_WID		41	/* 40 + nul */
+	VERSION	0x082494
+	SCHDR		// shdr;		/* secondary block header */
+	DESC		// desc;		/* block descriptor */
+   
+	EGUREC		// egu;		/* egu info (analog) */
+ #CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	IO_INFO		// ai_io;		/* analog i/o info */
+	FLOAT[16]	// targval[TXT_N];	/* target value array */
+	CHAR[697]	// targstr[TXT_N+1][TXT_WID];	/* target string array */
+	CHAR[41]	// sparestr[TXT_WID];
+
+	CHAR		// flags;		/* some bit flags */
+	CHAR		// spare;		/* Always pad to integer boundary! */
+	UINT16[8]	// spare1[8];	/* more spares */
+

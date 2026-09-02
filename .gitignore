@@ -1,0 +1,16 @@
+node_modules/
+dist/
+win-unpacked/
+build/
+out/
+*.exe
+*.ort
+*.onnx
+_dados_navegador/
+component_crx_cache/
+ProvenanceData/
+sessao_whatsapp/
+session/
+wa_versao_fixa/
+*.log
+*.wal

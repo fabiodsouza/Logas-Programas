@@ -1,0 +1,28 @@
+// ITM 6.1->7.0
+
+	VERSION	0x041800
+	PBHDR		// phdr;		/* block header */
+	DESC		// desc;		/* block descriptor */
+
+	EGUREC		//egu;		/* egu info (unused for now) */
+	FIELDINFO	//gate;
+	FIELDINFO	//reset;
+	DWORD		//limit;		// interval limit (milliseconds)
+	DWORD		//tlimit;		// total limit (seconds)
+	INT16		//options;	/* CLR, IALM_, HCLR, CCLR  */
+	INT16		//passed;		/* PASS_ */
+	INT16		//seqnum;		// for G_DATA
+	INT16		//current_gate;	// Current Gate (0/1)
+	INT16		//current_input;	// Current Input (0/1)
+	INT16		//current_state;	// Current State (0/1)
+	INT16		//previous_state;	// Previous State (0/1)
+	INT16		//current_reset;	// current reset (0/1)
+	INT16		//previous_reset;	// Previous reset (0/1)
+	INT16		//SampleCount;	// used to compute average interval
+
+	DWORD		//CurrentCount;	// Current Interval so far (ms)
+	DWORD		//StartTime;	// StartTime (ms)
+	DWORD[80]	//Intervals[N_ITEMS];
+	DWORD		//total;			// total interval (seconds!)
+	DWORD		//tmpscan;		// copy of primary block scan time.
+	DWORD[2]	//spare[2];

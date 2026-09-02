@@ -1,0 +1,20 @@
+//PAR
+// iFIX40 -> iFIX45
+
+	VERSION	0x112005
+
+	PBHDR				//phdr;			/* block header */
+	DESC				//desc;			/* block descriptor */
+	UINT16			//flags;			// misc option bits...
+	FLOAT[60]		//fltValues[MAX_COUNT];			// array of values
+	CHAR[60]		//ef[MAX_COUNT];					// digits to right of decimal for each value in a_cv 
+	CHAR[2460]	//szText[MAX_COUNT][DESCSIZ];		// array of descriptions
+	//
+	EGUREC			// aegu;			/* egu info(analog in + out) */
+	CHAR[34]    //EGU_DESC	LongEguDesc;	/* for longer egu tagnames V7.0 10152003 nhenderson */
+	FLOAT		s1;			// spare
+	FLOAT		s2;			// spare
+	FLOAT		s3;			// spare
+	FLOAT		s4;			// spare
+	FLOAT		s5;			// spare
+	FLOAT		s6;			// spare

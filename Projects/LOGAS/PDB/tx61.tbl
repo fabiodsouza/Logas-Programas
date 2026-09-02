@@ -1,0 +1,20 @@
+// MB (text) block conversion table
+// v6.1->7.0
+
+//#define	MB_TEXT_SIZE	81		/* max size of string (for now) */
+
+	PBHDR		//phdr;		/* primary block header */
+
+	IO_INFO		//mb_io;		/* IOREC and IODNAME */
+	INT16		//size;		/* text size to read from I/O driver */
+
+	CHAR[81]	//input_buf[MB_TEXT_SIZE];	/* buffer to store data input
+						 * from keyboard when block
+						 * is in auto mode */
+
+	CHAR[81]	//text[MB_TEXT_SIZE];	/* buffer to read/write text */
+					/* This is the current "value" */
+	UCHAR 	//option;	/* mao121792 */
+	UCHAR 	//spare2;
+
+	#DESC	//desc;	/* jss022097 */

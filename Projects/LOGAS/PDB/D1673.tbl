@@ -1,0 +1,19 @@
+//D16 block conversion table
+// iFIX40 -> iFIX45
+
+	VERSION	0x011497
+	PBHDR	// phdr;		/* block header */
+	DESC	// desc;		/* block descriptor */
+	
+	UINT16	// flags;
+	IO_INFO	// io;
+	UINT16	// invert;
+	UINT16	// almchk;
+	UINT16	// curval;
+	UINT16	// curalm;
+	UINT16	// bitcount;
+	UINT16[3]	//spare[3];
+
+	EGUREC	// egu;		/* needed for parsing */
+	CHAR[656]	// string[D16_N * D16_STRL];
+

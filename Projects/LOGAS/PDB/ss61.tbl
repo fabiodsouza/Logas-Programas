@@ -1,0 +1,12 @@
+// SS block conversion table
+// v6.1->7.0
+//#define		SS_NINPUTS	6
+
+SCHDR	    //shdr;		/* secondary block header */
+GETFROM[6]  //get[SS_NINPUTS];		/* 2nd get tag info */
+EGUREC	    //egurec;		/* egu info (analog) */
+UCHAR	    //sel_mode;		/* select mode */
+UCHAR	    //xx;		/* force next field on even word boundary */
+PDATA	    //pdata;		/* current absolute output */
+#DESC	    //desc;		// jss022097
+#EGU_DESC   //LongEguDesc;	// sethu090197-for longer egu tagnames

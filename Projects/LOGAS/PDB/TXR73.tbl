@@ -1,0 +1,14 @@
+// TXR 
+// iFIX40 -> iFIX45
+
+	VERSION	0x030697
+	SCHDR		// phdr;		/* secondary block header */
+	DESC		// desc;		/* block descriptor */
+    
+	IO_INFO		// io;			/* digital in info */
+	EGUREC		// egu;
+	UINT16		// len;		/* text size to read from I/O driver */
+	
+	UINT16		// options;
+	UINT16[3]		// spares[3];
+

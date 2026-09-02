@@ -1,0 +1,19 @@
+//  CA block conversion table
+// v 6.1 -> 7.0
+
+//#define	CA_NINPUTS	8	/* number of inputs */
+//#define	CA_SIZE		32	/* postfix exp size (23+nul+6 extra) */
+
+   SCHDR	//shdr;		/* secondary block header */
+   DESC		//desc;		/* block descriptor */
+   
+   GETFROM[8]	//get[CA_NINPUTS];	/* get tags info */
+
+   EGUREC	//egu;			/* egu info (analog) */
+   UCHAR[32]	//exp[CA_SIZE];		/* postfix expression (with spares) */
+   UCHAR	//rnd;			/* round-off enable */
+   UCHAR	//spare;
+   
+   PDATA	//pdata;			/* current absolute output */
+   #EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+

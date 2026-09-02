@@ -1,0 +1,52 @@
+// PI2 6.1->7.0
+// iFIX40 -> iFIX45
+
+	VERSION	0x062292
+	SCHDR		// shdr;		/* secondary block header */
+	DESC		// desc
+	GETFROM		// sp;		/* remotable setpoint */
+	FIELDINFO	// feedback;	/* feed back tag info */
+	FIELDINFO	// feedfwd;	/* feed forward tag info */
+
+	EGUREC		// egurec;		/* egu info (analog) */
+  CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	EGUREC		// oegurec;	/* output egu info (analog) */
+  CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+
+	FLOAT		// devalm;		/* deviation alarm */
+	FLOAT		// deadband;	/* alarm dead band */
+	FLOAT		// splo;		/* low setpoint clamp */
+	FLOAT		// sphi;		/* high setpoint clamp */
+	FLOAT		// gap;		/* gap action constant */
+
+	UCHAR		// options;	/* block options:  OUT REV etc. */
+	UCHAR		// i_mode;		/* ITERM option select */
+	UCHAR		// d_mode;		/* DTERM option select */
+	UCHAR		// status;		/* misc status bits */
+	UCHAR		// spareb;
+	UCHAR		// sparec;
+
+	FCONST		// propband;	/* proportional band */
+	FCONST		// rate;		/* derivative time constant */
+	FCONST		// reset;		/* integral time constant */
+	FCONST		// dglimit;	/* derivative filter (usually 10) */
+	FCONST		// spare1;
+	FCONST		// spare2;
+
+	FCONST		// alpha;		/* derivative mode filter */
+	FCONST		// beta;		/* Proportional action constant */
+	FCONST		// gamma;		/* Derivative action constant */
+
+	FLOAT		// output;		/* current unscaled output */
+	PDATA		// pdata;		/* current scaled output */
+	PDATA		// pv;		/* current input (PV) */
+	FLOAT		// pv_old;		/* previous input */
+	FLOAT		// d_old;		/* previous dterm */
+	FLOAT		// i_old;		/* previous iterm */
+	FLOAT		// err0;		/* error at time t */
+	FLOAT		// err1;		/* error at time t - 1 */
+	FLOAT		// err2;		/* error at time t - 2 */
+	FLOAT		// spare3;
+	FLOAT		// spare4;
+	FLOAT		// p_old;		/* previous pterm */
+

@@ -1,0 +1,17 @@
+// DR block conversion table
+// v4.0 -> 4.5
+   VERSION	0x081408
+   SCHDR	//shdr;		    /* primary block header */
+   DESC		//desc;		    /* block descriptor */
+   
+   EGUREC	//egu;		    /* egu info (analog) */
+   IO_INFO	//dr_io;	    /* IOREC and IODNAME */
+   UCHAR	//almcheck;	    /* type of alarming to do */
+   UCHAR	//options;	    /* input invert */
+   CHAR[128]	//addr_str[CIOAD];  /* raw io address in string */	
+   UCHAR 	//out_enable;	    /* UCHAR to decide if output is allowed */
+   UCHAR	//wld_no;	    /* no of wld characters */
+   UCHAR	//wld_base;	    /* base of the I/O address ( dec, hex ) */
+   UCHAR 	//wld_ptr;	    /* no indicating position of the wild */
+   EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+   UINT16[8]    //spare[8];

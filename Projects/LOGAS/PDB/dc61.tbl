@@ -1,0 +1,39 @@
+// DC block conversion table
+// v6.1 -> 7.0
+
+//#define	DCSTEP_SIZ	56	/* length of step as ASCII in menu */
+//#define	DCSTEPS		12	/* number of program steps */
+//#define	DC_NINPUTS	16	/* number of inputs */
+//#define	DC_NOUTPUTS	8	/* number of outputs */
+
+//#define	DC_SIZE1	((15 + DC_NINPUTS) / 16) = 1
+//#define	DC_SIZE2	((15 + DC_NOUTPUTS) / 16) = 1
+
+   PBHDR	//phdr;			    /* primary block header */
+   DESC		//desc;			    /* block descriptor */
+   IOREC[16]	//iorecin[DC_NINPUTS];	    /* input io records */
+   IOREC2[16]	//iorec2in[DC_NINPUTS];	    /* input io2 records llb 121393 added */
+   IOREC[8]	//iorecout[DC_NOUTPUTS];    /* output io records */
+   IOREC2[8]	//iorec2out[DC_NOUTPUTS];   /* output io2 records llb 121393 added */
+   IODNAME	//input_device;		    /* input IO device name */
+   IODNAME	//output_device;	    /* output IO device name */
+
+   UINT16	//input_mask[DC_SIZE1];	    /* which bits in use */
+   UINT16	//output_mask[DC_SIZE2];    /* which bits in use */
+
+   DCSTEP[12]	//dcstep[DCSTEPS];
+   INT32	//vtm;			/* current timer (0 if inactive) cpi110889 changed from int to long*/
+   UCHAR	//vst;			/* status bits: err, debug */
+   UCHAR	//vstep;			/* current step */
+   UINT16	//incv;			/* input bit current values */
+   UINT16	//maintstat;		/* 1 = that bit is in maint */
+   UINT16	//loctw;			/* local term wd #0 */
+   UCHAR	//cspatt;			/* cold start pattern */
+   UCHAR	//csmask;			/* cold start mask */
+   INT16	//vw;			/* variable wait time */
+   CHAR		//vmo;			/* manual output request */
+   CHAR		//vmomsk;			/* manual output mask */
+   CHAR		//vcu;			/* current output pattern */
+   CHAR		//spx;			/* spare */
+   INT16	//intwb[DC_SIZE1];	/* which bits are tw's */
+   INT16	//outtwb[DC_SIZE2];	/* which bits are tw's */

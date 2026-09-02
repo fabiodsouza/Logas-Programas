@@ -1,0 +1,44 @@
+// PID converion table
+// v6.1->7.0
+
+	SCHDR		//shdr;		/* secondary block header */
+	FIELDINFO	//feedback;	/* 'feedback tag' info (future) */
+	GETFROM		//tv;		/* remotable setpoint */
+
+	EGUREC		//egurec;		/* egu info (analog) */
+	EGUREC		//oegurec;	/* output egu info (analog) */
+
+	FLOAT		//devalm;		/* deviation alarm */
+	FLOAT		//deadband;	/* alarm dead band */
+	FLOAT		//splo;		/* low setpoint clamp */
+	FLOAT		//sphi;		/* high setpoint clamp */
+	FLOAT		//gap;		/* gap action constant */
+
+	FCONST		//propband;	/* proportional band */
+	FCONST		//rate;		/* derivative time constant */
+	FCONST		//reset;		/* integral time constant */
+
+	FCONST		//alpha;		/* derivative mode filter */
+	FCONST		//beta;		/* Proportional action constant */
+	FCONST		//gamma;		/* Derivative action constant */
+
+	UCHAR		//status;		/* block operation status:  OUT REV etc. */
+	UCHAR		//bumpless;	/* type of bumpless transfer desired */
+	PDATA		//pdata;		/* current absolute output */
+	PDATA		//input;		/* current absolute input */
+
+	FLOAT		//err1;		/* error at time t - 1 */
+	FLOAT		//err2;		/* error at time t - 2 */
+	FLOAT		//err3;		/* error at time t - 3 */
+
+	FLOAT		//prop_err;	/* error at time t - 1 */
+
+	FLOAT		//gain;		/* controller gain:  100 / propband */
+	FLOAT		//time;		/* scan time / 60 (to get in minutes) */
+	FLOAT		//redt;		/* gain * time / reset */
+	FLOAT		//radt;		/* gain * rate / time */
+	INT16		//ltime;		/* previous scan time */
+	FLOAT		//lcl_value;	/* local value of output */
+	#DESC		//desc;		/* jss 022097*/
+	#EGU_DESC	//InEguDesc;	/* for longer egu tagnames - new to raptor*/
+	#EGU_DESC	//OutEguDesc;	/* for longer egu tagnames - new to raptor*/

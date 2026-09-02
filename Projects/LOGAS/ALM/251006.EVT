@@ -1,0 +1,61 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 00:53:07
+--------------------------------------------------------
+
+06/10/2025 00:53:12 [fix.exe] Proficy iFIX Software is running!
+
+06/10/2025 13:24:43 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 13:25:08
+--------------------------------------------------------
+
+06/10/2025 13:25:13 [fix.exe] Proficy iFIX Demo System Running!
+
+06/10/2025 13:56:30 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 13:57:02
+--------------------------------------------------------
+
+06/10/2025 13:57:07 [fix.exe] Proficy iFIX Demo System Running!
+
+06/10/2025 14:20:57 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 14:21:02
+--------------------------------------------------------
+
+06/10/2025 14:21:07 [fix.exe] Proficy iFIX Software is running!
+
+06/10/2025 14:21:12 [IOCNTRL.EXE] Failed to launch driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+06/10/2025 14:22:14 [IOCNTRL.EXE] Failed to destroy driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+06/10/2025 14:22:17 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 14:22:20
+--------------------------------------------------------
+
+06/10/2025 14:22:25 [fix.exe] Proficy iFIX Demo System Running!
+
+06/10/2025 16:29:25 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  06/10/2025 16:29:47
+--------------------------------------------------------
+
+06/10/2025 16:29:53 [fix.exe] Proficy iFIX Software is running!
+

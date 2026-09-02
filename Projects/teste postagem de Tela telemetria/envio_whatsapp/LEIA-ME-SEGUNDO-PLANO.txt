@@ -1,0 +1,49 @@
+==================================================================
+ ENVIO DA TELEMETRIA NO WHATSAPP - RODANDO EM SEGUNDO PLANO
+==================================================================
+
+OBJETIVO
+  Fazer o envio rodar OCULTO (sem janela de cmd aberta), para
+  que ninguem feche por engano e o programa pare.
+
+--------------------------------------------------------------
+COMO LIGAR (fazer so uma vez)
+--------------------------------------------------------------
+1) IMPORTANTE: antes de ocultar, garanta que o WhatsApp ja esta
+   conectado. Se nunca conectou neste PC, rode primeiro o
+   "iniciar_envio_whatsapp.bat" e escaneie o QR Code com o
+   celular. A sessao fica salva na pasta "sessao_whatsapp".
+
+2) Clique com o botao DIREITO em:
+        instalar_segundo_plano.bat
+   e escolha "Executar como administrador".
+
+3) Pronto. A partir de agora o envio:
+     - inicia sozinho quando o PC liga e faz login;
+     - reabre em ate 3 minutos se alguem fechar/derrubar;
+     - NAO mostra nenhuma janela de cmd.
+
+   Pode fechar qualquer janela do envio que ainda estiver aberta.
+
+--------------------------------------------------------------
+COMO CONFERIR SE ESTA RODANDO
+--------------------------------------------------------------
+  Abra o Gerenciador de Tarefas (Ctrl+Shift+Esc), aba "Detalhes",
+  e procure por "node.exe". Se estiver la, o envio esta ativo.
+
+--------------------------------------------------------------
+COMO DESLIGAR O SEGUNDO PLANO
+--------------------------------------------------------------
+  Clique com o botao direito em "desinstalar_segundo_plano.bat"
+  e escolha "Executar como administrador".
+
+--------------------------------------------------------------
+SE O WHATSAPP DESCONECTAR (pedir QR de novo)
+--------------------------------------------------------------
+  Como roda oculto, o QR Code nao aparece. Se o WhatsApp cair
+  (ex.: voce desconectou pelo celular), faca:
+    1) desinstalar_segundo_plano.bat  (como administrador)
+    2) iniciar_envio_whatsapp.bat     -> escaneie o QR de novo
+    3) instalar_segundo_plano.bat     (como administrador)
+
+==================================================================

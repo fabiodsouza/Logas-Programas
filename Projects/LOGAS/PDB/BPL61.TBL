@@ -1,0 +1,16 @@
+// BPL 6.1->7.0
+
+	VERSION	0x092995
+	SCHDR	// shdr		 secondary block header
+	DESC	// desc
+
+//  parameter constants
+
+	EGUREC		// egurec;	egu info (analog)
+ #CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	FCONST[20]	// inputs
+	FCONST		// spare
+	FCONST[20]	// outputs
+	FCONST[20]	// slopes
+	PDATA		// pdata
+

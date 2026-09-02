@@ -1,0 +1,21 @@
+{
+  "fortlev": {
+    "nome": "FORTLEV",
+    "pontos": [
+      "FORTLEV"
+    ],
+    "salt": "gerado-pelo-criar_usuario.py",
+    "senha_hash": "gerado-pelo-criar_usuario.py"
+  },
+  "extrema": {
+    "nome": "Cliente Extrema-MG",
+    "pontos": [
+      "BAIA 1",
+      "BAIA 2",
+      "BAIA 3"
+    ],
+    "conjunto": true,
+    "salt": "gerado-pelo-criar_usuario.py",
+    "senha_hash": "gerado-pelo-criar_usuario.py"
+  }
+}

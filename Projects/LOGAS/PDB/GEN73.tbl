@@ -1,0 +1,27 @@
+// GEN 
+// iFIX40 -> iFIX45
+
+	VERSION	0x010594
+	PBHDR		// phdr;		/* block header */
+	DESC		// desc;		/* block descriptor */
+   
+	UCHAR		// wave;		/* wave type */
+	UCHAR		// flags;
+	UINT16		// period;		/* wave period (x scan) */
+	EGURECEX		// egu;
+  CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	FCONST		// scale;		/* pct of egu scale */
+	FCONST		// random;		/* random component as pct of scale */
+
+	DOUBLE		// phase;		/* current phase from 0 to 2*pi */
+	DOUBLE		// output;		/* current UNCLAMPED output */
+
+	PDATA		// pdata;		/* clamped value */
+
+	FCONST		// spare1;
+	FCONST		// spare2;
+	FCONST		// spare3;
+	UINT32		// sparea;
+	UINT32		// spareb;
+	UINT32		// sparec;
+

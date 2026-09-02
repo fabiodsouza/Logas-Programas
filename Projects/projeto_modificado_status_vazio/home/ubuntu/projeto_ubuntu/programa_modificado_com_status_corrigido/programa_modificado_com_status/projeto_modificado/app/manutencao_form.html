@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário de Manutenção</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      select,
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+      }
+
+      select:focus,
+      input[type="text"]:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .other-input {
+        display: none;
+        margin-top: 10px;
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      .other-input.show {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .submit-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .submit-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .required {
+        color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Formulário de Manutenção</h2>
+
+      <form id="maintenance-form">
+        <div class="form-group">
+          <label for="maintenance-type">
+            Tipo de Manutenção: <span class="required">*</span>
+          </label>
+          <select id="maintenance-type" required>
+            <option value="">Selecione...</option>
+            <option value="Preventiva Básica">Preventiva Básica</option>
+            <option value="Preventiva Completa">Preventiva Completa</option>
+            <option value="Inspeção Técnica">Inspeção Técnica</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+
+        <!-- Outros campos do formulário podem ser adicionados aqui -->
+        <div class="form-group">
+          <label for="description">Descrição:</label>
+          <textarea
+            id="description"
+            rows="4"
+            style="
+              width: 100%;
+              padding: 12px;
+              border: 2px solid #ddd;
+              border-radius: 4px;
+              font-size: 16px;
+              resize: vertical;
+            "
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">Enviar</button>
+      </form>
+    </div>
+
+    <script>
+      // Função para mostrar/esconder o campo de texto baseado na seleção
+      function toggleOtherInput() {
+        const maintenanceType = document.getElementById("maintenance-type");
+        const otherInput = document.getElementById("other-maintenance-input");
+        const otherText = document.getElementById("other-maintenance-text");
+
+        if (maintenanceType.value === "Outros") {
+          otherInput.classList.add("show");
+          otherText.required = true;
+        } else {
+          otherInput.classList.remove("show");
+          otherText.required = false;
+          otherText.value = ""; // Limpa o campo quando não está visível
+        }
+      }
+
+      // Event listener para mudanças no select
+      document
+        .getElementById("maintenance-type")
+        .addEventListener("change", toggleOtherInput);
+
+      // Validação do formulário
+      document
+        .getElementById("maintenance-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const maintenanceType =
+            document.getElementById("maintenance-type").value;
+          const otherText = document.getElementById(
+            "other-maintenance-text"
+          ).value;
+
+          // Validação específica para "Outros"
+          if (maintenanceType === "Outros" && !otherText.trim()) {
+            alert("Por favor, especifique o tipo de manutenção.");
+            document.getElementById("other-maintenance-text").focus();
+            return;
+          }
+
+          // Aqui você pode processar os dados do formulário
+          const formData = {
+            tipoManutencao:
+              maintenanceType === "Outros" ? otherText : maintenanceType,
+            descricao: document.getElementById("description").value,
+          };
+
+          console.log("Dados do formulário:", formData);
+          alert(
+            "Formulário enviado com sucesso!\nTipo: " + formData.tipoManutencao
+          );
+        });
+
+      // Inicialização - garante que o campo esteja escondido no carregamento
+      document.addEventListener("DOMContentLoaded", function () {
+        toggleOtherInput();
+      });
+    </script>
+  </body>
+</html>

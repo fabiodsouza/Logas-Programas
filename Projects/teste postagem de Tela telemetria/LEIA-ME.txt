@@ -1,0 +1,69 @@
+==========================================================
+ TELEMETRIA -> WHATSAPP  (captura de hora em hora + envio)
+==========================================================
+
+COMO FUNCIONA (visao geral)
+---------------------------
+1) CAPTURA: de hora em hora tira um print da tela da telemetria e salva
+   na pasta "capturas", organizada por dia (capturas\AAAA-MM-DD\...).
+2) ENVIO: de hora em hora pega a imagem mais recente e envia no WhatsApp.
+   Se a imagem for igual a anterior, NAO reenvia (sem repetir).
+3) VIGIA: a cada 5 minutos confere se os programas estao rodando; se
+   algum cair ou for fechado, reabre sozinho (oculto, sem janela).
+
+Requisito: as maquinas precisam ficar LIGADAS e LOGADAS (a captura
+precisa da tela aberta).
+
+
+ARQUIVOS NESTA PASTA (CAPTURA)
+------------------------------
+Essenciais (NAO apague):
+  captura_telemetria.py     -> o programa de captura
+  vigia_captura.ps1         -> verifica e reabre a captura
+  vigia_oculto_captura.vbs  -> roda o vigia sem janela (sem piscar)
+  capturas\                 -> onde as imagens sao salvas
+
+Para ligar/usar:
+  instalar_vigia_captura.bat -> liga o vigia (captura passa a rodar oculta
+                                e se reabre sozinha). RODE UMA VEZ.
+  remover_vigia_captura.bat  -> desliga o vigia
+  iniciar_captura.bat        -> roda a captura de forma VISIVEL (ver logs)
+  listar_monitores.bat       -> mostra os monitores (para escolher qual capturar)
+
+Pasta "envio_whatsapp\"      -> o programa de envio (veja LEIA-ME-ENVIO.txt la dentro)
+Pasta "_nao_usados (pode apagar)\" -> arquivos antigos/duplicados; pode apagar
+
+
+COMO COLOCAR PARA RODAR (resumo)
+--------------------------------
+CAPTURA (nesta maquina):
+  1. Se precisar, confira o monitor com  listar_monitores.bat  e ajuste a
+     linha  MONITOR_PADRAO  no captura_telemetria.py.
+  2. De dois cliques em  instalar_vigia_captura.bat  (uma vez).
+  3. Pode fechar qualquer janela visivel; daqui pra frente roda sozinha.
+
+ENVIO (no PC Windows 10/11):
+  1. De dois cliques em  envio_whatsapp\instalar_vigia_envio.bat  (uma vez).
+  2. Na primeira vez, rode  iniciar_envio_whatsapp.bat  para escanear o QR.
+  3. Depois pode fechar; o vigia mantem rodando oculto.
+
+
+ESCOLHER PARA QUEM ENVIAR (numeros / grupos / contatos)
+-------------------------------------------------------
+Abra  envio_whatsapp\index.js  e edite a lista "destinos". Exemplos:
+   destinos: [
+     { tipo: 'numero', valor: '5531984432363' },
+     { tipo: 'grupo',  nome: 'Nome Exato do Grupo' },
+   ],
+Pode colocar QUANTOS quiser (numeros e/ou grupos). Para descobrir o nome
+exato de um grupo, rode  envio_whatsapp\listar_grupos.bat .
+Depois de editar, reinicie o envio (feche o node.exe no Gerenciador de
+Tarefas, ou reinicie; o vigia reabre com a nova configuracao).
+
+
+PARA PARAR TUDO
+---------------
+  remover_vigia_captura.bat                  (para a captura)
+  envio_whatsapp\remover_vigia_envio.bat     (para o envio)
+  E, se quiser parar na hora, finalize "pythonw.exe" e "node.exe" no
+  Gerenciador de Tarefas.

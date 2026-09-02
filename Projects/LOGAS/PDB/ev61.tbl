@@ -1,0 +1,13 @@
+// EV block conversion table
+// v6.1->7.0
+//#define		EVSTEPS		2	/* number of condition statements */
+
+SCHDR	    //shdr;		    /* secondary block header */
+
+VSP	    //pre_vsp;	    /* previous block's vsp (for sac proc)*/
+EVSTAT[2]   //evdef[EVSTEPS];   /* event block definitions */
+ACTION[2]   //evtru[EVSTEPS];   /* event true definitions */
+ACTION[2]   //evfal[EVSTEPS];   /* event fakse definitions */
+FLOAT	    //equal_db;	    /* EQUAL dead band limit */
+PDATA	    //pdata;	    /* same as input - just for consistancy */
+#DESC	    //desc;		    /* jss022097 */

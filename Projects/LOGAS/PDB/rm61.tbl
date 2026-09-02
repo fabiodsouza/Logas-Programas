@@ -1,0 +1,20 @@
+// RM block conversion table
+// v6.1 -> 7.0
+
+   PBHDR	//pbhdr;		/* primary block header */
+   DESC		//desc;			/* block descriptor */
+   EGUREC	//egurec;		/* egu info (analog) */
+
+   GETFROM[3]	//tv[3];		/* target values */
+
+   FLOAT[3]	//ramp_rate[3];		/* ramp rates */
+   INT32[2]	//hold_time[2];		/* hold or soak times */
+   INT32	//rem_hold_time;	/* if in hold, time left to hold */
+   FLOAT	//lolim;		/* low limit for target*/
+   FLOAT	//hilim;		/* high limit */
+
+   UCHAR	//cur_step;		/* current ramp step */
+   UCHAR	//status;		/* status UCHAR */
+
+   PDATA	//pdata;		/* current value (for chaining + calc) */
+   #EGU_DESC	//LongEguDesc;		/* for longer egu tagnames - new to raptor*/

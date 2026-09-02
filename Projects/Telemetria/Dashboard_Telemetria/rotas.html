@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotas do Caminhão — Betim · Logás</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{--bg:#070b14;--panel:#0f1828;--line:#22324d;--text:#eef4fd;--muted:#8298b9;--cyan:#3bc4ec;--green:#2bd18a;--orange:#f59140;}
+  *{box-sizing:border-box} html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,Arial,sans-serif;display:flex;flex-direction:column;height:100vh}
+  header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#14203a,transparent)}
+  header h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.4px}
+  header h1 span{color:var(--cyan)}
+  select{background:#0a1120;border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px 11px;font-size:14px;min-width:170px}
+  select:hover{border-color:var(--cyan)}
+  .info{font-size:13px;color:var(--muted)}
+  .info b{color:var(--text);font-variant-numeric:tabular-nums}
+  .chip{display:inline-block;padding:2px 9px;border:1px solid var(--line);border-radius:20px;margin-left:6px}
+  #map{flex:1 1 auto;min-height:0}
+  .leaflet-container{background:#0a1120}
+  .legend{font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle;margin:0 4px 0 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>ROTAS DO CAMINHÃO — <span>BETIM</span></h1>
+  <label class="info">Empresa:
+    <select id="sel"></select>
+  </label>
+  <div class="info" id="info">Selecione uma empresa para ver a rota.</div>
+  <div class="legend"><i style="background:#2bd18a"></i>Base Betim <i style="background:#f59140"></i>Destino <i style="background:#3bc4ec"></i>Rota</div>
+</header>
+<div id="map"></div>
+
+<script>
+/* ---- dados (mesmos do viagem_tomtom.py) ---- */
+const KEY="QKOjjJCpYZm3VPqrNJ321dW9Pa9d1acK";
+const VEL_ROTA=80;     // velocidade de roteamento (evita NO_ROUTE_FOUND em rodovia)
+const PLAN=45;         // velocidade de planejamento (media real da frota)
+const BASE=[-19.956313674094236,-44.13045441870082];
+const EMP={
+  "ALSCO":[-19.99688525938805,-44.04234853219335],
+  "BELGO":[-19.88015658498822,-43.79436691246574],
+  "EXTRUMINAS":[-19.784602405046915,-44.30053450924594],
+  "M.PEQUI":[-19.63405367583952,-44.64858965619242],
+  "VDL":[-20.223776765982244,-43.80441798800982],
+  "MG STEEL":[-20.0101038138369,-44.43642493526554],
+  "VILMA":[-19.999554235688944,-44.235817118699714],
+  "G.PERDÕES":[-21.163806206103395,-45.12207431634263],
+  "JD CANADÁ":[-20.06183436258079,-43.98785491877735],
+  "FORTLEV":[-19.83672647219803,-44.08215546741692]
+};
+
+/* ---- mapa ---- */
+const map=L.map("map",{zoomControl:true}).setView(BASE,9);
+L.tileLayer("https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key="+KEY,
+  {maxZoom:18, attribution:"© TomTom"}).addTo(map);
+const baseMarker=L.circleMarker(BASE,{radius:8,color:"#0a0f18",weight:2,fillColor:"#2bd18a",fillOpacity:1}).addTo(map).bindPopup("Base Betim");
+let linha=null, destMarker=null;
+
+function fmtH(h){ const m=Math.round(h*60); return (h>=1? (Math.floor(h)+"h"+String(m%60).padStart(2,"0")) : (m+" min")); }
+
+async function verRota(nome){
+  const dest=EMP[nome];
+  const info=document.getElementById("info");
+  info.innerHTML="Calculando rota para <b>"+nome+"</b>…";
+  const url="https://api.tomtom.com/routing/1/calculateRoute/"
+    +BASE[0]+","+BASE[1]+":"+dest[0]+","+dest[1]
+    +"/json?key="+KEY+"&traffic=true&travelMode=truck&vehicleCommercial=true&vehicleMaxSpeed="+VEL_ROTA+"&routeType=fastest";
+  try{
+    const resp=await fetch(url);
+    if(!resp.ok){
+      let msg=""; try{const e=await resp.json(); msg=(e.detailedError&&e.detailedError.message)||"";}catch(_){}
+      info.innerHTML="Erro "+resp.status+" ao calcular a rota de <b>"+nome+"</b>. "+msg;
+      return;
+    }
+    const d=await resp.json();
+    const route=d.routes[0];
+    const pts=[];
+    route.legs.forEach(leg=>leg.points.forEach(p=>pts.push([p.latitude,p.longitude])));
+    if(linha) map.removeLayer(linha);
+    if(destMarker) map.removeLayer(destMarker);
+    linha=L.polyline(pts,{color:"#3bc4ec",weight:5,opacity:.9}).addTo(map);
+    destMarker=L.circleMarker(dest,{radius:8,color:"#0a0f18",weight:2,fillColor:"#f59140",fillOpacity:1}).addTo(map).bindPopup(nome);
+    map.fitBounds(linha.getBounds(),{padding:[50,50]});
+    const km=route.summary.lengthInMeters/1000;
+    const tomtomH=route.summary.travelTimeInSeconds/3600;
+    const planH=Math.max(tomtomH, km/PLAN);             // teto de planejamento 45 km/h
+    const atrasoMin=Math.round((route.summary.trafficDelayInSeconds||0)/60);
+    info.innerHTML="<b>"+nome+"</b>"
+      +"<span class='chip'>Distância <b>"+km.toFixed(1)+" km</b></span>"
+      +"<span class='chip'>Tempo (45 km/h) <b>"+fmtH(planH)+"</b></span>"
+      +"<span class='chip'>TomTom c/ trânsito <b>"+fmtH(tomtomH)+"</b></span>"
+      +(atrasoMin>0?"<span class='chip'>Atraso trânsito <b>"+atrasoMin+" min</b></span>":"");
+  }catch(err){
+    info.innerHTML="Falha ao acessar a TomTom ("+err.message+"). Verifique internet/chave.";
+  }
+}
+
+/* ---- seletor ---- */
+const sel=document.getElementById("sel");
+sel.insertAdjacentHTML("beforeend","<option value=''>— escolha —</option>");
+Object.keys(EMP).forEach(n=>sel.insertAdjacentHTML("beforeend","<option value='"+n+"'>"+n+"</option>"));
+sel.onchange=()=>{ if(sel.value) verRota(sel.value); };
+
+/* abre direto via ?empresa=NOME (usado por um botao no painel, se quiser) */
+const q=new URLSearchParams(location.search).get("empresa");
+if(q && EMP[q]){ sel.value=q; verRota(q); }
+</script>
+</body>
+</html>

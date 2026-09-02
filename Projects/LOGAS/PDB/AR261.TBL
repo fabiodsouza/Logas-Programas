@@ -1,0 +1,17 @@
+// SAI 6.1 -> 7.0
+
+	VERSION	0x113094
+
+	PBHDR		//phdr;		/* primary block header */
+	DESC		//desc;		/* block descriptor */
+   
+	EGUREC		//aegu;		/* egu info (analog in + out) */
+   #CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	IO_INFO		//ai_io;		/* analog in info */
+	
+	FLOAT		//low;	/* Simple Float constant */
+	FLOAT		//high;	/* Simple Float constant */
+
+	UINT16		//io_type;	/* what data type did driver return? */
+
+	PDATA		//pdata;		/* current value */

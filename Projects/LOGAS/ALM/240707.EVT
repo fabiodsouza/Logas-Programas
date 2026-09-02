@@ -1,0 +1,22 @@
+07/07/2024 14:03:09 [IOCNTRL.EXE] Failed to stop driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+
+07/07/2024 14:03:14 [IOCNTRL.EXE] Failed to destroy driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+07/07/2024 14:03:18 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  07/07/2024 14:13:40
+--------------------------------------------------------
+
+07/07/2024 14:13:45 [fix.exe] Proficy iFIX Software is running!
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  07/07/2024 14:30:29
+--------------------------------------------------------
+
+07/07/2024 14:30:33 [fix.exe] Proficy iFIX Software is running!
+

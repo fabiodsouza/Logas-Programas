@@ -1,0 +1,57 @@
+{
+  "orlandia": {
+    "nome": "Orlândia",
+    "pontos": [
+      "ORLÂNDIA"
+    ],
+    "conjunto": false,
+    "ativo": true,
+    "salt": "77cedcf9819bc09cc48743a30cee5371",
+    "senha_hash": "4e3beb49dc31cc1b4452d4711680c3a0dad705aa81b5ed85bba8fa1a9eac1548",
+    "criado_em": "2026-07-29T10:27:36",
+    "senha_trocada_em": "2026-07-29T10:27:36",
+    "ultimo_acesso": "2026-08-03T07:19:29"
+  },
+  "extrema": {
+    "nome": "Extrema",
+    "pontos": [
+      "BAIA 1",
+      "BAIA 2",
+      "BAIA 3"
+    ],
+    "conjunto": true,
+    "ativo": true,
+    "salt": "664c8b0f88f21ad9d95e4a700c2226f1",
+    "senha_hash": "a33ba29edc9df6ff580904f70a50a513989cea0d0de6550e719ed8407d9bb1b4",
+    "criado_em": "2026-07-30T08:54:53",
+    "senha_trocada_em": "2026-07-30T08:54:53",
+    "ultimo_acesso": "2026-07-30T11:18:24"
+  },
+  "alsco": {
+    "nome": "Alsco",
+    "pontos": [
+      "ALSCO"
+    ],
+    "conjunto": false,
+    "ativo": true,
+    "salt": "012675735b6f6960a50cad190c4a694e",
+    "senha_hash": "d00cd839fb9f9e9b4c38a2f2fb337eb76cbf71e524609a7263e2f2f085a8c41a",
+    "criado_em": "2026-07-30T09:01:04",
+    "senha_trocada_em": "2026-07-30T09:01:04",
+    "ultimo_acesso": "2026-07-31T15:13:45"
+  },
+  "lagarto": {
+    "nome": "Lagarto",
+    "pontos": [
+      "BAIA 1 (LAGARTO)",
+      "BAIA 2 (LAGARTO)"
+    ],
+    "conjunto": true,
+    "ativo": true,
+    "salt": "fc3bc46b635de214e177406b574551f7",
+    "senha_hash": "24b93cc1594bd5b44fa35a078129f3edf21fd1794a183e1c892317a63bd03693",
+    "criado_em": "2026-07-30T11:02:51",
+    "senha_trocada_em": "2026-07-30T11:02:51",
+    "ultimo_acesso": "2026-07-30T11:03:32"
+  }
+}

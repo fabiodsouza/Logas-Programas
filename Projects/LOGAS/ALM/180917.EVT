@@ -1,0 +1,68 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  17/09/2018 08:20:51
+--------------------------------------------------------
+
+17/09/2018 08:21:19 [FIXTOHIST.EXE] 08:21:19 17/09/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+17/09/2018 08:21:36 [fix.exe] Proficy iFIX Software is running!
+
+17/09/2018 15:34:38 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  17/09/2018 15:37:03
+--------------------------------------------------------
+
+17/09/2018 15:37:08 [fix.exe] Proficy iFIX Demo System Running!
+
+17/09/2018 15:37:08 [FIXTOHIST.EXE] 15:37:08 17/09/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+17/09/2018 16:49:40 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  17/09/2018 16:50:39
+--------------------------------------------------------
+
+17/09/2018 16:50:43 [fix.exe] Proficy iFIX Software is running!
+
+17/09/2018 16:50:44 [FIXTOHIST.EXE] 16:50:44 17/09/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+17/09/2018 16:54:58 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  17/09/2018 16:56:08
+--------------------------------------------------------
+
+17/09/2018 16:56:12 [fix.exe] Proficy iFIX Demo System Running!
+
+17/09/2018 16:56:13 [FIXTOHIST.EXE] 16:56:13 17/09/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+17/09/2018 17:12:26 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  17/09/2018 17:13:14
+--------------------------------------------------------
+
+17/09/2018 17:13:19 [fix.exe] Proficy iFIX Software is running!
+
+17/09/2018 17:13:20 [FIXTOHIST.EXE] 17:13:20 17/09/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+

@@ -1,0 +1,850 @@
+/* Reset e configurações básicas */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: #333;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+/* Seção de adicionar projeto */
+.add-project-section {
+  padding: 30px;
+  text-align: center;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Botões */
+.btn-primary {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: 10px;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn-edit {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+.btn-edit:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+/* Modal - CORREÇÕES PRINCIPAIS */
+.modal {
+  display: flex;
+  align-items: flex-start; /* Mudança: alinhamento no topo para evitar cortes */
+  justify-content: center;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto; /* Permitir scroll no modal container */
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: none; /* CORREÇÃO: Remover limitação de altura */
+  min-height: auto; /* CORREÇÃO: Altura automática */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  animation: modalSlideIn 0.3s ease;
+  position: relative;
+  margin: 20px auto; /* CORREÇÃO: Margem para centralização */
+}
+
+.modal-header {
+  padding: 20px 30px 15px 30px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #e9ecef;
+  background-color: white;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-body {
+  padding: 20px 30px;
+  flex-grow: 1;
+  /* CORREÇÃO: Remover overflow-y auto que estava causando problemas */
+  overflow: visible;
+  min-height: auto;
+}
+
+.modal-footer {
+  padding: 15px 30px 20px 30px;
+  flex-shrink: 0;
+  border-top: 1px solid #e9ecef;
+  background-color: white;
+  border-radius: 0 0 12px 12px;
+  /* CORREÇÃO: Remover position sticky que estava causando problemas */
+  position: relative;
+  z-index: 10;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  line-height: 1;
+  margin-top: -5px;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.modal h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  padding-right: 40px;
+}
+
+/* Formulário */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-group input[type="range"] {
+  margin-bottom: 10px;
+}
+
+#progress-value {
+  font-weight: 600;
+  color: #007bff;
+  font-size: 1.1rem;
+}
+
+.form-actions {
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Tabela */
+.dashboard-table {
+  padding: 30px;
+  overflow-x: auto;
+}
+
+.dashboard-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: table;
+}
+
+.dashboard-table table th {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dashboard-table table td {
+  padding: 15px 12px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.dashboard-table table tr:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease;
+}
+
+/* Badges de urgência */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.badge-baixa {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-média {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-alta {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-crítica {
+  background: #721c24;
+  color: white;
+}
+
+.badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-info {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-pink {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.badge-cyan {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.badge-purple {
+  background: #e2e3f3;
+  color: #383d41;
+}
+
+.badge-secondary {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+/* Barra de progresso */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-bar {
+  width: 120px;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2c3e50;
+  min-width: 35px;
+  text-align: center;
+}
+
+/* Botões de ação */
+.actions {
+  white-space: nowrap;
+}
+
+.btn-edit,
+.btn-delete {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+  display: inline-block;
+}
+
+.btn-edit {
+  background: #007bff;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+}
+
+/* Estado vazio */
+.empty-state {
+  text-align: center;
+  padding: 60px 30px;
+  color: #6c757d;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+/* Navegação principal */
+.main-nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.nav-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 14px;
+  min-width: 140px;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.nav-btn.active {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* Cores específicas para cada tela ativa */
+#nav-obras.active {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+}
+
+#nav-preventiva.active {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+}
+
+#nav-plantao.active {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+}
+
+#nav-treinamentos.active {
+  background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+}
+
+#nav-viagens.active {
+  background: linear-gradient(135deg, #e91e63, #c2185b);
+}
+
+/* Seções */
+.section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Estilos específicos para manutenção preventiva */
+#maintenance-table th {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+}
+
+.maintenance-type-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.type-preventiva-basica {
+  background: #e8f5e8;
+  color: #2d5a2d;
+}
+
+.type-preventiva-completa {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.type-inspecao-tecnica {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.type-manutencao-eletrica {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.type-manutencao-hidraulica {
+  background: #e0f2f1;
+  color: #00695c;
+}
+
+.type-manutencao-ar-condicionado {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.type-outros {
+  background: #f5f5f5;
+  color: #424242;
+}
+
+/* Badge para meio de transporte */
+.badge-transport {
+  background: linear-gradient(135deg, #607d8b, #455a64);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Estilos específicos para formulários das novas telas */
+#nome-individual-group {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid #2196f3;
+}
+
+#nome-individual-group label {
+  color: #2196f3;
+  font-weight: 600;
+}
+
+/* Melhorias nos campos de data e hora */
+input[type="date"],
+input[type="time"] {
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+input[type="date"]:focus,
+input[type="time"]:focus {
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  outline: none;
+}
+
+/* Estados vazios personalizados */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.empty-state p:first-child {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.empty-state p:last-child {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* RESPONSIVIDADE MELHORADA */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  /* CORREÇÃO: Modal responsivo */
+  .modal {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: none;
+    margin: 10px auto;
+    min-height: auto;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .modal h2 {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-table {
+    padding: 15px;
+  }
+
+  #projects-table {
+    font-size: 0.9rem;
+  }
+
+  #projects-table th,
+  #projects-table td {
+    padding: 10px 8px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions .btn-primary,
+  .form-actions .btn-secondary {
+    width: 100%;
+    margin: 0;
+  }
+
+  .main-nav {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 10px 16px;
+    font-size: 12px;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    width: 200px;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  /* CORREÇÃO: Modal em telas muito pequenas */
+  .modal {
+    padding: 5px;
+  }
+
+  .modal-content {
+    margin: 5px auto;
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .dashboard-table {
+    padding: 10px;
+  }
+
+  #projects-table {
+    font-size: 0.8rem;
+  }
+
+  #projects-table th,
+  #projects-table td {
+    padding: 8px 6px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* CORREÇÕES ESPECÍFICAS PARA GARANTIR VISIBILIDADE DOS BOTÕES */
+.modal-footer .btn-primary,
+.modal-footer .btn-secondary {
+  min-width: 120px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Forçar visibilidade do modal footer */
+.modal-footer {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+}
+
+/* Melhorias na tabela para acomodar mais colunas */
+.dashboard-table {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+table {
+  min-width: 800px;
+}
+
+th,
+td {
+  padding: 12px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Responsividade para tabelas */
+@media (max-width: 768px) {
+  th,
+  td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .actions {
+    min-width: 120px;
+  }
+
+  .btn-edit,
+  .btn-delete {
+    padding: 6px 10px;
+    font-size: 11px;
+    margin: 2px;
+  }
+}
+
+/* Animações para transições entre telas */
+.section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  display: none;
+}
+
+.section.active {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}

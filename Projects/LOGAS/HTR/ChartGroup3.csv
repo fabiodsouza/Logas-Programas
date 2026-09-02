@@ -1,0 +1,10 @@
+"!","ApplyAll","DaysBeforeNow","Duration","FetchPenLimits","FixedDate","FixedTime","HiLimit","HistoricalSampleType","LoLimit","MarkerChar","MarkerStyle","PenLineColor","PenLineStyle","PenLineWidth","Source","StartDateType","StartTimeType","TimeBeforeNow"
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,110,0,0,"",0,16711680,0,1,"Fix32.THISNODE.AI10.f_cv",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,1000,0,0,"",0,32768,0,1,"Fix32.THISNODE.AI11.f_cv",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,200,0,0,"",0,255,0,1,"Fix32.THISNODE.AI12.f_cv",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,300,0,0,"",0,8421376,0,1,"Fix32.THISNODE.AI3.F_CV",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,200,0,0,"",0,16744703,0,1,"Fix32.THISNODE.AI.F_CV",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,500,0,0,"",0,65535,0,1,"Fix32.THISNODE.AI1.F_CV",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,200,0,0,"",0,16777215,0,1,"Fix32.THISNODE.AI2.F_CV",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,200,0,0,"",0,128,0,1,"Fix32.THISNODE.AI.F_CV",0,0,300
+"&&",#FALSE#,0,300,#TRUE#,#1999-06-02#,#1899-12-30 11:33:16#,1234,0,0,"",0,65280,0,1,"Fix32.THISNODE.AI5.f_cv",0,0,300

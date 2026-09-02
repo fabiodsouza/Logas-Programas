@@ -1,0 +1,17 @@
+// BL Conversion Table
+// v6.1 -> 7.0
+//#define 	BL_NINPUTS	8
+//#define	BL_SIZE		32	/* internal postfix expression */
+
+PBHDR		//pbhdr;			/* primary block header */
+GETFROM[8]	//get[BL_NINPUTS];		/* 'get from' info */
+DESC		//desc;			/* block descriptor */
+EGUREC		//egurec;			/* open/close tags */
+UCHAR[32]	//exp[BL_SIZE];		/* expression */
+INT16[8]	//galms[BL_NINPUTS];	/* alarm conds of inputs or flag */
+PDATA		//pdata;			/* current counter value */
+#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+
+
+
+

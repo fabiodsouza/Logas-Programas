@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torre de Controle — Reabastecimento Logás</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="dados.js"></script>
+<script src="viagem.js"></script>
+<style>
+  :root{
+    --bg:#070b14; --bg2:#0a1120; --panel:#0f1828; --panel2:#13203a; --line:#22324d;
+    --text:#eef4fd; --muted:#8298b9; --cyan:#3bc4ec;
+    --green:#2bd18a; --yellow:#f4cb53; --orange:#f59140; --red:#f1556a;
+    --shadow:0 4px 20px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:radial-gradient(1200px 600px at 70% -10%,#0d1730,var(--bg));
+       color:var(--text);font-family:"Segoe UI",system-ui,Arial,sans-serif;
+       display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+  header{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;
+         padding:8px 24px;border-bottom:1px solid var(--line);
+         background:linear-gradient(180deg,rgba(20,32,58,.6),transparent);flex:0 0 auto}
+  .hspacer{display:none}
+  .brand{flex:1 1 auto;text-align:center;min-width:0}
+  .brand .ttl{font-size:clamp(17px,1.5vw,24px);font-weight:800;letter-spacing:.6px;white-space:nowrap}
+  .brand .ttl span{color:var(--cyan)}
+  .brand .sub{color:var(--muted);font-size:13px;margin-top:3px}
+  .right{flex:0 0 auto;display:flex;align-items:center;justify-content:flex-end;gap:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+       padding:8px 18px;text-align:center;min-width:88px;box-shadow:var(--shadow)}
+  .kpi b{display:block;font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+  .kpi small{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+  .clock{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:1px}
+  .gear{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:12px;
+        width:46px;height:46px;font-size:20px;cursor:pointer}
+  .gear:hover{border-color:var(--cyan);color:var(--cyan)}
+
+  main{flex:1 1 auto;display:flex;gap:12px;padding:12px 16px;overflow:hidden}
+  #grid{flex:1 1 auto;display:flex;gap:12px;min-width:0;overflow:hidden}
+  .col{flex:1;display:flex;flex-direction:column;gap:12px;min-width:0}
+  .rrow{display:flex;gap:12px;align-items:stretch;flex:1 1 0;min-height:0}
+  .rrow .region{flex:1;min-width:0}
+  .region{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+          border-radius:12px;padding:9px 11px 11px;box-shadow:var(--shadow);
+          display:flex;flex-direction:column;min-height:0}
+  .region h2{margin:0 0 8px;font-size:12px;color:var(--cyan);font-weight:800;text-transform:uppercase;
+             letter-spacing:1.2px;display:flex;align-items:center;gap:7px;flex:0 0 auto}
+  .region h2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .region .cnt{margin-left:auto;font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px}
+  /* Cada região usa colunas iguais (definidas em buildGrid): 4 em região cheia, 2 em
+     região pareada de meia coluna. Assim os cards têm ~a mesma largura em todo o quadro.
+     minmax(0,1fr) impede que o conteúdo empurre o card para fora da caixa. */
+  .cells{display:grid;gap:8px;grid-template-columns:repeat(4,minmax(0,1fr));
+         flex:1 1 auto;align-content:start}
+  h2.hidden{visibility:hidden}
+  .cell .ssdot{position:absolute;top:7px;right:9px;color:var(--muted);font-size:11px;opacity:.75}
+  .cell.ss{opacity:.92}
+
+  .cell{position:relative;border-radius:11px;background:linear-gradient(180deg,var(--panel2),var(--bg2));
+        border:1px solid var(--line);border-top:4px solid var(--green);
+        padding:9px 10px 10px;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;
+        min-width:0;min-height:96px;overflow:hidden}
+  .cell:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(0,0,0,.5);border-color:var(--cyan)}
+  .cell .nm{font-size:13px;font-weight:700;letter-spacing:.3px;color:#dbe6f6;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+  .cell .pr{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cell .pr small{font-size:10px;color:var(--muted);font-weight:600;margin-left:2px}
+  .cell .rate{font-size:11px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cell .foot{display:flex;align-items:center;justify-content:space-between;margin-top:6px;min-height:18px}
+  .cell .hr{font-size:13px;font-weight:800}
+  .pill{font-size:10px;font-weight:800;letter-spacing:.6px;padding:3px 8px;border-radius:20px;text-transform:uppercase}
+  .cell .arrow{position:absolute;top:10px;right:11px;color:var(--muted);font-size:12px;opacity:0;transition:opacity .12s}
+  .cell:hover .arrow{opacity:1}
+  .cell.crit{border-top-color:var(--red);animation:pulse 1.5s infinite}
+  .cell.urg{border-top-color:var(--orange)}
+  .cell.warn{border-top-color:var(--yellow)}
+  .cell.off{border-top-color:var(--muted);opacity:.6;cursor:default}
+  .cell.off:hover{transform:none;border-color:var(--line);box-shadow:none}
+  .cell.off .pr{font-size:16px;color:var(--red);font-style:italic}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(241,85,106,0)}50%{box-shadow:0 0 22px rgba(241,85,106,.55)}}
+
+  /* ---------- Painel lateral de alertas ---------- */
+  #alertPanel{flex:0 0 332px;display:flex;flex-direction:column;gap:13px;min-height:0;overflow-y:auto;
+              padding:6px 6px 6px 18px;margin-left:6px;border-left:1px solid var(--line)}
+  .apHead{font-size:13px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--text);
+          display:flex;align-items:center;gap:9px;padding:0 2px 8px;margin-bottom:1px;flex:0 0 auto;
+          border-bottom:1px solid var(--line)}
+  .apHead::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+  .apSec{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+         border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);flex:0 0 auto}
+  .apSecHead{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;text-transform:uppercase;
+             letter-spacing:.9px;margin-bottom:11px}
+  .apSecHead .num{margin-left:auto;font-variant-numeric:tabular-nums;font-size:13px;background:var(--bg2);
+                  border:1px solid var(--line);border-radius:20px;padding:2px 11px;color:var(--text)}
+  .apSecHead.crit{color:var(--red)} .apSecHead.urg{color:var(--orange)} .apSecHead.ss{color:var(--muted)}
+  .alert-item{position:relative;border-radius:10px;padding:10px 12px;margin-bottom:9px;cursor:pointer;
+              background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--muted);
+              transition:transform .1s,border-color .1s,box-shadow .1s}
+  .alert-item:last-child{margin-bottom:0}
+  .alert-item:hover{border-color:var(--cyan);transform:translateX(-3px);box-shadow:0 4px 14px rgba(0,0,0,.4)}
+  .alert-item.crit{border-left-color:var(--red);animation:pulse 1.5s infinite}
+  .alert-item.urg{border-left-color:var(--orange)}
+  .alert-item.ss{border-left-color:var(--muted)}
+  .ai-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .ai-nm{font-size:14px;font-weight:700;color:#dbe6f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ai-reg{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;flex:0 0 auto}
+  .ai-bot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px}
+  .ai-pr{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+  .ai-pr small{font-size:10px}
+  .ai-sub{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.35}
+  .ai-empty{color:var(--muted);font-size:11px;font-style:italic;padding:4px 2px}
+  #alertPanel .pill{white-space:nowrap}
+  #alertPanel::-webkit-scrollbar{width:8px}
+  #alertPanel::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+
+  .overlay{position:fixed;inset:0;background:rgba(3,6,12,.72);backdrop-filter:blur(3px);
+           display:none;z-index:20;align-items:center;justify-content:center;padding:24px}
+  .overlay.open{display:flex}
+  .detail{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+          border-radius:18px;width:min(920px,94vw);max-height:90vh;overflow:auto;box-shadow:var(--shadow)}
+  .detail .dh{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 24px;border-bottom:1px solid var(--line)}
+  .detail .dh h3{margin:0;font-size:20px}
+  .detail .dh .reg{color:var(--cyan);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+  .close{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;width:36px;height:36px;font-size:18px;cursor:pointer}
+  .close:hover{border-color:var(--red);color:var(--red)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:7px;padding:9px 24px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:7px 11px}
+  .stat b{display:block;font-size:19px;font-variant-numeric:tabular-nums}
+  .stat small{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.4px;line-height:1.15;display:block}
+  .chartwrap{padding:2px 24px 4px}
+  .chartwrap h4{margin:0 0 2px;font-size:13px;color:#cfe0f5}
+  .chartwrap .note{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .chartbox{position:relative;height:190px}
+  .addread{margin:6px 24px 0;padding:9px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+  .addread .arttl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .addread .arttl span{text-transform:none;letter-spacing:0;color:var(--cyan)}
+  .addread .arrow2{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .addread input{background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 11px;width:150px;font-size:15px}
+  .addread .armsg{font-size:12px;color:var(--green)}
+  .dactions{display:flex;gap:10px;justify-content:flex-end;padding:9px 24px 14px}
+
+  .cfgbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;width:min(900px,94vw);max-height:88vh;overflow:auto;padding:22px 24px}
+  .cfgbox h3{margin:0 0 4px}
+  .cfgbox p{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .cfgrow{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .cfgrow label{font-size:12px;color:var(--muted);display:flex;flex-direction:column}
+  .cfgrow input{margin-top:5px;background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 9px;width:130px}
+  .cfgrow input[type=date]{cursor:pointer}
+  .cfgrow input[type=date]:hover{border-color:var(--cyan)}
+  input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.85) sepia(1) saturate(3) hue-rotate(160deg);cursor:pointer;opacity:.95;font-size:16px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:6px 9px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-size:11px;text-transform:uppercase}
+  /* Programação: tabela compacta para caber sem barra de rolagem horizontal */
+  #progTable{font-size:12px;width:100%}
+  #progTable th,#progTable td{padding:4px 5px;vertical-align:middle}
+  #progTable select,#progTable input{font-size:12px!important;box-sizing:border-box}
+  #progTable .pgCli{max-width:118px!important;padding:4px 4px!important}
+  #progTable .pgCav,#progTable .pgCar,#progTable .pgMot{max-width:84px!important;padding:4px 4px!important}
+  #progTable .pgSai{min-width:128px!important;width:100%;padding:4px 4px!important;cursor:pointer}
+  #progTable .pill{white-space:normal!important;line-height:1.1}
+  td input{width:82px;background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:5px 7px;text-align:right}
+  .btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 16px;cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--cyan)}
+  .btn.primary{background:var(--cyan);color:#04121b;border-color:var(--cyan);font-weight:700}
+  .btnrow{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+  main::-webkit-scrollbar,.detail::-webkit-scrollbar,.cfgbox::-webkit-scrollbar{width:10px}
+  main::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hspacer"></div>
+  <div class="brand">
+    <div class="ttl">CENTRO DE OPERAÇÕES — <span>LOGÁS</span> · REABASTECIMENTO</div>
+    <div class="sub" id="sub">Carregando leituras…</div>
+  </div>
+  <div class="right">
+    <div class="kpi"><b style="color:var(--red)" id="kCrit">0</b><small>Crítico</small></div>
+    <div class="kpi"><b style="color:var(--orange)" id="kUrg">0</b><small>Urgente</small></div>
+    <div class="kpi" id="kSemSinalBox"><b style="color:var(--muted)" id="kSemSinal">0</b><small>Sem Sinal</small></div>
+    <div class="kpi" id="kDispBox" style="cursor:pointer" title="Plano de despacho (todas as bases) — clique para abrir"><b style="color:var(--cyan)" id="kDisp">–</b><small>Despacho</small></div>
+    <div class="kpi" id="kProgBox" style="cursor:pointer" title="Programação — cavalo, carreta, motorista, saída e chegada por base"><b style="color:var(--green)" id="kProg">Programação</b><small>&nbsp;</small></div>
+    <div class="clock" id="clock">--:--:--</div>
+    <button class="gear" id="btnExport" title="Exportar relatório (CSV/Excel) — resumo + dados brutos">⬇</button>
+    <button class="gear" id="gear" title="Configurar limites e parâmetros">⚙</button>
+  </div>
+</header>
+
+<main>
+  <div id="grid"></div>
+  <aside id="alertPanel">
+    <div class="apHead">Eventos ativos</div>
+    <div class="apSec">
+      <div class="apSecHead crit">🔴 Crítico<span class="num" id="apCritN">0</span></div>
+      <div id="apCrit"></div>
+    </div>
+    <div class="apSec">
+      <div class="apSecHead urg">🟠 Urgente<span class="num" id="apUrgN">0</span></div>
+      <div id="apUrg"></div>
+    </div>
+    <div class="apSec">
+      <div class="apSecHead ss">⚪ Sem Sinal<span class="num" id="apSsN">0</span></div>
+      <div id="apSs"></div>
+    </div>
+  </aside>
+</main>
+
+<!-- Detalhe -->
+<div class="overlay" id="detailOverlay">
+  <div class="detail">
+    <div class="dh">
+      <div><h3 id="dName">—</h3><div class="reg" id="dReg">—</div></div>
+      <button class="close" id="dClose">✕</button>
+    </div>
+    <div id="dOffline" style="display:none;margin:0 24px;margin-top:16px;padding:10px 14px;border-radius:10px;
+         background:rgba(241,85,106,.14);border:1px solid var(--red);color:#ffd0d6;font-size:13px;font-weight:600"></div>
+    <div class="stats">
+      <div class="stat"><b id="sPrev">—</b><small id="sPrevL">Leitura anterior</small></div>
+      <div class="stat"><b id="sP">—</b><small id="sPL">Pressão atual (Bar)</small></div>
+      <div class="stat"><b id="sLast">—</b><small>Consumo na última hora</small></div>
+      <div class="stat"><b id="sRate">—</b><small>Consumo médio (Bar/h)</small></div>
+      <div class="stat"><b id="sMin">—</b><small>Limite crítico (Bar)</small></div>
+      <div class="stat"><b id="sH">—</b><small>Horas até o limite</small></div>
+      <div class="stat"><b id="sBase">—</b><small>Base de abastecimento</small></div>
+      <div class="stat"><b id="sViagem">—</b><small>Tempo de viagem (h)</small></div>
+      <div class="stat"><b id="sSaida">—</b><small>Sair da base até</small></div>
+    </div>
+    <div class="chartwrap">
+      <h4>Histórico de pressão</h4>
+      <p class="note" id="dNote"></p>
+      <div class="chartbox"><canvas id="chart"></canvas></div>
+    </div>
+    <div class="addread">
+      <div class="arttl">Registrar leitura manual <span id="dNowHint"></span></div>
+      <div class="arrow2">
+        <input id="dNewVal" type="number" step="0.01" placeholder="Pressão (Bar)">
+        <button class="btn primary" id="dAddBtn">Registrar</button>
+        <button class="btn" id="dNoSig">Sem sinal</button>
+        <button class="btn" id="dUndo" title="Desfazer a última leitura manual desta empresa">Desfazer manual</button>
+        <span id="dAddMsg" class="armsg"></span>
+      </div>
+    </div>
+    <div class="addread" id="corrBox" style="border-color:var(--orange)">
+      <div class="arttl">Corrigir leitura <span>(corrige o valor de qualquer leitura — automática ou manual)</span></div>
+      <div class="arrow2">
+        <select id="dCorrSel" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:9px 11px;font-size:14px;max-width:240px"></select>
+        <input id="dCorrVal" type="number" step="0.01" placeholder="Valor correto (Bar)">
+        <button class="btn primary" id="dCorrBtn">Salvar correção</button>
+        <button class="btn" id="dCorrUndo" title="Restaurar o valor original (apenas leitura automática)">Remover correção</button>
+        <span id="dCorrMsg" class="armsg"></span>
+      </div>
+    </div>
+    <div class="dactions">
+      <button class="btn" id="dRota" style="display:none">Ver rota</button>
+      <button class="btn" id="dEdit">Editar limite</button>
+      <button class="btn primary" id="dClose2">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Config -->
+<div class="overlay" id="cfgOverlay">
+  <div class="cfgbox">
+    <h3>Configuração</h3>
+    <p>O consumo é calculado automaticamente pela diferença entre as fotos. Aqui você define, por empresa, o limite crítico, a base de abastecimento e o tempo de viagem da base até a empresa. O sistema calcula o horário-limite para o caminhão sair da base e chegar antes de faltar gás.</p>
+    <div class="cfgrow">
+      <label>Preparação/carregamento na base (h)<input type="number" id="buffer" value="0" min="0" step="0.5"></label>
+      <label>Consumo provisório (Bar/h)<input type="number" id="fallback" value="20" min="1" step="1"></label>
+      <button class="btn" id="resetBtn">Restaurar limites padrão</button>
+    </div>
+    <table id="cfgTable"><tbody></tbody></table>
+    <div class="btnrow"><button class="btn primary" id="cfgClose">Fechar</button></div>
+  </div>
+</div>
+
+<!-- Despacho Betim -->
+<div class="overlay" id="dispOverlay">
+  <div class="cfgbox" style="width:min(1040px,96vw)">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+      <h3 style="margin:0">Despacho —</h3>
+      <select id="dispBaseSel" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 11px;font-size:15px"></select>
+    </div>
+    <p id="dispResumo">—</p>
+    <div id="dispConflito" style="display:none;margin:0 0 14px;padding:10px 14px;border-radius:10px;
+         background:rgba(241,85,106,.14);border:1px solid var(--red);color:#ffd0d6;font-size:13px;font-weight:600"></div>
+    <table id="dispTable"><tbody></tbody></table>
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">A troca pode ser feita a partir de ~60 Bar. As mais distantes são adiantadas porque ocupam o caminhão por mais tempo e têm menos folga. Tempos de viagem são editáveis na engrenagem (⚙).</p>
+    <div class="btnrow"><button class="btn primary" id="dispClose">Fechar</button></div>
+  </div>
+</div>
+
+<!-- Programação -->
+<div class="overlay" id="progOverlay">
+  <div class="cfgbox" style="width:min(1180px,97vw);max-height:92vh;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap">
+      <h3 style="margin:0">Programação —</h3>
+      <select id="progBaseSel" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px 11px;font-size:15px"></select>
+      <button class="btn" id="progAddBtn" type="button">+ Empresa</button>
+      <button class="btn" id="progFrotaBtn" type="button" style="margin-left:auto">Cadastro de frota</button>
+    </div>
+    <p id="progResumo" style="margin:0 0 10px">—</p>
+
+    <!-- Cadastro de frota (cavalos, carretas, motoristas) -->
+    <div id="progFrota" style="display:none;margin:0 0 14px;padding:12px 14px;border-radius:10px;background:var(--bg2);border:1px solid var(--line)">
+      <div style="color:var(--muted);font-size:12px;margin-bottom:8px">Um item por linha. Salva no navegador e alimenta as listas suspensas abaixo.</div>
+      <div class="cfgrow" style="gap:14px;flex-wrap:wrap;align-items:flex-start">
+        <label style="flex:1;min-width:150px">Cavalos (placa/nº)<textarea id="frotaCavalos" rows="5" style="width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px;font-size:13px;resize:vertical"></textarea></label>
+        <label style="flex:1;min-width:150px">Carretas (placa/nº)<textarea id="frotaCarretas" rows="5" style="width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px;font-size:13px;resize:vertical"></textarea></label>
+        <label style="flex:1;min-width:150px">Motoristas<textarea id="frotaMotoristas" rows="5" style="width:100%;background:var(--bg);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:7px;font-size:13px;resize:vertical"></textarea></label>
+      </div>
+      <div class="btnrow" style="margin-top:10px"><button class="btn primary" id="frotaSalvar" type="button">Salvar frota</button></div>
+    </div>
+
+    <div style="overflow:auto"><table id="progTable"><tbody></tbody></table></div>
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">O horário de <b>saída</b> vem sugerido pela urgência (igual ao Despacho) e é <b>editável por você</b>. A <b>chegada no cliente</b> é calculada pela TomTom com o <b>trânsito do dia</b> para o horário de saída escolhido (marcada com “· trânsito”; se a TomTom não responder, usa o tempo de viagem padrão). Cavalo, carreta e motorista são escolhidos das listas do cadastro de frota.</p>
+    <div class="btnrow">
+      <span id="progMsg" style="margin-right:auto;color:var(--green);font-size:13px"></span>
+      <button class="btn" id="progSeed" type="button">Restaurar sugestões</button>
+      <button class="btn" id="progLimpar" type="button">Limpar programação da base</button>
+      <button class="btn primary" id="progClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Exportar relatório -->
+<div class="overlay" id="exportOverlay">
+  <div class="cfgbox" style="width:min(620px,94vw)">
+    <h3>Exportar relatório</h3>
+    <p>Escolha o período e os arquivos. Gera CSV e/ou uma planilha Excel (.xlsx) no formato pivô — uma linha por horário, uma coluna por empresa — para o operador ver sem abrir a pasta de dados.</p>
+    <div class="cfgrow">
+      <label>De<input type="date" id="expDe"></label>
+      <label>Até<input type="date" id="expAte"></label>
+      <button class="btn" id="expTudo" type="button">Todo o histórico</button>
+    </div>
+    <div style="margin:6px 0 6px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px">Indicadores (no resumo por empresa)</div>
+    <div class="cfgrow" id="expIndic" style="gap:10px 18px;flex-wrap:wrap">
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="leituras" checked> Nº de leituras</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="ultima" checked> Última e menor pressão</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="consumo" checked> Consumo médio e pico</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="abast" checked> Nº de abastecimentos</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="abastAlta" checked> Abastec. com pressão alta</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" data-ind="semsinal" checked> Tempo sem sinal e quedas</label>
+    </div>
+    <div style="margin:12px 0 6px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px">Arquivos a gerar</div>
+    <div class="cfgrow" style="gap:18px;flex-wrap:wrap">
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" id="expResumo" checked> Resumo por empresa</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" id="expBrutos" checked> Dados brutos (1 linha por leitura)</label>
+      <label style="flex-direction:row;align-items:center;gap:7px;margin:0"><input type="checkbox" id="expPivo" checked> <b>Planilha pivô (Excel .xlsx)</b></label>
+    </div>
+    <div class="btnrow">
+      <span id="expMsg" style="margin-right:auto;color:var(--green);font-size:13px"></span>
+      <button class="btn" id="expClose">Fechar</button>
+      <button class="btn primary" id="expGerar">Exportar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rota no mapa (TomTom) -->
+<div class="overlay" id="rotaOverlay">
+  <div class="cfgbox" style="width:min(1000px,96vw);max-height:92vh;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0">Rota do caminhão — <span id="rotaNome" style="color:var(--cyan)">—</span></h3>
+      <button class="close" id="rotaClose">✕</button>
+    </div>
+    <div id="rotaInfo" style="font-size:13px;color:var(--muted);margin-bottom:8px">—</div>
+    <div id="rotaMap" style="flex:1 1 auto;min-height:440px;border:1px solid var(--line);border-radius:10px"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Cadastro fixo: regiões, empresas e limite crítico ---------- */
+const REGISTRO = {
+  "BETIM":["ALSCO","BELGO","EXTRUMINAS","M.PEQUI","VDL","MG STEEL","VILMA","G.PERDÕES","JD CANADÁ","FORTLEV"],
+  "POÇOS DE CALDAS":["ACQUION"],
+  "POUSO ALEGRE":["BALANÇA","POUSO"],
+  "EXTREMA-MG":["BAIA 1","BAIA 2","BAIA 3"],
+  "IPATINGA":["FERMAG","PLANALTO","TROPICAL","BARRIGÃO"],
+  "ESPÍRITO SANTO":["SPINASSÉ","COLATINA"],
+  "BARBACENA":["AMG SP","DOW"],
+  "LAGARTO-SE":["BAIA 1 (LAGARTO)","BAIA 2 (LAGARTO)"],
+  "ORLÂNDIA":["ORLÂNDIA"]
+};
+
+/* Conjuntos de baias de um mesmo cliente: a baia de maior pressão é a que está
+   suprindo e o alerta só dispara quando TODAS estão baixas (igual Extrema-MG). */
+const GRUPOS = {
+  "EXTREMA-MG":["BAIA 1","BAIA 2","BAIA 3"],
+  "LAGARTO-SE":["BAIA 1 (LAGARTO)","BAIA 2 (LAGARTO)"]
+};
+/* Nome curto na tela (chave interna fica única p/ não colidir com as baias de Extrema). */
+const NOME_EXIB = { "BAIA 1 (LAGARTO)":"BAIA 1", "BAIA 2 (LAGARTO)":"BAIA 2" };
+function nomeExib(n){ return NOME_EXIB[n]||n; }
+function grupoDe(n){ for(const reg in GRUPOS){ if(GRUPOS[reg].indexOf(n)>=0) return reg; } return null; }
+const MIN_PADRAO = 30;
+const TROCA_MIN_BAR = 25;  // subida mínima entre fotos para cogitar troca de carreta
+const TROCA_NOVA = 160;    // toda troca de carreta leva o nível para ≥ este valor (Bar)
+const MAX_QUEDA_BARH = 100; // queda maior que isso (Bar/h) entre leituras = provável erro de OCR (leitura ignorada)
+const MAX_BAR = 260;        // pressão acima disso é impossível (manômetro vai até ~250) → ignorada
+
+/* Base de abastecimento por região (as demais serão definidas depois). */
+const BASE_POR_REGIAO = { "BETIM":"Betim" };
+
+/* Tempo de viagem REAL da base Betim até cada empresa (horas, só ida). Editável na engrenagem. */
+const VIAGEM_BETIM = {
+  "ALSCO":0.67, "BELGO":2, "EXTRUMINAS":2, "M.PEQUI":2, "VDL":2,
+  "MG STEEL":1.5, "VILMA":0.5, "G.PERDÕES":4, "JD CANADÁ":1, "FORTLEV":1
+};
+
+/* ---------- Rota no mapa: base, empresas e chave TomTom (lado navegador) ---------- */
+const ROTA_KEY="QKOjjJCpYZm3VPqrNJ321dW9Pa9d1acK";
+const ROTA_VEL=80, ROTA_MARGEM=0.25;   // margem sobre o tempo da TomTom (+25%)
+const ROTA_BASE=[-19.956313674094236,-44.13045441870082];
+const ROTA_EMP={
+  "ALSCO":[-19.99688525938805,-44.04234853219335],
+  "BELGO":[-19.88015658498822,-43.79436691246574],
+  "EXTRUMINAS":[-19.784602405046915,-44.30053450924594],
+  "M.PEQUI":[-19.63405367583952,-44.64858965619242],
+  "VDL":[-20.223776765982244,-43.80441798800982],
+  "MG STEEL":[-20.0101038138369,-44.43642493526554],
+  "VILMA":[-19.999554235688944,-44.235817118699714],
+  "G.PERDÕES":[-21.163806206103395,-45.12207431634263],
+  "JD CANADÁ":[-20.06183436258079,-43.98785491877735],
+  "FORTLEV":[-19.83672647219803,-44.08215546741692]
+};
+
+/* Todas as bases (de onde os caminhoes partem) e suas empresas — usado pelo "Ver rota".
+   O viagem.js (gerado pelo viagem_tomtom.py) tem prioridade; isto garante o botao
+   mesmo antes de regenerar o viagem.js. */
+const _EXTREMA_LL=[-22.879789341622573,-46.37153143232148];
+const _LAGARTO_LL=[-10.942275471289067,-37.664630632932656];
+const ROTA_BASES={
+  "Betim":{ll:[-19.956313674094236,-44.13045441870082],emp:{
+    "ALSCO":[-19.99688525938805,-44.04234853219335],"BELGO":[-19.88015658498822,-43.79436691246574],
+    "EXTRUMINAS":[-19.784602405046915,-44.30053450924594],"M.PEQUI":[-19.63405367583952,-44.64858965619242],
+    "VDL":[-20.223776765982244,-43.80441798800982],"MG STEEL":[-20.0101038138369,-44.43642493526554],
+    "VILMA":[-19.999554235688944,-44.235817118699714],"G.PERDÕES":[-21.163806206103395,-45.12207431634263],
+    "JD CANADÁ":[-20.06183436258079,-43.98785491877735],"FORTLEV":[-19.83672647219803,-44.08215546741692]}},
+  "Ipatinga":{ll:[-19.49428141512894,-42.5641418151882],emp:{
+    "FERMAG":[-19.640920460304503,-43.19905455133256],"PLANALTO":[-18.832190089279514,-41.98886114088789],
+    "TROPICAL":[-17.799046971057447,-41.786611987253515],"BARRIGÃO":[-20.247201068273977,-42.142691617280825]}},
+  "Poços de Caldas":{ll:[-21.832402609646568,-46.638100827678535],emp:{
+    "ACQUION":[-21.836972399653416,-46.65197019071189],
+    "BALANÇA":[-22.186699646902554,-45.84373712545687],
+    "POUSO":[-22.227004144603004,-45.939380412239686],
+    "BAIA 1":_EXTREMA_LL,"BAIA 2":_EXTREMA_LL,"BAIA 3":_EXTREMA_LL}},
+  "Aracruz":{ll:[-19.83892742835953,-40.0740806431825],emp:{
+    "COLATINA":[-19.536927166506434,-40.63081675380119],
+    "FAZENDA CHAPADÃO":[-19.408056063696854,-40.23438228591222]}},
+  "Rio Joanes":{ll:[-12.85706473846636,-38.29688919851569],emp:{
+    "BAIA 1 (LAGARTO)":_LAGARTO_LL,"BAIA 2 (LAGARTO)":_LAGARTO_LL,
+    "UMBAÚBA":[-11.37995547438915,-37.66215708987112]}},
+  "Cravinhos":{ll:[-21.338500793014,-47.73450988499415],emp:{
+    "ORLÂNDIA":[-20.71725328770959,-47.8803115828694]}},
+  "Campo Grande":{ll:[-20.492855717543165,-54.73852313179462],emp:{
+    "SEARA":[-20.467447774599314,-54.71663397743636]}},
+  "Barbacena":{ll:[-21.218483045099013,-43.74357509319152],emp:{
+    "AMG SP":[-21.084951701950843,-44.58957361808009],"DOW":[-21.4471714105341,-43.60857273399927]}}
+};
+const ROTA_IDX={};
+for(const _b in ROTA_BASES){ const _B=ROTA_BASES[_b]; for(const _e in _B.emp){ ROTA_IDX[_e]={base:_b,baseLL:_B.ll,destLL:_B.emp[_e]}; } }
+
+/* Despacho Betim: 3 caminhões e a troca pode ser feita já a partir de 60 Bar. */
+/* ---------- Bases de despacho (nº de caminhões e empresas) ---------- */
+const TURNO_DIA = [6, 18];   // dia = 06:00–18:00 (fora disso = noite)
+const DESPACHO_BASES = {
+  "Betim":           {caminhoes:{dia:3, noite:2}, empresas:REGISTRO["BETIM"]},
+  "Ipatinga":        {caminhoes:1, empresas:["FERMAG","PLANALTO","TROPICAL","BARRIGÃO"]},
+  "Poços de Caldas": {caminhoes:5, empresas:["ACQUION","BALANÇA","POUSO","BAIA 1"]},
+  "Aracruz":         {caminhoes:2, empresas:["COLATINA","SPINASSÉ","FAZENDA CHAPADÃO"]},
+  "Rio Joanes":      {caminhoes:2, empresas:["BAIA 1 (LAGARTO)","UMBAÚBA"]},
+  "Cravinhos":       {caminhoes:1, empresas:["ORLÂNDIA"]},
+  "Campo Grande":    {caminhoes:1, empresas:["SEARA"]},
+  "Barbacena":       {caminhoes:1, empresas:["AMG SP","DOW"]},
+};
+function caminhoesBase(conf){
+  if(typeof conf.caminhoes==="number") return conf.caminhoes;
+  const h=new Date().getHours(), dia=(h>=TURNO_DIA[0] && h<TURNO_DIA[1]);
+  return dia ? conf.caminhoes.dia : conf.caminhoes.noite;
+}
+/* Motorista + carreta por entrega, salvos no navegador */
+function despStore(){try{return JSON.parse(localStorage.getItem("logas_despacho"))||{};}catch(e){return {};}}
+function saveDesp(s){try{localStorage.setItem("logas_despacho",JSON.stringify(s));}catch(e){}}
+function labelDespacho(base,n){
+  if(base==="Poços de Caldas" && n==="BAIA 1") return "Extrema";
+  if(base==="Rio Joanes" && n==="BAIA 1 (LAGARTO)") return "Lagarto";
+  return nomeExib(n);
+}
+const ADIANTAR_BAR = 60;     // pressão a partir da qual já é aceitável adiantar a entrega
+const SERVICO_H = 0.5;       // tempo aprox. de carga/descarga na empresa (round-trip = 2*viagem + serviço)
+
+/* mapa empresa -> região */
+const REGIAO_DE = {};
+for(const reg in REGISTRO) REGISTRO[reg].forEach(n=>REGIAO_DE[n]=reg);
+
+/* ---------- Config persistida ---------- */
+function loadCfg(){try{return JSON.parse(localStorage.getItem("logas_cfg"))||{};}catch(e){return{};}}
+let cfg = loadCfg();
+function getMin(n){return (cfg.min&&cfg.min[n]!=null)?cfg.min[n]:MIN_PADRAO;}
+function getBase(n){
+  if(cfg.base&&cfg.base[n]!=null&&cfg.base[n]!=="")return cfg.base[n];
+  const d=window.LOGAS_VIAGEM;
+  if(d&&d.rotas&&d.rotas[n]&&d.rotas[n].base) return d.rotas[n].base;   // base ao vivo (viagem.js)
+  if(ROTA_IDX[n]) return ROTA_IDX[n].base;                             // base fixa (todas as bases)
+  return BASE_POR_REGIAO[REGIAO_DE[n]]||"";
+}
+/* tempo de viagem AO VIVO (TomTom), vindo do viagem.js (window.LOGAS_VIAGEM) */
+function viagemLive(n){
+  const d=window.LOGAS_VIAGEM;
+  return (d&&d.viagem&&d.viagem[n]!=null&&d.viagem[n]!=="")?parseFloat(d.viagem[n]):null;
+}
+function getViagem(n){
+  if(cfg.viagem&&cfg.viagem[n]!=null&&cfg.viagem[n]!=="")return parseFloat(cfg.viagem[n]); // override manual (engrenagem)
+  const lv=viagemLive(n); if(lv!=null) return lv;                                          // tempo real (TomTom)
+  if(VIAGEM_BETIM[n]!=null)return VIAGEM_BETIM[n];                                          // tempo fixo
+  return REGIAO_DE[n]==="BETIM"?1:null;
+}
+function buffer(){return parseFloat(document.getElementById("buffer").value)||0;}
+function fallbackRate(){return parseFloat(document.getElementById("fallback").value)||20;}
+function saveCfg(){
+  cfg.buffer=buffer();cfg.fallback=fallbackRate();
+  try{localStorage.setItem("logas_cfg",JSON.stringify(cfg));}catch(e){}
+}
+
+/* ---------- Leituras manuais (digitadas no painel, salvas no navegador) ---------- */
+function manualStore(){try{return JSON.parse(localStorage.getItem("logas_manual"))||{};}catch(e){return {};}}
+function saveManual(s){try{localStorage.setItem("logas_manual",JSON.stringify(s));}catch(e){}}
+function nowLocalISO(){
+  const d=new Date(),p=x=>String(x).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+/* ---------- Correções de leitura (quando o sistema leu errado o valor da foto) ----------
+   Guardadas por empresa e por horário (t). Sobrescrevem o valor do dados.js e
+   sobrevivem ao recarregamento automático, porque são aplicadas em leituras(). */
+function correcoesStore(){try{return JSON.parse(localStorage.getItem("logas_correcoes"))||{};}catch(e){return {};}}
+function saveCorrecoes(s){try{localStorage.setItem("logas_correcoes",JSON.stringify(s));}catch(e){}}
+function leiturasBase(n){
+  const d=window.LOGAS_DADOS;
+  const base=(d&&d.leituras&&d.leituras[n])?d.leituras[n].slice():[];
+  const corr=correcoesStore()[n]||{};
+  return base.map(r=>{
+    const c=corr[r.t];
+    return (c!=null&&c!=="") ? {...r,p:c,corrigido:true,pOrig:r.p} : {...r};
+  });
+}
+
+/* ---------- Acesso aos dados (arquivo dados.js + correções + manuais) ---------- */
+function leituras(n){
+  const base=leiturasBase(n);
+  const man=manualStore()[n]||[];
+  const all=base.concat(man);
+  all.sort((a,b)=>new Date(a.t)-new Date(b.t));
+  return all;
+}
+function ultimaLeitura(n){
+  const ls=leituras(n);
+  for(let i=ls.length-1;i>=0;i--){if(ls[i].p!==null&&ls[i].p!==undefined)return ls[i];}
+  return ls.length?ls[ls.length-1]:null;
+}
+/* Se a leitura MAIS RECENTE for nula, a empresa está fora do ar.
+   Retorna o texto do status e desde quando (início da sequência de nulos no fim). */
+function semSinalInfo(n){
+  const ls=leituras(n);
+  if(!ls.length)return null;
+  const last=ls[ls.length-1];
+  if(last.p!==null&&last.p!==undefined)return null;
+  let i=ls.length-1;
+  while(i>0 && (ls[i-1].p===null||ls[i-1].p===undefined)) i--;
+  return {obs:last.obs||"Sem Sinal", desde:ls[i].t};
+}
+
+/* Consumo medido: média das quedas reais entre leituras (ignora trocas de carreta = subidas). */
+function consumoMedido(n){
+  const ls=leituras(n).filter(r=>r.p!==null&&r.p!==undefined&&r.p<=MAX_BAR);
+  if(ls.length<2)return null;
+  const taxas=[];
+  for(let i=1;i<ls.length;i++){
+    const dh=(new Date(ls[i].t)-new Date(ls[i-1].t))/3600000;
+    if(dh<=0)continue;
+    const queda=ls[i-1].p-ls[i].p;
+    if(queda>0 && queda/dh<=MAX_QUEDA_BARH)taxas.push(queda/dh);  // só quedas plausíveis (ignora pico de erro de OCR)
+  }
+  if(!taxas.length)return null;
+  const recentes=taxas.slice(-4);            // média das últimas quedas
+  return recentes.reduce((a,b)=>a+b,0)/recentes.length;
+}
+
+function round(x){return Math.round(x*10)/10;}
+function fmtH(h){if(h==null)return"—";if(!isFinite(h))return"∞";if(h<=0)return"0 h";if(h<1)return Math.round(h*60)+" min";return round(h)+" h";}
+function vbar(x){return Number(x).toFixed(2).replace('.',',');}
+
+/* Extrema-MG: 3 baias para o mesmo cliente. O status do conjunto olha a baia que está
+   suprindo (a de maior pressão no momento) e o consumo real (maior consumo medido entre as baias).
+   Uma baia em 0 não gera alerta se outra ainda tem gás. */
+function estadoGrupo(reg){
+  const baias=GRUPOS[reg];
+  const atuais=baias.map(nb=>{const r=ultimaLeitura(nb);return (r&&r.p!=null)?r.p:0;});
+  let sup=0;for(let i=1;i<atuais.length;i++) if(atuais[i]>atuais[sup]) sup=i;
+  const supName=baias[sup], supP=atuais[sup], min=getMin(supName);
+  let medido=null;
+  baias.forEach(nb=>{const m=consumoMedido(nb);if(m!=null)medido=(medido==null)?m:Math.max(medido,m);});
+  const rate=medido!=null?medido:fallbackRate();
+  const h=rate>0?(supP-min)/rate:Infinity;
+  const viagem=getViagem(supName), base=getBase(supName), buf=buffer();
+  const temDespacho=(viagem!=null && !!base);
+  const despacho=temDespacho?h-(viagem+buf):null;
+  let key="ok",col="var(--green)",tag=fmtH(h);
+  if(h<=0){ key="crit";col="var(--red)";tag="ABAIXO DO LIMITE"; }
+  else if(temDespacho){
+    if(despacho<=0){ key="crit";col="var(--red)";tag="DESPACHAR AGORA"; }
+    else if(despacho<2){ key="urg";col="var(--orange)";tag="Sair em "+fmtH(despacho); }
+    else if(despacho<6){ key="warn";col="var(--yellow)";tag="Sair em "+fmtH(despacho); }
+    else { key="ok";col="var(--green)";tag="Sair em "+fmtH(despacho); }
+  } else { if(!isFinite(h)){tag="∞";} else if(h<2){key="urg";col="var(--orange)";} else if(h<12){key="warn";col="var(--yellow)";} }
+  return {min,rate,medido,h,viagem,base,buf,temDespacho,despacho,key,col,tag,supName};
+}
+
+function estado(n){
+  // Baias de um conjunto (Extrema-MG, Lagarto-SE): pressão própria no card, status do conjunto
+  const gReg=grupoDe(n);
+  if(gReg){
+    const g=estadoGrupo(gReg);
+    const r=ultimaLeitura(n);
+    const p=(r&&r.p!=null)?r.p:0;
+    return {off:false,semSinal:false,grupo:gReg,suprindo:(n===g.supName),
+            p,t:r?r.t:null,min:g.min,rate:g.rate,medido:g.medido,h:g.h,
+            viagem:g.viagem,base:g.base,buf:g.buf,temDespacho:g.temDespacho,despacho:g.despacho,key:g.key,col:g.col,tag:g.tag};
+  }
+  const ss=semSinalInfo(n);                       // != null se a leitura mais recente é nula (fora do ar)
+  const semSinal=!!ss;
+  const foraHoras = ss ? (Date.now()-new Date(ss.desde))/3600000 : null;
+  const desde = ss ? ss.desde : null;
+  const obs = ss ? ss.obs : null;
+  // Anti-erro de OCR: se a última leitura numérica é uma queda fisicamente impossível
+  // vs a anterior (> MAX_QUEDA_BARH), ela é ignorada e usamos a anterior (confiável).
+  let reg=ultimaLeitura(n), suspeita=null;          // última leitura COM valor
+  {
+    const _all=leituras(n).filter(r=>r.p!=null&&r.p!==undefined);
+    if(_all.length>=1){
+      const _b=_all[_all.length-1];
+      let _a=null; for(let i=_all.length-2;i>=0;i--){ if(_all[i].p<=MAX_BAR){ _a=_all[i]; break; } }  // última boa anterior
+      if(_b.p>MAX_BAR){                               // valor impossível (acima do manômetro) → usa a última boa
+        suspeita={lida:_b.p,t:_b.t}; reg=_a||_b;
+      } else if(_a){
+        const _dh=(new Date(_b.t)-new Date(_a.t))/3600000;
+        if(_dh>0 && (_a.p-_b.p)/_dh>MAX_QUEDA_BARH){ suspeita={lida:_b.p,t:_b.t}; reg=_a; }
+      }
+    }
+  }
+  const min=getMin(n);
+  if(!reg||reg.p===null||reg.p===undefined)        // nunca teve leitura numérica → realmente sem dados
+    return {off:true,semSinal,obs:obs||(reg?reg.obs:"sem leitura"),desde,foraHoras,p:null};
+  const medido=consumoMedido(n);
+  const rate=medido!=null?medido:fallbackRate();
+  // Projeção quando fora do ar: a empresa continua consumindo a partir do último
+  // valor conhecido. Estimamos a pressão "agora" como se a leitura não tivesse caído,
+  // e usamos essa previsão para horas até o limite, despacho e alertas.
+  const pConhecido=reg.p;
+  let p=reg.p, projetado=false;
+  const horasSemLeitura=(Date.now()-new Date(reg.t))/3600000;
+  if(semSinal && rate>0 && horasSemLeitura>0){
+    p=Math.max(0, reg.p - rate*horasSemLeitura);
+    projetado=true;
+  }
+  const h=rate>0?(p-min)/rate:Infinity;            // horas até o limite (sobre a pressão prevista)
+  const viagem=getViagem(n), base=getBase(n), buf=buffer();
+  const temDespacho = (viagem!=null && !!base);
+  const despacho = temDespacho ? h-(viagem+buf) : null; // horas até precisar sair da base
+
+  let key="ok",col="var(--green)",tag=fmtH(h);
+  if(h<=0){ key="crit";col="var(--red)";tag="ABAIXO DO LIMITE"; }
+  else if(temDespacho){
+    if(despacho<=0){ key="crit";col="var(--red)";tag="DESPACHAR AGORA"; }
+    else if(despacho<2){ key="urg";col="var(--orange)";tag="Sair em "+fmtH(despacho); }
+    else if(despacho<6){ key="warn";col="var(--yellow)";tag="Sair em "+fmtH(despacho); }
+    else { key="ok";col="var(--green)";tag="Sair em "+fmtH(despacho); }
+  } else { // base ainda não definida → só horas até o limite
+    if(!isFinite(h)){ tag="∞"; }
+    else if(h<2){ key="urg";col="var(--orange)"; }
+    else if(h<12){ key="warn";col="var(--yellow)"; }
+  }
+  return {off:false,semSinal,foraHoras,desde,obs,p,projetado,pConhecido,tLeitura:reg.t,horasSemLeitura,t:reg.t,min,rate,medido,h,viagem,base,buf,temDespacho,despacho,key,col,tag,suspeita};
+}
+
+/* ---------- Despacho Betim: janelas de saída, 3 caminhões e conflitos ----------
+   Para cada empresa de Betim calcula:
+     - latest  = horas até o caminhão PRECISAR sair da base (chegar antes do limite crítico)
+     - earliest= horas a partir das quais já dá pra adiantar (pressão chegando a 60 Bar)
+   Depois agenda em 3 caminhões (round-trip = ida+volta+serviço) priorizando as mais
+   urgentes; quem não cabe na frota a tempo é marcado como CONFLITO. A ordem de saída
+   recomendada já adianta as mais distantes (têm menos folga e ocupam mais o caminhão). */
+function despachoBase(baseNome){
+  const conf=DESPACHO_BASES[baseNome];
+  if(!conf) return {plan:[],conflitos:0};
+  const jobs=[];
+  conf.empresas.forEach(n=>{
+    const e=estado(n);
+    if(e.off) return;                 // sem leitura numérica → fora do planejamento
+    if(!(e.rate>0)||!isFinite(e.h)) return;  // pressão estável/subindo → sem previsão de esvaziar
+    const viagem=e.viagem!=null?e.viagem:getViagem(n);
+    if(viagem==null) return;
+    const buf=e.buf||0;
+    const tTo60 = e.p>ADIANTAR_BAR ? (e.p-ADIANTAR_BAR)/e.rate : 0;
+    jobs.push({
+      n, p:e.p, rate:e.rate, viagem, min:e.min, h:e.h, semSinal:!!e.semSinal,
+      earliest: tTo60 - viagem - buf,   // pode sair a partir daqui (h a partir de agora)
+      latest: e.despacho,               // tem que sair até aqui (h a partir de agora)
+      rt: 2*viagem + SERVICO_H,         // ocupação do caminhão (ida+volta+serviço)
+      podeAdiantar: e.p<=ADIANTAR_BAR,  // já está em faixa de troca antecipada
+      // Pressão projetada no horário-limite de saída (consumo constante): chega ao limite após a viagem
+      barLimite: e.min + e.rate*viagem
+    });
+  });
+  // Só planeja o que está dentro do horizonte (próx. 24 h) ou já vencido
+  const plan=jobs.filter(j=>j.latest<24);
+  // Earliest-Deadline-First em N caminhões
+  plan.sort((a,b)=>a.latest-b.latest);
+  const trucks=new Array(caminhoesBase(conf)).fill(0);  // "livre daqui a X h"
+  let conflitos=0;
+  plan.forEach(j=>{
+    let ti=0; for(let i=1;i<trucks.length;i++) if(trucks[i]<trucks[ti]) ti=i;
+    const free=trucks[ti];
+    j.conflito = free > j.latest + 1e-6;            // nenhum caminhão livre a tempo
+    if(j.conflito) conflitos++;
+    j.depart = Math.max(free, j.earliest);           // sai o quanto antes for permitido
+    j.truck  = ti;
+    trucks[ti] = j.depart + j.rt;
+  });
+  // Ordem recomendada de saída = por horário de partida
+  plan.sort((a,b)=>a.depart-b.depart || a.latest-b.latest);
+  return {plan, conflitos};
+}
+
+function fmtRelogio(h){
+  if(h<=0.05) return "AGORA";
+  const d=new Date(Date.now()+h*3600*1000);
+  const p=x=>String(x).padStart(2,"0");
+  const hora=`${p(d.getHours())}:${p(d.getMinutes())}`;
+  const hoje=new Date().toDateString()===d.toDateString();
+  // Hoje: só a hora. Outro dia: "dd/mm · hh:mm" com separador para a data não colar na hora.
+  return hoje ? hora : `${p(d.getDate())}/${p(d.getMonth()+1)}  ·  ${hora}`;
+}
+function fmtViagem(h){ if(h==null)return"—"; if(h<1)return Math.round(h*60)+" min"; const m=Math.round((h-Math.floor(h))*60); return Math.floor(h)+"h"+(m?String(m).padStart(2,"0"):""); }
+
+/* Atualiza o KPI do cabeçalho (chamado a cada refresh) */
+function renderDespachoKPI(){
+  const b=document.getElementById("kDisp");
+  let prox=null, proxBase="", conflTot=0;
+  for(const base in DESPACHO_BASES){
+    const {plan,conflitos}=despachoBase(base);
+    conflTot+=conflitos;
+    if(plan.length && (prox===null || plan[0].depart<prox.depart)){ prox=plan[0]; proxBase=base; }
+  }
+  if(prox===null){ b.textContent="ok"; b.style.color="var(--green)"; return; }
+  if(conflTot){ b.textContent=conflTot+" conflito"+(conflTot>1?"s":""); b.style.color="var(--red)"; }
+  else if(prox.depart<=0.25){ b.textContent="Sair: "+labelDespacho(proxBase,prox.n); b.style.color="var(--orange)"; }
+  else { b.textContent=fmtRelogio(prox.depart)+" "+labelDespacho(proxBase,prox.n); b.style.color="var(--cyan)"; }
+}
+
+/* Monta a tabela do plano de despacho (chamado ao abrir o overlay) */
+function renderDespacho(){
+  const baseNome=(document.getElementById("dispBaseSel")||{}).value || "Betim";
+  const conf=DESPACHO_BASES[baseNome];
+  const {plan,conflitos}=despachoBase(baseNome);
+  const resumo=document.getElementById("dispResumo");
+  const tb=document.querySelector("#dispTable tbody");
+  const cf=document.getElementById("dispConflito");
+  tb.innerHTML=`<tr><th>#</th><th>Empresa</th><th>Viagem</th><th>Pressão agora</th><th>Sair da base</th><th>Limite às</th><th>Status</th></tr>`;
+  if(!plan.length){
+    resumo.textContent="Nenhuma entrega de "+baseNome+" prevista para as próximas 24 h. Tudo com folga.";
+    cf.style.display="none"; return;
+  }
+  resumo.innerHTML=`<b>${plan.length}</b> entrega(s) de ${baseNome} no horizonte de 24 h · <b>${caminhoesBase(conf)}</b> caminhão(ões) · ordem recomendada de saída abaixo.`;
+  if(conflitos){
+    cf.style.display="block";
+    cf.textContent=`⚠ ${conflitos} entrega(s) não cabem na frota a tempo — adiante as mais distantes agora (a troca pode ser feita a partir de ~60 Bar) ou reforce os caminhões.`;
+  } else cf.style.display="none";
+  const ds=despStore();
+  plan.forEach((j,i)=>{
+    let badge, cor;
+    if(j.conflito){ badge="CONFLITO"; cor="var(--red)"; }
+    else if(j.depart<=0.25 && j.podeAdiantar){ badge="ADIANTAR / SAIR JÁ"; cor="var(--orange)"; }
+    else if(j.depart<=0.25){ badge="SAIR JÁ"; cor="var(--orange)"; }
+    else { badge="programado"; cor="var(--green)"; }
+    const atras = j.latest<0 ? ` style="color:var(--red);font-weight:700"` : "";
+    tb.insertAdjacentHTML("beforeend",`<tr>
+      <td>${i+1}</td>
+      <td><b>${labelDespacho(baseNome,j.n)}</b>${j.semSinal?' <span style="color:var(--muted)">(s/ sinal)</span>':''}</td>
+      <td>${fmtViagem(j.viagem)}</td>
+      <td>${vbar(j.p)} <small style="color:var(--muted)">Bar</small></td>
+      <td style="font-weight:700">${fmtRelogio(j.depart)}</td>
+      <td${atras}>${fmtRelogio(j.latest)}</td>
+      <td><span class="pill" style="background:${cor};color:#0a0f18">${badge}</span></td>
+    </tr>`);
+  });
+}
+
+/* ================= PROGRAMAÇÃO (cavalo, carreta, motorista, saída/chegada) =================
+   Reaproveita despachoBase() para sugerir o horário de saída por urgência. A chegada no
+   cliente = saída + tempo de viagem da base. Cavalo/carreta/motorista saem do cadastro de
+   frota (listas no navegador). Tudo persistido em localStorage. */
+function frotaStore(){
+  try{ const f=JSON.parse(localStorage.getItem("logas_frota"))||{}; return {cavalos:f.cavalos||[],carretas:f.carretas||[],motoristas:f.motoristas||[]}; }
+  catch(e){ return {cavalos:[],carretas:[],motoristas:[]}; }
+}
+function saveFrota(f){ try{ localStorage.setItem("logas_frota",JSON.stringify(f)); }catch(e){} }
+function progStore(){ try{ return JSON.parse(localStorage.getItem("logas_prog"))||{}; }catch(e){ return {}; } }
+function saveProg(s){ try{ localStorage.setItem("logas_prog",JSON.stringify(s)); }catch(e){} }
+
+/* Date -> valor de <input type="datetime-local"> ("YYYY-MM-DDThh:mm") em horário local */
+function toLocalInput(d){
+  const p=x=>String(x).padStart(2,"0");
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+/* Date -> relógio amigável ("hh:mm" hoje, senão "dd/mm · hh:mm") */
+function fmtRelogioAbs(d){
+  const p=x=>String(x).padStart(2,"0");
+  const hora=`${p(d.getHours())}:${p(d.getMinutes())}`;
+  return (new Date().toDateString()===d.toDateString()) ? hora : `${p(d.getDate())}/${p(d.getMonth()+1)}  ·  ${hora}`;
+}
+/* <select> a partir de uma lista; marca o valor atual (mesmo que já não esteja na lista) */
+function selectFrota(cls,key,lista,atual){
+  const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  let opts=`<option value="">—</option>`;
+  const arr=lista.slice();
+  if(atual && arr.indexOf(atual)<0) arr.push(atual);
+  arr.forEach(v=>{ opts+=`<option value="${esc(v)}"${v===atual?" selected":""}>${esc(v)}</option>`; });
+  return `<select class="${cls}" data-k="${key}" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:4px 6px;font-size:13px;max-width:150px">${opts}</select>`;
+}
+
+/* Junta os trabalhos sugeridos de uma base (ou de todas) com horário de saída absoluto */
+function progJobs(baseSel){
+  const out=[];
+  const bases = (baseSel==="Todas") ? Object.keys(DESPACHO_BASES) : [baseSel];
+  bases.forEach(base=>{
+    const {plan}=despachoBase(base);
+    plan.forEach(j=>{
+      const saidaSug=new Date(Date.now()+Math.max(0,j.depart)*3600*1000);
+      out.push({base, n:j.n, viagem:j.viagem, p:j.p, rate:j.rate, min:j.min, depart:j.depart, latest:j.latest,
+                conflito:j.conflito, podeAdiantar:j.podeAdiantar, semSinal:j.semSinal, saidaSug});
+    });
+  });
+  out.sort((a,b)=>a.saidaSug-b.saidaSug);
+  return out;
+}
+
+function badgeProg(j){
+  if(j.conflito) return ["CONFLITO","var(--red)"];
+  if(j.depart<=0.25 && j.podeAdiantar) return ["ADIANTAR / SAIR JÁ","var(--orange)"];
+  if(j.depart<=0.25) return ["SAIR JÁ","var(--orange)"];
+  return ["programado","var(--green)"];
+}
+
+/* ----- Chegada com TRÂNSITO do dia (TomTom, considerando o horário de saída) -----
+   Usa a mesma chave/rota do "Ver rota". departAt = horário de saída, então a TomTom
+   devolve o tempo previsto para AQUELE momento (trânsito do dia). Mantém a margem de
+   planejamento de +25% usada no resto do painel. Resultados ficam em cache por cliente
+   e faixa de 15 min para não refazer chamadas a cada atualização. */
+const _transitoCache={};
+function _isoOffset(d){
+  const p=x=>String(x).padStart(2,"0");
+  const off=-d.getTimezoneOffset(), sg=off>=0?"+":"-", ao=Math.abs(off);
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}:00${sg}${p(Math.floor(ao/60))}:${p(ao%60)}`;
+}
+function viagemTransito(n, departDate){
+  const ri=(typeof rotaInfo==="function")?rotaInfo(n):null;
+  if(!ri||!ri.baseLL||!ri.destLL) return Promise.resolve(null);
+  let t=Math.round(departDate.getTime()/(15*60*1000))*15*60*1000;       // faixa de 15 min
+  if(t < Date.now()) t=Math.round(Date.now()/(15*60*1000))*15*60*1000;  // departAt não pode ser no passado
+  const bucket=new Date(t), key=n+"|"+t;
+  if(_transitoCache[key]!=null) return Promise.resolve(_transitoCache[key]);
+  const url="https://api.tomtom.com/routing/1/calculateRoute/"+ri.baseLL[0]+","+ri.baseLL[1]+":"+ri.destLL[0]+","+ri.destLL[1]
+    +"/json?key="+ROTA_KEY+"&travelMode=truck&vehicleCommercial=true&vehicleMaxSpeed="+ROTA_VEL+"&routeType=fastest&traffic=true&departAt="+encodeURIComponent(_isoOffset(bucket));
+  return fetch(url).then(r=>r.ok?r.json():null).then(d=>{
+    if(!d||!d.routes||!d.routes[0]) return null;
+    const h=d.routes[0].summary.travelTimeInSeconds/3600*(1+ROTA_MARGEM);
+    _transitoCache[key]=h; return h;
+  }).catch(()=>null);
+}
+/* Preenche a célula de chegada: mostra na hora com o tempo padrão e, ao voltar a TomTom,
+   reescreve com o trânsito do dia. */
+function setChegada(cell, saidaDate, hFallback, n){
+  if(!cell || !saidaDate || isNaN(saidaDate.getTime())) return;
+  const row=cell.closest("tr");
+  const atualizaBarCheg=(h)=>{
+    if(!row) return;
+    const bc=row.querySelector(".pgBarCheg"); if(!bc) return;
+    const p=bc.dataset.p==="" ? null : parseFloat(bc.dataset.p);
+    bc.innerHTML=fmtBarSaida(barNaChegada(saidaDate, p, parseFloat(bc.dataset.rate), h), parseFloat(bc.dataset.min));
+  };
+  const chFb=new Date(saidaDate.getTime()+(hFallback||0)*3600*1000);
+  cell.innerHTML=fmtRelogioAbs(chFb)+' <span style="color:var(--muted);font-weight:400;font-size:11px">· prevendo trânsito…</span>';
+  cell.title="tempo de viagem padrão (aguardando trânsito)";
+  atualizaBarCheg(hFallback);
+  viagemTransito(n, saidaDate).then(h=>{
+    if(h==null){
+      cell.innerHTML=fmtRelogioAbs(chFb)+' <span style="color:var(--muted);font-weight:400;font-size:11px">· tempo padrão</span>';
+      cell.title="sem dado de trânsito no momento — usando tempo de viagem padrão";
+      atualizaBarCheg(hFallback); return;
+    }
+    const ch=new Date(saidaDate.getTime()+h*3600*1000);
+    cell.innerHTML=fmtRelogioAbs(ch)+' <span style="color:var(--green);font-weight:400;font-size:11px">· trânsito</span>';
+    cell.title="chegada com o trânsito do dia (TomTom +25%) · viagem "+_fmtRota(h);
+    atualizaBarCheg(h);
+  });
+}
+
+/* Pressão prevista no momento da saída = pressão atual − consumo × (horas até a saída).
+   Se a saída já é agora/passado, usa a pressão atual. Nunca abaixo de 0. */
+function barNaSaida(saidaDate, p, rate){
+  if(p==null) return null;
+  let hrs=(saidaDate.getTime()-Date.now())/3600000; if(!(hrs>0)) hrs=0;
+  let b=p-(rate||0)*hrs; if(b<0) b=0;
+  return b;
+}
+function fmtBarSaida(b, min){
+  if(b==null) return '<span style="color:var(--muted)">—</span>';
+  let cor=""; if(b<=min) cor="color:var(--red);font-weight:700"; else if(b<=min+20) cor="color:var(--orange);font-weight:700";
+  return `<span style="${cor}">${Math.round(b)}</span> <small style="color:var(--muted)">Bar</small>`;
+}
+/* Pressão prevista na CHEGADA = bar na saída − consumo durante a viagem (h = tempo de viagem). */
+function barNaChegada(saidaDate, p, rate, h){
+  const bs=barNaSaida(saidaDate, p, rate);
+  if(bs==null) return null;
+  let b=bs-(rate||0)*(h||0); if(b<0) b=0;
+  return b;
+}
+
+function renderProgFrotaInputs(){
+  const f=frotaStore();
+  document.getElementById("frotaCavalos").value=f.cavalos.join("\n");
+  document.getElementById("frotaCarretas").value=f.carretas.join("\n");
+  document.getElementById("frotaMotoristas").value=f.motoristas.join("\n");
+}
+
+/* Lista de todas as empresas cadastradas (para escolher/trocar a empresa de uma linha) */
+function todasEmpresas(){
+  const out=[]; for(const reg in REGISTRO) REGISTRO[reg].forEach(n=>{ if(out.indexOf(n)<0) out.push(n); });
+  return out;
+}
+/* Dados computados de UMA empresa (pressão, consumo, viagem, base, urgência) p/ a programação */
+function jobFromCliente(n){
+  const e=estado(n);
+  const base=e.base||getBase(n);
+  const viagem=(e.viagem!=null)?e.viagem:getViagem(n);
+  const latest=(e.temDespacho && isFinite(e.despacho))?e.despacho:null;
+  const depart=(latest!=null)?Math.max(0,latest):0;
+  const saidaSug=new Date(Date.now()+depart*3600*1000);
+  const p=e.off?null:e.p;
+  return {base, n, viagem, p, rate:e.rate, min:e.min, depart, latest:(latest!=null?latest:0),
+          conflito:false, podeAdiantar:(p!=null && p<=ADIANTAR_BAR), semSinal:!!e.semSinal, saidaSug};
+}
+/* Plano de programação (lista editável). Semeado uma vez a partir das sugestões de urgência;
+   depois o operador troca empresas, adiciona e remove linhas. Persistido no navegador. */
+function planStore(){ try{ const a=JSON.parse(localStorage.getItem("logas_plano")); return Array.isArray(a)?a:null; }catch(e){ return null; } }
+function savePlano(a){ try{ localStorage.setItem("logas_plano",JSON.stringify(a)); }catch(e){} }
+function seedPlano(){
+  const old=progStore(), jobs=progJobs("Todas");
+  const a=jobs.map(j=>{ const o=old[j.base+"|"+j.n]||{};
+    return {cli:j.n, cavalo:o.cavalo||"", carreta:o.carreta||"", mot:o.mot||"", saida:o.saida||toLocalInput(j.saidaSug)}; });
+  savePlano(a); return a;
+}
+function getPlano(){ let a=planStore(); if(!a) a=seedPlano(); return a; }
+/* <select> de empresas, para trocar a empresa da linha.
+   Se uma base estiver filtrada, lista só as empresas daquela base. */
+function selectCliente(idx, atual, baseSel){
+  const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  let arr=todasEmpresas();
+  if(baseSel && baseSel!=="Todas") arr=arr.filter(n=>getBase(n)===baseSel);
+  let opts="";
+  if(atual && arr.indexOf(atual)<0) arr.unshift(atual);
+  arr.forEach(n=>{ opts+=`<option value="${esc(n)}"${n===atual?" selected":""}>${esc(nomeExib(n))}</option>`; });
+  return `<select class="pgCli" data-i="${idx}" title="Trocar empresa desta linha" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:4px 6px;font-size:13px;max-width:160px;font-weight:600">${opts}</select>`;
+}
+
+function renderProg(){
+  const baseSel=(document.getElementById("progBaseSel")||{}).value || "Todas";
+  const f=frotaStore();
+  const plano=getPlano();
+  const resumo=document.getElementById("progResumo");
+  const tb=document.querySelector("#progTable tbody");
+  tb.innerHTML=`<tr><th>#</th><th>Base</th><th>Cliente</th><th>Cavalo</th><th>Carreta</th><th>Motorista</th><th>Viagem</th><th>Bar na saída</th><th>Saída (previsão)</th><th>Chegada no cliente</th><th>Bar na chegada</th><th>Status</th><th></th></tr>`;
+  const vis=[];
+  plano.forEach((ent,idx)=>{ const base=getBase(ent.cli); if(baseSel==="Todas"||base===baseSel) vis.push(idx); });
+  const semFrota=(!f.cavalos.length && !f.carretas.length && !f.motoristas.length);
+  resumo.innerHTML=`<b>${vis.length}</b> entrega(s) programada(s)`+(baseSel==="Todas"?" (todas as bases)":" · base "+baseSel)
+    + (semFrota? ` · <span style="color:var(--orange)">cadastre a frota em “Cadastro de frota” para escolher cavalo/carreta/motorista</span>`:"");
+  if(!vis.length){
+    tb.insertAdjacentHTML("beforeend",`<tr><td colspan="13" style="color:var(--muted);padding:14px">Sem linhas. Use <b>+ Empresa</b> para adicionar, ou <b>Restaurar sugestões</b>.</td></tr>`);
+  }
+  const vmap={}, nmap={};
+  let nrow=0;
+  vis.forEach(idx=>{
+    const ent=plano[idx];
+    const j=jobFromCliente(ent.cli);
+    const saidaDate = ent.saida ? new Date(ent.saida) : j.saidaSug;
+    const chegada = new Date(saidaDate.getTime() + (j.viagem||0)*3600*1000);
+    const [badge,cor]=badgeProg(j);
+    const atras = j.latest<0 ? ` style="color:var(--red);font-weight:700"` : "";
+    nrow++;
+    tb.insertAdjacentHTML("beforeend",`<tr>
+      <td>${nrow}</td>
+      <td>${j.base||"—"}</td>
+      <td>${selectCliente(idx, ent.cli, baseSel)}${j.semSinal?' <span style="color:var(--muted)">(s/ sinal)</span>':''}</td>
+      <td>${selectFrota("pgCav",idx,f.cavalos,ent.cavalo||"")}</td>
+      <td>${selectFrota("pgCar",idx,f.carretas,ent.carreta||"")}</td>
+      <td>${selectFrota("pgMot",idx,f.motoristas,ent.mot||"")}</td>
+      <td>${fmtViagem(j.viagem)}</td>
+      <td class="pgBar" data-i="${idx}" data-p="${j.p!=null?j.p:''}" data-rate="${j.rate||0}" data-min="${j.min}" title="Pressão prevista quando o caminhão sair da base (consumo até a saída)">${fmtBarSaida(barNaSaida(saidaDate, j.p, j.rate), j.min)}</td>
+      <td><input class="pgSai" data-i="${idx}" type="datetime-local" value="${toLocalInput(saidaDate)}" title="Edite o horário de saída — a chegada é recalculada" style="background:var(--bg2);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:5px 8px;font-size:13px;min-width:186px;cursor:pointer"></td>
+      <td class="pgCheg" data-i="${idx}"${atras} style="font-weight:700">${fmtRelogioAbs(chegada)}</td>
+      <td class="pgBarCheg" data-i="${idx}" data-p="${j.p!=null?j.p:''}" data-rate="${j.rate||0}" data-min="${j.min}" title="Pressão prevista quando o caminhão chegar ao cliente (consumo até a saída + durante a viagem)">${fmtBarSaida(barNaChegada(saidaDate, j.p, j.rate, j.viagem), j.min)}</td>
+      <td><span class="pill" style="background:${cor};color:#0a0f18;white-space:nowrap;display:inline-block">${badge}</span></td>
+      <td><button class="pgDel" data-i="${idx}" title="Remover esta linha" style="background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:3px 9px;cursor:pointer">✕</button></td>
+    </tr>`);
+    vmap[idx]=j.viagem||0; nmap[idx]=ent.cli;
+  });
+  // chegada com trânsito do dia, por linha
+  vis.forEach(idx=>{
+    const cell=document.querySelector(`#progTable .pgCheg[data-i="${idx}"]`);
+    const inp=document.querySelector(`#progTable .pgSai[data-i="${idx}"]`);
+    if(cell&&inp&&inp.value) setChegada(cell, new Date(inp.value), vmap[idx], nmap[idx]);
+  });
+  // trocar empresa da linha
+  document.querySelectorAll("#progTable .pgCli").forEach(sel=>{
+    sel.addEventListener("change",e=>{
+      const i=+e.target.dataset.i, a=getPlano(); if(!a[i]) return;
+      a[i].cli=e.target.value; savePlano(a); renderProg();
+    });
+  });
+  // cavalo / carreta / motorista
+  document.querySelectorAll("#progTable .pgCav,#progTable .pgCar,#progTable .pgMot").forEach(sel=>{
+    sel.addEventListener("change",e=>{
+      const i=+e.target.dataset.i, a=getPlano(); if(!a[i]) return;
+      if(e.target.classList.contains("pgCav")) a[i].cavalo=e.target.value;
+      else if(e.target.classList.contains("pgCar")) a[i].carreta=e.target.value;
+      else a[i].mot=e.target.value;
+      savePlano(a);
+    });
+  });
+  // horário de saída
+  document.querySelectorAll("#progTable .pgSai").forEach(inp=>{
+    inp.addEventListener("click",function(){ try{ this.showPicker && this.showPicker(); }catch(e){} });
+    inp.addEventListener("focus",function(){ try{ this.showPicker && this.showPicker(); }catch(e){} });
+    inp.addEventListener("input",e=>{
+      const i=+e.target.dataset.i, a=getPlano(); if(!a[i]) return;
+      a[i].saida=e.target.value; savePlano(a);
+      const cell=document.querySelector(`#progTable .pgCheg[data-i="${i}"]`);
+      if(cell && e.target.value){ setChegada(cell, new Date(e.target.value), vmap[i]||0, nmap[i]); }
+      const bcell=document.querySelector(`#progTable .pgBar[data-i="${i}"]`);
+      if(bcell && e.target.value){
+        const pAtt=bcell.dataset.p==="" ? null : parseFloat(bcell.dataset.p);
+        bcell.innerHTML=fmtBarSaida(barNaSaida(new Date(e.target.value), pAtt, parseFloat(bcell.dataset.rate)), parseFloat(bcell.dataset.min));
+      }
+    });
+  });
+  // remover linha
+  document.querySelectorAll("#progTable .pgDel").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      const i=+e.currentTarget.dataset.i, a=getPlano(); if(i<0||i>=a.length) return;
+      a.splice(i,1); savePlano(a); renderProg();
+    });
+  });
+}
+/* Adiciona uma empresa ao plano (na base atualmente filtrada, se houver) */
+function progAddEmpresa(){
+  const baseSel=(document.getElementById("progBaseSel")||{}).value || "Todas";
+  const todas=todasEmpresas();
+  let cli=todas[0];
+  if(baseSel!=="Todas"){ const c=todas.find(n=>getBase(n)===baseSel); if(c) cli=c; }
+  const a=getPlano();
+  const j=jobFromCliente(cli);
+  a.push({cli, cavalo:"", carreta:"", mot:"", saida:toLocalInput(j.saidaSug)});
+  savePlano(a); renderProg();
+}
+
+/* KPI do cabeçalho: próxima saída programada */
+function renderProgKPI(){
+  const b=document.getElementById("kProg"); if(!b) return;
+  b.textContent="Programação";
+  b.style.color="var(--green)";
+}
+
+/* ---------- Montagem da grade ---------- */
+function buildGrid(){
+  const grid=document.getElementById("grid");grid.innerHTML="";
+  // Arranjo igual ao sistema: 3 colunas; cada coluna tem linhas; cada linha tem 1+ regiões lado a lado.
+  // BETIM dividido em faixas de 4 para alinhar com as faixas das outras colunas
+  const B=REGISTRO["BETIM"];
+  const LAYOUT=[
+    [ {betim:B.slice(0,4),header:true}, {betim:B.slice(4,8),header:false}, {betim:B.slice(8),header:false} ],
+    [ ["POÇOS DE CALDAS"], ["POUSO ALEGRE"], ["EXTREMA-MG"] ],
+    [ ["IPATINGA"], ["ESPÍRITO SANTO","BARBACENA"], ["LAGARTO-SE","ORLÂNDIA"] ]
+  ];
+  const makeCell=(reg,n)=>{
+    const el=document.createElement("div");
+    el.className="cell";el.dataset.n=n;el.dataset.reg=reg;
+    el.onclick=()=>openDetail(reg,n);
+    return el;
+  };
+  // Cria uma caixa de região. names = empresas; header: mostra título (senão reserva o espaço);
+  // cols = nº de colunas iguais da grade (4 em região cheia, 2 em região pareada de meia coluna).
+  const addBox=(rowEl,reg,names,header,cols)=>{
+    const qt=REGISTRO[reg].length;
+    const r=document.createElement("div");r.className="region";
+    r.innerHTML = header
+      ? `<h2>${reg}<span class="cnt">${qt}</span></h2><div class="cells"></div>`
+      : `<h2 class="hidden">${reg}</h2><div class="cells"></div>`;
+    const cells=r.querySelector(".cells");
+    cells.style.gridTemplateColumns="repeat("+cols+",minmax(0,1fr))";
+    names.forEach(n=>cells.appendChild(makeCell(reg,n)));
+    rowEl.appendChild(r);
+  };
+  // Monta cada coluna. Item pode ser: ["REG"] (uma região cheia), ["REG1","REG2"] (pareadas),
+  // ou {betim:[empresas], header:bool} (faixa do BETIM, sempre 4 colunas).
+  LAYOUT.forEach(colDef=>{
+    const col=document.createElement("div");col.className="col";
+    colDef.forEach(item=>{
+      const row=document.createElement("div");row.className="rrow";
+      if(Array.isArray(item)){
+        const cols = item.length>=2 ? 2 : 4;   // pareadas (meia coluna) → 2; sozinha (coluna cheia) → 4
+        item.forEach(reg=>addBox(row,reg,REGISTRO[reg],true,cols));
+      } else if(item.betim){
+        addBox(row,"BETIM",item.betim,item.header,4);
+      }
+      col.appendChild(row);
+    });
+    grid.appendChild(col);
+  });
+}
+
+function refresh(){
+  let crit=0,urg=0,soon=null,soonName="",semSinal=0;
+  const grpDone=new Set();
+  const evCrit=[],evUrg=[],evSs=[];
+  document.querySelectorAll(".cell").forEach(el=>{
+    const n=el.dataset.n,e=estado(n);
+    const regN=REGIAO_DE[n]||"";
+    if(e.semSinal)semSinal++;
+    el.className="cell "+(e.off?"off":(e.key==="ok"?"":e.key))+(e.semSinal?" ss":"");
+    const ssDot=e.semSinal?`<span class="ssdot" title="Fora do ar">○</span>`:"";
+    const suspDot=e.suspeita?`<span class="ssdot" style="color:var(--yellow)" title="Última leitura ignorada (queda implausível p/ ~${vbar(e.suspeita.lida)} Bar) — confira e corrija no detalhe">⚠</span>`:"";
+    if(e.off){
+      el.innerHTML=`${ssDot}<div class="nm" title="${nomeExib(n)}">${nomeExib(n)}</div><div class="pr">${e.obs||"sem leitura"}</div>`;
+      evSs.push({reg:regN,n,clickN:n,p:null,obs:e.obs||"sem leitura",foraH:e.foraHoras,key:null});
+      return;
+    }
+    if(e.grupo){
+      if(!grpDone.has(e.grupo)){
+        grpDone.add(e.grupo);
+        if(e.key==="crit")crit++; else if(e.key==="urg")urg++;
+        if(soon===null||e.h<soon){soon=e.h;soonName=e.grupo;}
+      }
+      if(e.suprindo){
+        if(e.key==="crit")evCrit.push({reg:e.grupo,n:e.grupo,clickN:n,p:e.p,col:e.col,tag:e.tag,h:e.h,medido:e.medido,rate:e.rate});
+        else if(e.key==="urg")evUrg.push({reg:e.grupo,n:e.grupo,clickN:n,p:e.p,col:e.col,tag:e.tag,h:e.h,medido:e.medido,rate:e.rate});
+      }
+    } else {
+      if(e.key==="crit")crit++;if(e.key==="urg")urg++;
+      if(soon===null||e.h<soon){soon=e.h;soonName=n;}
+      if(e.semSinal){
+        evSs.push({reg:regN,n,clickN:n,p:e.p,obs:e.obs||"Sem Sinal",foraH:e.foraHoras,key:e.key,col:e.col,tag:e.tag,medido:e.medido,rate:e.rate,projetado:e.projetado,pConhecido:e.pConhecido});
+      } else if(e.key==="crit"){
+        evCrit.push({reg:regN,n,clickN:n,p:e.p,col:e.col,tag:e.tag,h:e.h,medido:e.medido,rate:e.rate});
+      } else if(e.key==="urg"){
+        evUrg.push({reg:regN,n,clickN:n,p:e.p,col:e.col,tag:e.tag,h:e.h,medido:e.medido,rate:e.rate});
+      }
+    }
+    const pill=(e.key==="crit"||e.key==="urg")
+      ?`<span class="pill" style="background:${e.col};color:#0a0f18">${e.tag}</span>`:"";
+    const hr=(e.key==="crit"||e.key==="urg")?"":`<span class="hr" style="color:${e.col}">${e.tag}</span>`;
+    const rateTxt=e.medido!=null?`${round(e.medido)} Bar/h`:`~${round(e.rate)} Bar/h`;
+    const rateTitle=e.projetado
+      ? `previsto a partir de ${vbar(e.pConhecido)} Bar · ${fmtH(e.h)} até o limite`
+      : (e.temDespacho?`${e.base} · ${fmtH(e.h)} até o limite`:`base a definir · ${fmtH(e.h)} até o limite`);
+    const prPrefix=e.projetado?'<span title="Pressão prevista (sem sinal)" style="color:var(--muted)">≈</span>':'';
+    el.innerHTML=`<span class="arrow">⤢</span>${ssDot}${suspDot}
+      <div class="nm" title="${nomeExib(n)}">${nomeExib(n)}</div>
+      <div class="pr">${prPrefix}${vbar(e.p)}<small>Bar</small></div>
+      <div class="rate" title="${rateTitle}">${e.projetado?"prev. ":""}${rateTxt} · ${fmtH(e.h)} limite</div>
+      <div class="foot">${hr}${pill}</div>`;
+  });
+  document.getElementById("kCrit").textContent=crit;
+  document.getElementById("kUrg").textContent=urg;
+  const ssEl=document.getElementById("kSemSinal");
+  ssEl.textContent=semSinal;
+  ssEl.style.color=semSinal>0?"var(--red)":"var(--muted)";
+  const d=window.LOGAS_DADOS;
+  const qt=d&&d.atualizado?new Date(d.atualizado).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+  document.getElementById("sub").textContent=
+    `Última foto lida: ${qt} · próxima a esvaziar: ${soonName||"–"} · ${semSinal} sem sinal · clique numa empresa para o histórico`;
+  evCrit.sort((a,b)=>a.h-b.h);
+  evUrg.sort((a,b)=>a.h-b.h);
+  evSs.sort((a,b)=>(b.foraH||0)-(a.foraH||0));
+  renderAlertPanel(evCrit,evUrg,evSs);
+  renderDespachoKPI();
+  renderProgKPI();
+  if(document.getElementById("dispOverlay").classList.contains("open") && !(document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#dispTable"))) renderDespacho();
+  if(document.getElementById("progOverlay").classList.contains("open") && !(document.activeElement&&document.activeElement.closest&&document.activeElement.closest("#progTable"))) renderProg();
+}
+
+/* ---------- Painel lateral de alertas ---------- */
+function alertRow(ev,type){
+  const reg=ev.reg||"";
+  const prPrefix = ev.projetado ? '<span style="color:var(--muted)" title="Pressão prevista (sem sinal)">≈</span>' : '';
+  const prTxt = ev.p!=null ? `${prPrefix}${vbar(ev.p)}<small style="color:var(--muted)"> Bar</small>` : '<span style="color:var(--muted)">— Bar</span>';
+  // Consumo por hora segundo a última leitura (medido entre fotos; ~ = estimado provisório)
+  const rateTxt = ev.medido!=null ? `${round(ev.medido)} Bar/h`
+                : (ev.rate!=null ? `~${round(ev.rate)} Bar/h` : "");
+  let tag="";
+  if(type==="ss"){
+    if(ev.key==="crit"||ev.key==="urg"){
+      const c=ev.key==="crit"?"var(--red)":"var(--orange)";
+      tag=`<span class="pill" style="background:${c};color:#0a0f18">${ev.key==="crit"?"CRÍTICO":"URGENTE"}</span>`;
+    } else {
+      tag=`<span class="pill" style="background:var(--muted);color:#0a0f18">${ev.obs||"Sem Sinal"}</span>`;
+    }
+  } else {
+    tag=`<span class="pill" style="background:${ev.col};color:#0a0f18">${ev.tag}</span>`;
+  }
+  const subParts=[];
+  if(ev.projetado && ev.pConhecido!=null) subParts.push(`prev. (últ. ${vbar(ev.pConhecido)})`);
+  if(rateTxt) subParts.push(`consumo ${rateTxt}`);
+  if(type==="ss" && ev.foraH!=null && isFinite(ev.foraH)) subParts.push(`fora do ar há ${fmtH(ev.foraH)}`);
+  const sub = subParts.length ? `<div class="ai-sub">${subParts.join(" · ")}</div>` : "";
+  return `<div class="alert-item ${type}" data-n="${ev.clickN}" data-reg="${reg}">
+    <div class="ai-top"><span class="ai-nm" title="${ev.n}">${ev.n}</span><span class="ai-reg">${reg}</span></div>
+    <div class="ai-bot"><span class="ai-pr">${prTxt}</span>${tag}</div>${sub}</div>`;
+}
+function renderAlertPanel(c,u,s){
+  const fill=(id,arr,type,emptyMsg)=>{
+    document.getElementById(id).innerHTML = arr.length
+      ? arr.map(ev=>alertRow(ev,type)).join("")
+      : `<div class="ai-empty">${emptyMsg}</div>`;
+  };
+  fill("apCrit",c,"crit","Nenhum evento crítico");
+  fill("apUrg",u,"urg","Nenhum evento urgente");
+  fill("apSs",s,"ss","Tudo com sinal");
+  document.getElementById("apCritN").textContent=c.length;
+  document.getElementById("apUrgN").textContent=u.length;
+  document.getElementById("apSsN").textContent=s.length;
+  document.querySelectorAll("#alertPanel .alert-item").forEach(it=>{
+    it.onclick=()=>openDetail(it.dataset.reg,it.dataset.n);
+  });
+}
+
+/* ---------- Exportação de relatórios (CSV / Excel) ----------
+   Gera DOIS arquivos pensados para alimentar dashboards depois:
+   1) logas-leituras-...csv  → dados brutos (1 linha por leitura) com flags e consumo já calculados;
+   2) logas-resumo-...csv    → 1 linha por empresa com os indicadores agregados + linha de totais.
+   Formato: separador ";" e vírgula decimal (abre direto no Excel pt-BR), com BOM UTF-8. */
+function csvNum(x){ if(x==null||x==="")return ""; return (Math.round(x*100)/100).toString().replace(".",","); }
+function baixarCSV(nome,linhas){
+  const csv="﻿"+linhas.join("\r\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=nome; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+}
+function dentroPeriodo(t,dDe,dAte){ const x=new Date(t); return (!dDe||x>=dDe)&&(!dAte||x<=dAte); }
+function leiturasPeriodo(n,dDe,dAte){ return leituras(n).filter(r=>dentroPeriodo(r.t,dDe,dAte)); }
+
+/* ---------- Planilha pivô (Excel .xlsx, gerada no navegador) ----------
+   Mesmo formato da planilha do operador: 1 linha por horário, 1 coluna por empresa,
+   célula = pressão lida (já com correções e leituras manuais aplicadas). Sem cores. */
+function fmtDataPivo(ts){
+  const d=new Date(ts), p=x=>String(x).padStart(2,"0");
+  return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function dadosPivo(dDe,dAte){
+  const empresas=[]; for(const reg in REGISTRO) REGISTRO[reg].forEach(n=>empresas.push(n));
+  const mapas={}, tset=new Set();
+  empresas.forEach(n=>{ const m={};
+    leituras(n).forEach(r=>{ if(!dentroPeriodo(r.t,dDe,dAte))return; m[r.t]=r; tset.add(r.t); });
+    mapas[n]=m;
+  });
+  const tss=[...tset].sort((a,b)=>new Date(a)-new Date(b));
+  return {empresas,mapas,tss};
+}
+function cabPivo(n){ return grupoDe(n) ? nomeExib(n)+" ("+REGIAO_DE[n]+")" : nomeExib(n); }
+function exportarPivoXLSX(dDe,dAte){
+  const {empresas,mapas,tss}=dadosPivo(dDe,dAte);
+  // cabeçalho: Data, e por empresa [bar, #] (igual às abas de mês do modelo)
+  const header=["Data"]; empresas.forEach(n=>{ header.push(cabPivo(n)); header.push("#"); });
+  const aoa=[header];
+  tss.forEach(ts=>{
+    const row=[fmtDataPivo(ts)];
+    empresas.forEach(n=>{ const r=mapas[n][ts]; row.push(r&&r.p!=null?r.p:null); row.push(null); });
+    aoa.push(row);
+  });
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  // consumo (#) = bar(hora anterior) − bar(hora atual). Grava a fórmula VIVA + o valor
+  // calculado (o SheetJS só escreve a célula de fórmula se ela tiver um valor em cache).
+  // Só preenche quando há leitura nas duas horas, para não gerar número errado nas lacunas.
+  const nrows=tss.length;
+  empresas.forEach((n,j)=>{
+    const barCol=1+2*j, hashCol=2+2*j, L=XLSX.utils.encode_col(barCol);
+    for(let i=1;i<nrows;i++){
+      const prevR=mapas[n][tss[i-1]], curR=mapas[n][tss[i]];
+      if(!(prevR&&prevR.p!=null&&curR&&curR.p!=null)) continue;
+      const exRow=i+2, addr=XLSX.utils.encode_cell({r:i+1,c:hashCol});
+      ws[addr]={t:"n",f:`${L}${exRow-1}-${L}${exRow}`,v:Math.round((prevR.p-curR.p)*100)/100};
+    }
+  });
+  const cols=[{wch:17}]; empresas.forEach(()=>{cols.push({wch:11},{wch:7});});
+  ws["!cols"]=cols;
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,"Pivo");
+  XLSX.writeFile(wb,"logas-pivo-"+new Date().toISOString().slice(0,10)+".xlsx");
+}
+function statsEmpresa(n,dDe,dAte){
+  const ls=leiturasPeriodo(n,dDe,dAte);       // sorted, inclui nulos, dentro do período
+  const num=ls.filter(r=>r.p!=null&&r.p!==undefined);
+  const taxas=[]; let refills=0, refillsAlta=0;
+  for(let i=1;i<num.length;i++){
+    const dh=(new Date(num[i].t)-new Date(num[i-1].t))/3600000;
+    if(dh<=0) continue;
+    const diff=num[i].p-num[i-1].p;
+    if(diff<0) taxas.push((-diff)/dh);                         // queda = consumo
+    else if(diff>=TROCA_MIN_BAR && num[i].p>=TROCA_NOVA){ refills++; if(num[i-1].p>ADIANTAR_BAR) refillsAlta++; } // troca de carreta (sobe p/ ≥160)
+  }
+  const consumoMedio = taxas.length? taxas.reduce((a,b)=>a+b,0)/taxas.length : null;
+  const consumoPico  = taxas.length? Math.max(...taxas) : null;
+  let semSinalH=0, quedas=0, inRun=false;
+  for(let i=0;i<ls.length;i++){
+    if(ls[i].p==null){
+      if(!inRun){ quedas++; inRun=true; }
+      const fim=(i+1<ls.length)? new Date(ls[i+1].t) : new Date();
+      semSinalH += (fim-new Date(ls[i].t))/3600000;
+    } else inRun=false;
+  }
+  const ultima=num.length?num[num.length-1]:null;
+  const menor=num.length?Math.min(...num.map(r=>r.p)):null;
+  return {n, reg:REGIAO_DE[n]||"", nLeituras:num.length,
+          ultimaP:ultima?ultima.p:null, ultimaT:ultima?ultima.t:null,
+          menorP:menor, consumoMedio, consumoPico, refills, refillsAlta, semSinalH, quedas};
+}
+/* Abre o diálogo de exportação, pré-preenchendo o período com o intervalo disponível nos dados. */
+function abrirExport(){
+  let min=null,max=null;
+  for(const reg in REGISTRO) REGISTRO[reg].forEach(n=>leituras(n).forEach(r=>{
+    const x=new Date(r.t); if(!min||x<min)min=x; if(!max||x>max)max=x;
+  }));
+  const iso=d=>d?d.toISOString().slice(0,10):"";
+  document.getElementById("expDe").value=iso(min);
+  document.getElementById("expAte").value=iso(max);
+  document.getElementById("exportOverlay").classList.add("open");
+}
+function exportarRelatorio(){
+ try{
+  const sep=";";
+  let gerados=0;
+  const de=document.getElementById("expDe").value, ate=document.getElementById("expAte").value;
+  const dDe = de? new Date(de+"T00:00:00") : null;
+  const dAte = ate? new Date(ate+"T23:59:59") : null;
+  const ind={}; document.querySelectorAll("#expIndic input[data-ind]").forEach(c=>ind[c.dataset.ind]=c.checked);
+  const wResumo=document.getElementById("expResumo").checked, wBrutos=document.getElementById("expBrutos").checked;
+  const wPivo=document.getElementById("expPivo").checked;
+  if(!wResumo&&!wBrutos&&!wPivo){ document.getElementById("expMsg").textContent="Marque pelo menos um arquivo."; return; }
+  const empresas=[]; for(const reg in REGISTRO) REGISTRO[reg].forEach(n=>empresas.push(n));
+  const dataStr=new Date().toISOString().slice(0,10);
+  const d=window.LOGAS_DADOS;
+  const periodoTxt = (de||ate)? `periodo: ${de||"inicio"} a ${ate||"fim"}` : "periodo: todo o historico";
+  const meta=`Relatorio Logas`+sep+`gerado em ${new Date().toLocaleString("pt-BR")}`+sep+periodoTxt;
+
+  // 2) RESUMO por empresa (colunas conforme indicadores escolhidos)
+  if(wResumo){
+    const cols=[{h:"Empresa",v:s=>s.n},{h:"Regiao",v:s=>s.reg}];
+    if(ind.leituras) cols.push({h:"Leituras",v:s=>s.nLeituras,tot:"n"});
+    if(ind.ultima){ cols.push({h:"UltimaPressaoBar",v:s=>csvNum(s.ultimaP)},
+                              {h:"UltimaLeitura",v:s=>s.ultimaT?new Date(s.ultimaT).toLocaleString("pt-BR"):""},
+                              {h:"MenorPressaoBar",v:s=>csvNum(s.menorP)}); }
+    if(ind.consumo){ cols.push({h:"ConsumoMedioBarH",v:s=>csvNum(s.consumoMedio)},
+                               {h:"PicoConsumoBarH",v:s=>csvNum(s.consumoPico)}); }
+    if(ind.abast) cols.push({h:"Abastecimentos",v:s=>s.refills,tot:"sum",k:"refills"});
+    if(ind.abastAlta) cols.push({h:"AbastecimentosPressaoAlta",v:s=>s.refillsAlta,tot:"sum",k:"refillsAlta"});
+    if(ind.semsinal){ cols.push({h:"TempoSemSinalH",v:s=>csvNum(s.semSinalH),tot:"sumh",k:"semSinalH"},
+                                {h:"QuedasDeSinal",v:s=>s.quedas,tot:"sum",k:"quedas"}); }
+    const linhasR=[meta,"",cols.map(c=>c.h).join(sep)];
+    const tot={refills:0,refillsAlta:0,semSinalH:0,quedas:0};
+    empresas.forEach(n=>{ const s=statsEmpresa(n,dDe,dAte);
+      tot.refills+=s.refills;tot.refillsAlta+=s.refillsAlta;tot.semSinalH+=s.semSinalH;tot.quedas+=s.quedas;
+      linhasR.push(cols.map(c=>c.v(s)).join(sep)); });
+    linhasR.push(cols.map((c,i)=>{ if(i===0)return"TOTAIS"; if(c.tot==="sum")return tot[c.k];
+      if(c.tot==="sumh")return csvNum(tot[c.k]); return ""; }).join(sep));
+    baixarCSV("logas-resumo-"+dataStr+".csv",linhasR); gerados++;
+  }
+
+  // 1) DADOS BRUTOS (tidy) — base para dashboards
+  if(wBrutos){
+    const headL=["Empresa","Regiao","DataHora","Data","Hora","PressaoBar","Status","SemSinal",
+                 "HorasDesdeAnterior","VariacaoBar","ConsumoBarH","Evento","Abastecimento","AbastecimentoPressaoAlta"];
+    const linhasL=[meta,"",headL.join(sep)];
+    empresas.forEach(n=>{
+      const ls=leiturasPeriodo(n,dDe,dAte); let prevNum=null, prevT=null;
+      for(let i=0;i<ls.length;i++){
+        const r=ls[i], dObj=new Date(r.t);
+        let horasAnt="", varBar="", consumo="", evento, abast=0, abastAlta=0;
+        if(i>0) horasAnt=(dObj-new Date(ls[i-1].t))/3600000;
+        if(r.p==null){ evento=r.obs||"Sem Sinal"; }
+        else{
+          if(prevNum!=null){
+            const dh=(dObj-new Date(prevT))/3600000, diff=r.p-prevNum; varBar=diff;
+            if(diff<0&&dh>0){ consumo=(-diff)/dh; evento="Queda"; }
+            else if(diff>=TROCA_MIN_BAR && r.p>=TROCA_NOVA){ evento="Abastecimento"; abast=1; if(prevNum>ADIANTAR_BAR) abastAlta=1; }
+            else evento="Leitura";
+          } else evento="Leitura";
+          prevNum=r.p; prevT=r.t;
+        }
+        linhasL.push([n,REGIAO_DE[n]||"",r.t,dObj.toLocaleDateString("pt-BR"),dObj.toLocaleTimeString("pt-BR"),
+          csvNum(r.p),(r.p==null?(r.obs||"Sem Sinal"):"OK"),(r.p==null?1:0),
+          csvNum(horasAnt),csvNum(varBar),csvNum(consumo),evento,abast,abastAlta].join(sep));
+      }
+    });
+    baixarCSV("logas-leituras-"+dataStr+".csv",linhasL); gerados++;
+  }
+  if(wPivo){
+    if(typeof XLSX==="undefined"){
+      document.getElementById("expMsg").textContent="CSV gerado. A planilha Excel não carregou (precisa de internet para a biblioteca).";
+      return;
+    }
+    exportarPivoXLSX(dDe,dAte); gerados++;
+  }
+  document.getElementById("expMsg").textContent="✓ "+gerados+" arquivo(s) gerado(s). Veja em Downloads.";
+ }catch(err){
+  document.getElementById("expMsg").textContent="Erro ao exportar: "+(err&&err.message?err.message:err);
+ }
+}
+
+/* ---------- Detalhe + gráfico (histórico REAL das fotos) ---------- */
+let chart=null,current=null;
+function openDetail(reg,n){
+  current={reg,n};
+  const e=estado(n);
+  document.getElementById("dName").textContent=nomeExib(n);
+  document.getElementById("dReg").textContent=reg;
+
+  const hhmm=t=>new Date(t).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  const num=leituras(n).filter(r=>r.p!==null&&r.p!==undefined);
+  const cur=num[num.length-1], prev=num[num.length-2];
+
+  // Banner de fora do ar
+  const off=document.getElementById("dOffline");
+  if(e.semSinal){
+    off.style.display="block";
+    const desdeTxt=e.desde?new Date(e.desde).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"—";
+    const motivo = e.projetado ? "Sem Sinal" : (e.obs||"Sem Sinal");
+    let html=`<div style="font-weight:700">⚠ Fora do ar desde ${desdeTxt} · há ${fmtH(e.foraHoras)} <span style="font-weight:400;opacity:.85">(${motivo})</span></div>`;
+    if(e.projetado){
+      html+=`<div style="margin-top:6px;font-weight:400;opacity:.95">`
+        +`Última leitura real: <b>${vbar(e.pConhecido)} Bar</b> às ${hhmm(e.tLeitura)} · consumo antes de ficar Sem Sinal: <b>${round(e.rate)} Bar/h</b><br>`
+        +`Pressão estimada agora, se continuar gastando no mesmo ritmo das últimas horas: <b>≈${vbar(e.p)} Bar</b>.`
+        +`</div>`;
+    } else if(num.length){
+      html+=`<div style="margin-top:6px;font-weight:400;opacity:.95">Mostrando o último valor conhecido e o consumo medido antes de cair.</div>`;
+    } else {
+      html+=`<div style="margin-top:6px;font-weight:400;opacity:.95">Sem leituras numéricas registradas.</div>`;
+    }
+    off.innerHTML=html;
+  } else off.style.display="none";
+
+  // Pressão atual e leitura anterior (com horário). Fora do ar → previsão + última leitura real.
+  const prevEl=document.getElementById("sPrev"), prevL=document.getElementById("sPrevL");
+  if(e.projetado){
+    document.getElementById("sP").textContent="≈"+vbar(e.p);
+    document.getElementById("sPL").textContent="Pressão prevista agora (s/ sinal)";
+    if(cur){ prevEl.textContent=vbar(cur.p); prevL.textContent="Última leitura real · "+hhmm(cur.t); }
+    else { prevEl.textContent="—"; prevL.textContent="Última leitura real"; }
+  } else {
+    document.getElementById("sP").textContent=e.p!=null?vbar(e.p):"—";
+    document.getElementById("sPL").textContent= cur?("Pressão atual · "+hhmm(cur.t)):"Pressão atual (Bar)";
+    if(prev){ prevEl.textContent=vbar(prev.p); prevL.textContent="Leitura anterior · "+hhmm(prev.t); }
+    else { prevEl.textContent="—"; prevL.textContent="Leitura anterior"; }
+    if(cur&&cur.corrigido) document.getElementById("sPL").textContent+=" · ✎ corrigido";
+  }
+
+  // Consumo na última hora (entre as duas últimas leituras)
+  const lastEl=document.getElementById("sLast");
+  if(prev&&cur){
+    const dh=(new Date(cur.t)-new Date(prev.t))/3600000;
+    const queda=prev.p-cur.p;
+    const aumento=-queda;
+    if(dh<=0){ lastEl.textContent="—"; lastEl.style.color=""; }
+    else if(aumento>=TROCA_MIN_BAR && cur.p>=TROCA_NOVA){
+      lastEl.textContent="troca de carreta · nova: "+vbar(cur.p)+" Bar";
+      lastEl.style.color="var(--green)";
+    } else if(queda>=0){
+      lastEl.textContent=round(queda)+" Bar ("+round(queda/dh)+"/h)";
+      lastEl.style.color="var(--cyan)";
+    } else {
+      lastEl.textContent="variação +"+round(aumento)+" Bar";
+      lastEl.style.color="var(--muted)";
+    }
+  } else { lastEl.textContent="—"; lastEl.style.color=""; }
+
+  document.getElementById("sRate").textContent=e.medido!=null?round(e.medido):"—";
+  document.getElementById("sMin").textContent=e.min!=null?e.min:getMin(n);
+  const hEl=document.getElementById("sH");hEl.textContent=fmtH(e.h);hEl.style.color=e.col||"var(--muted)";
+
+  // Base, viagem e horário-limite de saída
+  document.getElementById("sBase").textContent=e.base||"a definir";
+  {
+    const sv=document.getElementById("sViagem");
+    const usaLive = !(cfg.viagem&&cfg.viagem[n]!=null&&cfg.viagem[n]!=="") && viagemLive(n)!=null;
+    sv.textContent=(e.viagem!=null?e.viagem:"—")+(usaLive?" ⟲":"");
+    sv.title=usaLive?("tempo real (TomTom)"+(window.LOGAS_VIAGEM&&window.LOGAS_VIAGEM.atualizado?" · "+new Date(window.LOGAS_VIAGEM.atualizado).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}):"")):"";
+  }
+  const saidaEl=document.getElementById("sSaida");
+  if(e.temDespacho){
+    if(e.despacho<=0){ saidaEl.textContent="DESPACHAR JÁ"; saidaEl.style.color="var(--red)"; }
+    else {
+      const dl=new Date(Date.now()+e.despacho*3600*1000);
+      const hoje=new Date().toDateString()===dl.toDateString();
+      saidaEl.textContent=dl.toLocaleString("pt-BR",hoje?{hour:"2-digit",minute:"2-digit"}:{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+      saidaEl.style.color=e.col;
+    }
+  } else { saidaEl.textContent="—"; saidaEl.style.color=""; }
+
+  const ls=leituras(n);
+  const labels=ls.map(r=>new Date(r.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}));
+  const pts=ls.map(r=>(r.p==null?null:r.p));
+  const note=document.getElementById("dNote");
+  if(ls.length<2)note.textContent="Apenas 1 leitura registrada até agora. O gráfico e o consumo medido ficam completos a partir da 2ª foto.";
+  else note.textContent=`${ls.length} leituras registradas. Consumo medido pela diferença real entre as fotos.`;
+
+  // Projeção no gráfico quando fora do ar: liga a última leitura real ao ponto previsto "agora".
+  let projData=null;
+  if(e.projetado){
+    let lastReal=-1; for(let i=ls.length-1;i>=0;i--){ if(ls[i].p!=null){lastReal=i;break;} }
+    labels.push("agora (prev.)");
+    pts.push(null);
+    projData=labels.map(()=>null);
+    if(lastReal>=0) projData[lastReal]=e.pConhecido;
+    projData[labels.length-1]=e.p;
+    note.textContent+=` Linha tracejada laranja = previsão sem sinal (≈${vbar(e.p)} Bar agora).`;
+  }
+
+  const datasets=[
+    {label:"Pressão (Bar)",data:pts,borderColor:"#3bc4ec",backgroundColor:"rgba(59,196,236,.15)",
+     fill:true,tension:.3,pointRadius:3,borderWidth:2,spanGaps:true},
+    {label:"Limite crítico",data:labels.map(()=>getMin(n)),borderColor:"#f1556a",borderDash:[6,5],
+     pointRadius:0,borderWidth:1.5,fill:false}
+  ];
+  if(projData) datasets.push({label:"Previsão (s/ sinal)",data:projData,borderColor:"#f59140",
+     borderDash:[4,4],pointRadius:4,pointBackgroundColor:"#f59140",borderWidth:2,fill:false,spanGaps:true});
+
+  const ctx=document.getElementById("chart");
+  if(chart)chart.destroy();
+  chart=new Chart(ctx,{
+    type:"line",
+    data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:"#cfe0f5"}}},
+      scales:{x:{ticks:{color:"#8298b9",maxRotation:0,autoSkip:true},grid:{color:"rgba(255,255,255,.05)"}},
+              y:{ticks:{color:"#8298b9"},grid:{color:"rgba(255,255,255,.05)"},title:{display:true,text:"Bar",color:"#8298b9"}}}}
+  });
+  // Campo de leitura manual
+  const hint=document.getElementById("dNowHint");
+  hint.textContent="· será registrada às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("dNewVal").value="";
+  document.getElementById("dAddMsg").textContent="";
+
+  // Campo de correção de leitura
+  document.getElementById("dCorrMsg").textContent="";
+  popularCorrecao(n);
+  document.getElementById("dRota").style.display = (rotaInfo(n)?"inline-block":"none");
+
+  document.getElementById("detailOverlay").classList.add("open");
+}
+function closeDetail(){document.getElementById("detailOverlay").classList.remove("open");if(chart){chart.destroy();chart=null;}}
+
+/* Registra uma leitura manual (digitada) no histórico da empresa atual */
+function registrarLeitura(p,obs){
+  if(!current)return;
+  const n=current.n, s=manualStore();
+  s[n]=s[n]||[];
+  const entry={t:nowLocalISO(), p:p};
+  if(p===null) entry.obs=obs||"Sem Sinal";
+  s[n].push(entry);
+  saveManual(s);
+  refresh();
+  openDetail(current.reg,n);
+  document.getElementById("dAddMsg").textContent = p===null ? "Registrado: Sem Sinal." : "Registrado: "+vbar(p)+" Bar.";
+}
+function desfazerManual(){
+  if(!current)return;
+  const n=current.n, s=manualStore();
+  if(s[n]&&s[n].length){ s[n].pop(); if(!s[n].length)delete s[n]; saveManual(s); refresh(); openDetail(current.reg,n);
+    document.getElementById("dAddMsg").textContent="Última leitura manual desfeita."; }
+  else document.getElementById("dAddMsg").textContent="Nenhuma leitura manual para desfazer.";
+}
+
+/* ---------- Correção de leitura (automática OU manual) ---------- */
+let _corrList=[];
+function leiturasEditaveis(n){
+  const auto=leiturasBase(n).map(r=>({t:r.t,p:r.p,origem:"auto",corrigido:!!r.corrigido}));
+  const man=(manualStore()[n]||[]).map((r,i)=>({t:r.t,p:(r.p==null?null:r.p),origem:"manual",idx:i}));
+  const all=auto.concat(man);
+  all.sort((a,b)=>new Date(a.t)-new Date(b.t));
+  return all;
+}
+function popularCorrecao(n){
+  const sel=document.getElementById("dCorrSel");
+  _corrList=leiturasEditaveis(n).slice().reverse();
+  sel.innerHTML="";
+  if(!_corrList.length){
+    const o=document.createElement("option"); o.value=""; o.textContent="(sem leitura registrada)";
+    sel.appendChild(o);
+  } else {
+    _corrList.slice(0,40).forEach((r,i)=>{
+      const quando=new Date(r.t).toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+      const val=r.p==null?"sem sinal":vbar(r.p)+" Bar";
+      const tipo=r.origem==="manual"?" · manual":(r.corrigido?" · corrigido":"");
+      const o=document.createElement("option");
+      o.value=String(i); o.textContent=quando+" · "+val+tipo;
+      sel.appendChild(o);
+    });
+  }
+  sincronizarValorCorrecao();
+}
+function sincronizarValorCorrecao(){
+  const sel=document.getElementById("dCorrSel");
+  const r=_corrList[parseInt(sel.value)];
+  document.getElementById("dCorrVal").value=(r&&r.p!=null)?r.p:"";
+}
+function _reabrirNaLeitura(n,ref){
+  refresh(); openDetail(current.reg,n);
+  const sel=document.getElementById("dCorrSel");
+  const pos=_corrList.findIndex(x=>x.t===ref.t && x.origem===ref.origem);
+  if(pos>=0){ sel.value=String(pos); sincronizarValorCorrecao(); }
+}
+function salvarCorrecao(){
+  if(!current)return;
+  const n=current.n, msg=document.getElementById("dCorrMsg");
+  const r=_corrList[parseInt(document.getElementById("dCorrSel").value)];
+  const v=document.getElementById("dCorrVal").value;
+  if(!r){ msg.textContent="Sem leitura para corrigir."; return; }
+  if(v===""){ msg.textContent="Digite o valor correto."; return; }
+  const novo=parseFloat(v);
+  if(isNaN(novo)){ msg.textContent="Valor inválido."; return; }
+  if(r.origem==="manual"){
+    const st=manualStore();
+    if(st[n]&&st[n][r.idx]){ st[n][r.idx].p=novo; delete st[n][r.idx].obs; saveManual(st); }
+  } else {
+    const ss=correcoesStore(); ss[n]=ss[n]||{}; ss[n][r.t]=novo; saveCorrecoes(ss);
+  }
+  _reabrirNaLeitura(n,r);
+  document.getElementById("dCorrMsg").textContent="Valor salvo: "+vbar(novo)+" Bar.";
+}
+function removerCorrecao(){
+  if(!current)return;
+  const n=current.n, msg=document.getElementById("dCorrMsg");
+  const r=_corrList[parseInt(document.getElementById("dCorrSel").value)];
+  if(!r){ msg.textContent="Sem leitura selecionada."; return; }
+  if(r.origem==="manual"){ msg.textContent="Leitura manual: use \"Desfazer manual\" para removê-la."; return; }
+  const ss=correcoesStore();
+  if(ss[n]&&ss[n][r.t]!=null){
+    delete ss[n][r.t]; if(!Object.keys(ss[n]).length)delete ss[n]; saveCorrecoes(ss);
+    _reabrirNaLeitura(n,r);
+    document.getElementById("dCorrMsg").textContent="Correção removida — valor original restaurado.";
+  } else msg.textContent="Esta leitura não tem correção.";
+}
+
+/* ---------- Config ---------- */
+function buildCfg(){
+  if(cfg.buffer!=null)document.getElementById("buffer").value=cfg.buffer;
+  if(cfg.fallback!=null)document.getElementById("fallback").value=cfg.fallback;
+  const tb=document.querySelector("#cfgTable tbody");
+  tb.innerHTML=`<tr><th>Empresa</th><th>Limite (Bar)</th><th>Base</th><th>Viagem (h)</th><th>Consumo medido</th></tr>`;
+  for(const reg in REGISTRO){
+    tb.insertAdjacentHTML("beforeend",`<tr><td colspan="5" style="color:var(--cyan);font-weight:700">${reg}</td></tr>`);
+    REGISTRO[reg].forEach(n=>{
+      const m=consumoMedido(n);
+      tb.insertAdjacentHTML("beforeend",`<tr>
+        <td>${nomeExib(n)}</td>
+        <td><input type="number" step="1" value="${getMin(n)}" data-k="min" data-n="${n}"></td>
+        <td><input type="text" value="${getBase(n)}" data-k="base" data-n="${n}" style="width:96px;text-align:left"></td>
+        <td><input type="number" step="0.5" min="0" value="${getViagem(n)!=null?getViagem(n):''}" data-k="viagem" data-n="${n}" placeholder="—"></td>
+        <td style="color:var(--muted)">${m!=null?round(m)+" Bar/h":"aguardando 2ª foto"}</td>
+      </tr>`);
+    });
+  }
+  tb.querySelectorAll("input").forEach(inp=>inp.addEventListener("input",e=>{
+    const k=e.target.dataset.k, n=e.target.dataset.n, v=e.target.value;
+    if(k==="min"){ cfg.min=cfg.min||{}; cfg.min[n]=parseFloat(v)||0; }
+    else if(k==="base"){ cfg.base=cfg.base||{}; cfg.base[n]=v; }
+    else if(k==="viagem"){ cfg.viagem=cfg.viagem||{}; cfg.viagem[n]=(v===""?"":parseFloat(v)); }
+    saveCfg();refresh();
+  }));
+}
+
+/* ---------- Recarrega dados.js sem recarregar a página ---------- */
+let _ultimoAtualizado=(window.LOGAS_DADOS&&window.LOGAS_DADOS.atualizado)||null;
+function recarregarDados(){
+  const s=document.createElement("script");
+  // No file:// a query string vira parte do nome do arquivo e o load falha — só usa cache-buster em http(s).
+  s.src = (location.protocol==="file:") ? "dados.js" : "dados.js?t="+Date.now();
+  s.onload=()=>{
+    refresh();
+    // Se uma foto nova entrou, atualiza o gráfico aberto e dá um aviso discreto.
+    const novo=window.LOGAS_DADOS&&window.LOGAS_DADOS.atualizado;
+    if(novo&&novo!==_ultimoAtualizado){
+      _ultimoAtualizado=novo;
+      if(current&&document.getElementById("detailOverlay").classList.contains("open"))
+        openDetail(current.reg,current.n);
+    }
+    s.remove();
+  };
+  s.onerror=()=>{ s.remove(); };
+  document.body.appendChild(s);
+}
+
+/* ---------- eventos ---------- */
+document.getElementById("gear").onclick=()=>{buildCfg();document.getElementById("cfgOverlay").classList.add("open");};
+document.getElementById("kDispBox").onclick=()=>{
+  const sel=document.getElementById("dispBaseSel");
+  if(!sel.options.length){ Object.keys(DESPACHO_BASES).forEach(b=>sel.insertAdjacentHTML("beforeend","<option>"+b+"</option>")); }
+  renderDespacho();
+  document.getElementById("dispOverlay").classList.add("open");
+};
+document.getElementById("dispBaseSel").onchange=renderDespacho;
+document.getElementById("dispClose").onclick=()=>document.getElementById("dispOverlay").classList.remove("open");
+/* ----- Programação ----- */
+document.getElementById("kProgBox").onclick=()=>{
+  const sel=document.getElementById("progBaseSel");
+  if(!sel.options.length){
+    sel.insertAdjacentHTML("beforeend","<option>Todas</option>");
+    Object.keys(DESPACHO_BASES).forEach(b=>sel.insertAdjacentHTML("beforeend","<option>"+b+"</option>"));
+  }
+  document.getElementById("progFrota").style.display="none";
+  document.getElementById("progMsg").textContent="";
+  renderProgFrotaInputs();
+  renderProg();
+  document.getElementById("progOverlay").classList.add("open");
+};
+document.getElementById("progBaseSel").onchange=renderProg;
+document.getElementById("progClose").onclick=()=>document.getElementById("progOverlay").classList.remove("open");
+document.getElementById("progFrotaBtn").onclick=()=>{
+  const el=document.getElementById("progFrota");
+  el.style.display=(el.style.display==="none")?"block":"none";
+};
+document.getElementById("frotaSalvar").onclick=()=>{
+  const lin=id=>document.getElementById(id).value.split("\n").map(s=>s.trim()).filter(Boolean);
+  saveFrota({cavalos:lin("frotaCavalos"),carretas:lin("frotaCarretas"),motoristas:lin("frotaMotoristas")});
+  document.getElementById("progMsg").textContent="Frota salva.";
+  renderProg();
+  setTimeout(()=>{document.getElementById("progMsg").textContent="";},2500);
+};
+document.getElementById("progAddBtn").onclick=()=>{ progAddEmpresa(); };
+document.getElementById("progSeed").onclick=()=>{
+  if(!confirm("Restaurar as sugestões de urgência? Isto substitui o plano atual da programação.")) return;
+  seedPlano(); renderProg();
+  document.getElementById("progMsg").textContent="Sugestões restauradas.";
+  setTimeout(()=>{document.getElementById("progMsg").textContent="";},2500);
+};
+document.getElementById("progLimpar").onclick=()=>{
+  const baseSel=document.getElementById("progBaseSel").value||"Todas";
+  const a=getPlano().filter(ent=> baseSel==="Todas" ? false : getBase(ent.cli)!==baseSel );
+  savePlano(a);
+  renderProg();
+  document.getElementById("progMsg").textContent="Programação limpa.";
+  setTimeout(()=>{document.getElementById("progMsg").textContent="";},2500);
+};
+document.getElementById("btnExport").onclick=()=>{document.getElementById("expMsg").textContent="";abrirExport();};
+document.getElementById("expClose").onclick=()=>document.getElementById("exportOverlay").classList.remove("open");
+document.getElementById("expGerar").onclick=exportarRelatorio;
+document.getElementById("expTudo").onclick=()=>{document.getElementById("expDe").value="";document.getElementById("expAte").value="";document.getElementById("expMsg").textContent="Período: todo o histórico";};
+["expDe","expAte"].forEach(id=>document.getElementById(id).addEventListener("click",function(){ try{this.showPicker&&this.showPicker();}catch(e){} }));
+document.getElementById("cfgClose").onclick=()=>{saveCfg();document.getElementById("cfgOverlay").classList.remove("open");};
+document.getElementById("dClose").onclick=closeDetail;
+document.getElementById("dClose2").onclick=closeDetail;
+document.getElementById("dEdit").onclick=()=>{closeDetail();buildCfg();document.getElementById("cfgOverlay").classList.add("open");};
+document.getElementById("dAddBtn").onclick=()=>{
+  const v=document.getElementById("dNewVal").value;
+  if(v===""){document.getElementById("dAddMsg").textContent="Digite a pressão.";return;}
+  registrarLeitura(parseFloat(v));
+};
+document.getElementById("dNewVal").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("dAddBtn").click();});
+document.getElementById("dNoSig").onclick=()=>registrarLeitura(null,"Sem Sinal");
+document.getElementById("dUndo").onclick=desfazerManual;
+document.getElementById("dCorrBtn").onclick=salvarCorrecao;
+document.getElementById("dCorrUndo").onclick=removerCorrecao;
+document.getElementById("dCorrSel").onchange=sincronizarValorCorrecao;
+document.getElementById("dCorrVal").addEventListener("keydown",e=>{if(e.key==="Enter")salvarCorrecao();});
+document.getElementById("buffer").oninput=()=>{saveCfg();refresh();};
+document.getElementById("fallback").oninput=()=>{saveCfg();refresh();};
+document.getElementById("resetBtn").onclick=()=>{if(confirm("Restaurar limites padrão (30 Bar) e bases/viagens? ")){cfg.min={};cfg.base={};cfg.viagem={};saveCfg();buildCfg();refresh();}};
+/* ---------- Rota no mapa (TomTom, embutida no painel) ---------- */
+let rotaMap=null, rotaLinha=null, rotaDest=null, rotaBaseM=null;
+function _fmtRota(h){ const m=Math.round(h*60); return h>=1?(Math.floor(h)+"h"+String(m%60).padStart(2,"0")):(m+" min"); }
+/* origem/destino de uma empresa: prioriza o viagem.js (varias bases); cai p/ Betim fixo */
+function rotaInfo(n){
+  const d=window.LOGAS_VIAGEM;
+  if(d&&d.rotas&&d.rotas[n]) return d.rotas[n];   // ao vivo (viagem.js) tem prioridade
+  if(ROTA_IDX[n]) return ROTA_IDX[n];             // fallback fixo (todas as bases)
+  return null;
+}
+function openRota(n){
+  const ri=rotaInfo(n); if(!ri) return;
+  document.getElementById("rotaNome").textContent=nomeExib(n)+" — base "+ri.base;
+  document.getElementById("rotaInfo").textContent="Calculando rota…";
+  document.getElementById("rotaOverlay").classList.add("open");
+  setTimeout(function(){
+    if(!rotaMap){
+      rotaMap=L.map("rotaMap",{zoomControl:true}).setView(ri.baseLL,9);
+      L.tileLayer("https://api.tomtom.com/map/1/tile/basic/main/{z}/{x}/{y}.png?key="+ROTA_KEY,{maxZoom:18,attribution:"© TomTom"}).addTo(rotaMap);
+    }
+    rotaMap.invalidateSize();
+    desenharRota(n, ri);
+  },60);
+}
+function desenharRota(n, ri){
+  const info=document.getElementById("rotaInfo");
+  const url="https://api.tomtom.com/routing/1/calculateRoute/"+ri.baseLL[0]+","+ri.baseLL[1]+":"+ri.destLL[0]+","+ri.destLL[1]
+    +"/json?key="+ROTA_KEY+"&traffic=true&travelMode=truck&vehicleCommercial=true&vehicleMaxSpeed="+ROTA_VEL+"&routeType=fastest";
+  fetch(url).then(function(resp){
+    if(!resp.ok){ return resp.json().catch(function(){return {};}).then(function(e){ throw new Error((e.detailedError&&e.detailedError.message)||("HTTP "+resp.status)); }); }
+    return resp.json();
+  }).then(function(d){
+    const route=d.routes[0], pts=[];
+    route.legs.forEach(function(l){ l.points.forEach(function(p){ pts.push([p.latitude,p.longitude]); }); });
+    if(rotaLinha) rotaMap.removeLayer(rotaLinha);
+    if(rotaDest) rotaMap.removeLayer(rotaDest);
+    if(rotaBaseM) rotaMap.removeLayer(rotaBaseM);
+    rotaBaseM=L.circleMarker(ri.baseLL,{radius:8,color:"#0a0f18",weight:2,fillColor:"#2bd18a",fillOpacity:1}).addTo(rotaMap).bindPopup("Base "+ri.base);
+    rotaLinha=L.polyline(pts,{color:"#3bc4ec",weight:5,opacity:.9}).addTo(rotaMap);
+    rotaDest=L.circleMarker(ri.destLL,{radius:8,color:"#0a0f18",weight:2,fillColor:"#f59140",fillOpacity:1}).addTo(rotaMap).bindPopup(nomeExib(n));
+    rotaMap.fitBounds(rotaLinha.getBounds(),{padding:[40,40]});
+    const km=route.summary.lengthInMeters/1000, tt=route.summary.travelTimeInSeconds/3600;
+    const plan=tt*(1+ROTA_MARGEM), atraso=Math.round((route.summary.trafficDelayInSeconds||0)/60);
+    info.innerHTML="Base <b>"+ri.base+"</b> · Distância <b>"+km.toFixed(1)+" km</b> · Tempo planejado (+25%) <b>"+_fmtRota(plan)+"</b> · TomTom c/ trânsito <b>"+_fmtRota(tt)+"</b>"+(atraso>0?" · atraso "+atraso+" min":"");
+  }).catch(function(err){
+    info.textContent="Não consegui calcular a rota: "+err.message+" (verifique internet/chave).";
+  });
+}
+function closeRota(){ document.getElementById("rotaOverlay").classList.remove("open"); }
+document.getElementById("dRota").onclick=()=>{ if(current) openRota(current.n); };
+document.getElementById("rotaClose").onclick=closeRota;
+["detailOverlay","cfgOverlay","dispOverlay","progOverlay","exportOverlay","rotaOverlay"].forEach(id=>{
+  document.getElementById(id).onclick=e=>{if(e.target.id===id){e.target.classList.remove("open");if(id==="detailOverlay"&&chart){chart.destroy();chart=null;}}};
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDetail();document.getElementById("cfgOverlay").classList.remove("open");document.getElementById("dispOverlay").classList.remove("open");document.getElementById("progOverlay").classList.remove("open");document.getElementById("exportOverlay").classList.remove("open");document.getElementById("rotaOverlay").classList.remove("open");}});
+
+function tick(){document.getElementById("clock").textContent=new Date().toLocaleTimeString("pt-BR");}
+
+/* init */
+if(cfg.buffer!=null)document.getElementById("buffer").value=cfg.buffer;
+if(cfg.fallback!=null)document.getElementById("fallback").value=cfg.fallback;
+buildGrid();refresh();tick();
+setInterval(tick,1000);
+setInterval(recarregarDados,60*1000);    // busca novas leituras a cada 60 s
+/* Recarrega viagem.js (tempos reais TomTom) sem recarregar a pagina. */
+function recarregarViagem(){
+  const s=document.createElement("script");
+  s.src=(location.protocol==="file:")?"viagem.js":"viagem.js?t="+Date.now();
+  s.onload=()=>{ refresh(); s.remove(); };
+  s.onerror=()=>{ s.remove(); };           // viagem.js ainda nao existe -> usa tempos fixos
+  document.body.appendChild(s);
+}
+setInterval(recarregarViagem,5*60*1000);   // atualiza tempos de viagem a cada 5 min
+</script>
+</body>
+</html>

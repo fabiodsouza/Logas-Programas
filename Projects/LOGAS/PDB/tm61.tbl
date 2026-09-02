@@ -1,0 +1,46 @@
+// TM block conversion table
+// v6.1->7.0
+//typedef	struct	{
+//	
+//	UCHAR		mode;		/*whether remote or local*/
+//	UCHAR		spare;
+//	UINT32		time;		/*time in seconds */
+//	FIELDINFO	fld_info;	/* tag+field name if used */
+//} TIME_TAG;
+
+SCHDR		//schdr;		/* secondary block header */
+DESC		//desc;		/* block descriptor */
+LBI		//reset_lbi;	/*Tag whose value determines
+INT16		//clr_on_start;	/* clear on startup, counting, etc. */
+
+// decompose into components
+//TIME_TAG	target_time;	/* The target time for this block */
+UCHAR		//mode;		/*whether remote or local*/
+UCHAR		//spare;
+UINT32		//time;		/*time in seconds */
+FIELDINFO	//fld_info;	/* tag+field name if used */
+
+//TIME_TAG	preset_time;	/* The preset(initial) time for this block */
+UCHAR		//mode;		/*whether remote or local*/
+UCHAR		//spare;
+UINT32		//time;		/*time in seconds */
+FIELDINFO	//fld_info;	/* tag+field name if used */
+
+INT16		//direction;	/* UP or DOWN	*/
+INT16		//condition;	/* ALWAYS/TIME	*/
+LBI		//exp_lbi;	/* Digital Tag which gets closed on
+LBI		//hold_lbi;	/* Digital Tag which determines
+INT16		//state;		/* block's state:counting or timeout */
+INT16		//prev_state;    	/* block's previous state:counting or timeout */
+INT16		//hold_state;	/* hold state:HOLDING or NOT_HOLDING */
+INT16		//prev_hold_state;/* previous hold state:HOLDING or NOT_HOLDING */
+INT16		//prev_reset;	/* previous value of reset */
+UINT32		//rem_val;	/* Time remaining for timeout */
+UINT32		//start_time;	/* Time at which block was started*/
+UINT32		//hold_start_time;  /* Time at which hold started*/
+INT16		//mode;	/* when to send OPEN to alarm contact */
+INT16		//prev_alm_state;	/* The block's alarm state in the previous scan period */
+UINT32		//elapsed_hold_time;	/*Elapsed hold time since BLOCK started*/
+UINT32		//prev_target_val; /* Target value the previous scan cycle */
+UINT32		//cur_val;	/* Current value as a unsigned long -
+PDATA		//pdata;		/* Current value for chain,calc,etc */

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Gestão de Manutenção</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="logo_right_style.css" />
+    <!-- Biblioteca SheetJS para exportação Excel (local, funciona offline) -->
+    <script src="xlsx.full.min.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div
+          id="dataHora"
+          style="
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-weight: bold;
+            font-family: Tahoma, sans-serif;
+            font-size: 16px;
+          "
+        ></div>
+        <img src="LogomarcaColorida.png" alt="Logomarca" class="logo-direita" />
+        <h1>Sistema de Gestão de Manutenção</h1>
+        <nav class="main-nav">
+          <button id="nav-painel" class="nav-btn active">📊 Painel</button>
+          <button id="nav-obras" class="nav-btn">
+            🏗️ Obras em Andamento
+          </button>
+          <button id="nav-preventiva" class="nav-btn">
+            🔧 Manutenção Preventiva
+          </button>
+          <button id="nav-plantao" class="nav-btn">🗓️ Escala de Plantão</button>
+          <button id="nav-treinamentos" class="nav-btn">
+            🎓 Treinamentos/Exames
+          </button>
+          <button id="nav-viagens" class="nav-btn">✈️ Escala de Viagens</button>
+          <button id="nav-ferias" class="nav-btn">🌴 Escala de Férias</button>
+        </nav>
+      </header>
+
+      <!-- Seção Painel (tela inicial) -->
+      <div id="painel-section" class="section active"></div>
+
+      <!-- Seção Obras em Andamento -->
+      <div id="obras-section" class="section">
+        <h2>Serviços e Obras em Andamento</h2>
+
+        <div id="empty-state" class="empty-state">
+          <h3>Nenhuma obra cadastrada ainda.</h3>
+          <p>Clique em "Adicionar Nova Obra" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table style="display: none">
+            <thead>
+              <tr>
+                <th>Nome da Obra</th>
+                <th>Urgência</th>
+                <th>Responsável</th>
+                <th>Especificidade</th>
+                <th>Local</th>
+                <th>Prazo</th>
+                <th>Progresso</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="project-list">
+              <!-- Projetos serão inseridos aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-project-btn" class="btn-primary">
+            + Adicionar Nova Obra
+          </button>
+        </div>
+      </div>
+
+      <!-- Seção Manutenção Preventiva -->
+      <div id="preventiva-section" class="section">
+        <h2>Manutenção Preventiva</h2>
+
+        <div id="maintenance-empty-state" class="empty-state">
+          <h3>Nenhuma manutenção preventiva cadastrada ainda.</h3>
+          <p>Clique em "Adicionar Nova Manutenção" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table style="display: none">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Tipo de Manutenção</th>
+                <th>Técnico Escalado</th>
+                <th>Carro Reservado</th>
+                <th>Principais Atuações</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="maintenance-list">
+              <!-- Manutenções serão inseridas aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-maintenance-btn" class="btn-primary">
+            + Adicionar Nova Manutenção
+          </button>
+        </div>
+      </div>
+
+      <!-- Seção Escala de Plantão -->
+      <div id="plantao-section" class="section">
+        <h2>Escala de Plantão</h2>
+
+        <div id="plantao-empty-state" class="empty-state">
+          <h3>Nenhuma escala de plantão cadastrada ainda.</h3>
+          <p>Clique em "Adicionar Nova Escala" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table style="display: none">
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Data de Início</th>
+                <th>Data de Término</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="plantao-list">
+              <!-- Plantões serão inseridos aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-plantao-btn" class="btn-primary">
+            + Adicionar Nova Escala
+          </button>
+        </div>
+      </div>
+
+      <!-- Seção Escala de Treinamentos -->
+      <div id="treinamentos-section" class="section">
+        <h2>Treinamentos/Exames</h2>
+
+        <div id="treinamento-empty-state" class="empty-state">
+          <h3>Nenhum treinamento/Exame cadastrado ainda.</h3>
+          <p>Clique em "Adicionar Novo Treinamento" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table style="display: none">
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Treinamento/Exame</th>
+                <th>Local</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="treinamento-list">
+              <!-- Treinamentos serão inseridos aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-treinamento-btn" class="btn-primary">
+            + Adicionar Novo Treinamento/Exame
+          </button>
+        </div>
+      </div>
+
+      <!-- Seção Escala de Viagens -->
+      <div id="viagens-section" class="section">
+        <h2>Escala de Viagens</h2>
+
+        <div id="viagem-empty-state" class="empty-state">
+          <h3>Nenhuma viagem cadastrada ainda.</h3>
+          <p>Clique em "Adicionar Nova Viagem" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table style="display: none">
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Local</th>
+                <th>Intervalo da Viagem</th>
+                <th>Data</th>
+                <th>Meio de Transporte</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="viagem-list">
+              <!-- Viagens serão inseridas aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-viagem-btn" class="btn-primary">
+            + Adicionar Nova Viagem
+          </button>
+        </div>
+      </div>
+
+      <!-- Seção Escala de Férias -->
+      <div id="ferias-section" class="section">
+        <h2>Escala de Férias</h2>
+
+        <div id="ferias-empty-state" class="empty-state">
+          <h3>Nenhuma escala de férias cadastrada ainda.</h3>
+          <p>Clique em "Adicionar Nova Escala" para começar.</p>
+        </div>
+
+        <div class="dashboard-table">
+          <table id="ferias-table" style="display: none">
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Data de Início</th>
+                <th>Data de Término</th>
+                <th>Intervalo de Férias (dias)</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="ferias-list">
+              <!-- Férias serão inseridas aqui dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="add-project-section">
+          <button id="add-ferias-btn" class="btn-primary">
+            + Adicionar Nova Escala
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Obra -->
+    <div id="project-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title">Adicionar Nova Obra</h2>
+        <form id="project-form">
+          <div class="form-group">
+            <label for="project-name">Nome da Obra:</label>
+            <input type="text" id="project-name" name="project-name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="urgency">Urgência:</label>
+            <select id="urgency" name="urgency" required>
+              <option value="">Selecione a urgência</option>
+              <option value="Baixa">Baixa</option>
+              <option value="Média">Média</option>
+              <option value="Alta">Alta</option>
+              <option value="Crítica">Crítica</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status" name="status" required>
+              <option value="">Selecione o status</option>
+              <option value="Programado">Programado</option>
+              <option value="Em-Andamento">Em Andamento</option>
+              <option value="Pausado">Pausado</option>
+              <option value="Finalizado">Finalizado</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="responsible">Responsável:</label>
+            <input type="text" id="responsible" name="responsible" required />
+          </div>
+
+          <div class="form-group">
+            <label for="specificity">Especificidade:</label>
+            <textarea
+              id="specificity"
+              name="specificity"
+              rows="3"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="location">Local:</label>
+            <input type="text" id="location" name="location" required />
+          </div>
+
+          <div class="form-group">
+            <label for="deadline">Prazo:</label>
+            <input type="date" id="deadline" name="deadline" required />
+          </div>
+
+          <div class="form-group">
+            <label for="progress">Progresso:</label>
+            <input
+              type="range"
+              id="progress"
+              name="progress"
+              min="0"
+              max="100"
+              value="0"
+            />
+            <span id="progress-value">0%</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="cancel-btn" class="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" id="submit-btn" class="btn-primary">
+              Adicionar Obra
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Manutenção -->
+    <div id="maintenance-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-maintenance">&times;</span>
+        <h2 id="maintenance-modal-title">Adicionar Nova Manutenção</h2>
+        <form id="maintenance-form">
+          <div class="form-group">
+            <label for="client">Cliente:</label>
+            <input type="text" id="client" name="client" required />
+          </div>
+
+          <div class="form-group">
+            <label for="maintenance-date">Data:</label>
+            <input
+              type="date"
+              id="maintenance-date"
+              name="maintenance-date"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="maintenance-type">Tipo de Manutenção:</label>
+            <select id="maintenance-type" name="maintenance-type" required>
+              <option value="">Selecione o tipo</option>
+              <option value="Preventiva Mensal">Preventiva Mensal</option>
+              <option value="Preventiva Semestral">Preventiva Semestral</option>
+              <option value="Troca de Filtro">Troca de Filtro</option>
+              <option value="Manutenção Corretiva">Manutenção Corretiva</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="technician">Técnico Escalado:</label>
+            <input type="text" id="technician" name="technician" required />
+          </div>
+
+          <div class="form-group">
+            <label for="reserved-car">Carro Reservado:</label>
+            <input type="text" id="reserved-car" name="reserved-car" />
+          </div>
+
+          <div class="form-group">
+            <label for="main-actions">Principais Atuações:</label>
+            <textarea
+              id="main-actions"
+              name="main-actions"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              id="maintenance-cancel-btn"
+              class="btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              id="maintenance-submit-btn"
+              class="btn-primary"
+            >
+              Adicionar Manutenção
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Plantão -->
+    <div id="plantao-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-plantao">&times;</span>
+        <h2 id="plantao-modal-title">Adicionar Nova Escala de Plantão</h2>
+        <form id="plantao-form">
+          <div class="form-group">
+            <label for="plantao-colaborador">Colaborador:</label>
+            <input
+              type="text"
+              id="plantao-colaborador"
+              name="plantao-colaborador"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="plantao-data-inicio">Data de Início:</label>
+            <input
+              type="date"
+              id="plantao-data-inicio"
+              name="plantao-data-inicio"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="plantao-data-termino">Data de Término:</label>
+            <input
+              type="date"
+              id="plantao-data-termino"
+              name="plantao-data-termino"
+              required
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="plantao-cancel-btn" class="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" id="plantao-submit-btn" class="btn-primary">
+              Adicionar Escala
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Treinamento -->
+    <div id="treinamento-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-treinamento">&times;</span>
+        <h2 id="treinamento-modal-title">Adicionar Novo Treinamento</h2>
+        <form id="treinamento-form">
+          <div class="form-group">
+            <label for="treinamento-colaborador">Colaborador:</label>
+            <input
+              type="text"
+              id="treinamento-colaborador"
+              name="treinamento-colaborador"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="treinamento-nome">Nome do Treinamento:</label>
+            <input
+              type="text"
+              id="treinamento-nome"
+              name="treinamento-nome"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="treinamento-local">Local:</label>
+            <input
+              type="text"
+              id="treinamento-local"
+              name="treinamento-local"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="treinamento-data">Data:</label>
+            <input
+              type="date"
+              id="treinamento-data"
+              name="treinamento-data"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="treinamento-horario">Horário:</label>
+            <input
+              type="time"
+              id="treinamento-horario"
+              name="treinamento-horario"
+              required
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              id="treinamento-cancel-btn"
+              class="btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              id="treinamento-submit-btn"
+              class="btn-primary"
+            >
+              Adicionar Treinamento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Viagem -->
+    <div id="viagem-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-viagem">&times;</span>
+        <h2 id="viagem-modal-title">Adicionar Nova Viagem</h2>
+        <form id="viagem-form">
+          <div class="form-group">
+            <label for="viagem-colaborador">Colaborador:</label>
+            <select id="viagem-colaborador" name="viagem-colaborador" required>
+              <option value="">Selecione o tipo</option>
+              <option value="Todos">Todos</option>
+              <option value="Individual">Individual</option>
+            </select>
+          </div>
+
+          <div
+            class="form-group"
+            id="nome-individual-group"
+            style="display: none"
+          >
+            <label for="viagem-nome-individual">Nome do Colaborador:</label>
+            <input
+              type="text"
+              id="viagem-nome-individual"
+              name="viagem-nome-individual"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="viagem-local">Local:</label>
+            <input type="text" id="viagem-local" name="viagem-local" required />
+          </div>
+
+          <div class="form-group">
+            <label for="viagem-intervalo">Intervalo da Viagem:</label>
+            <input
+              type="text"
+              id="viagem-intervalo"
+              name="viagem-intervalo"
+              placeholder="Ex: 3 dias"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="viagem-data">Data:</label>
+            <input type="date" id="viagem-data" name="viagem-data" required />
+          </div>
+
+          <div class="form-group">
+            <label for="viagem-transporte">Meio de Transporte:</label>
+            <select id="viagem-transporte" name="viagem-transporte" required>
+              <option value="">Selecione o transporte</option>
+              <option value="Carro da Empresa">Carro da Empresa</option>
+              <option value="Carro Alugado">Carro Alugado</option>
+              <option value="Carro Particular">Carro Particular</option>
+              <option value="Avião">Avião</option>
+              <option value="Ônibus">Ônibus</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="viagem-cancel-btn" class="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" id="viagem-submit-btn" class="btn-primary">
+              Adicionar Viagem
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal para Adicionar/Editar Férias -->
+    <div id="ferias-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-ferias">&times;</span>
+        <h2 id="ferias-modal-title">Adicionar Nova Escala de Férias</h2>
+        <form id="ferias-form">
+          <div class="form-group">
+            <label for="ferias-colaborador">Colaborador:</label>
+            <input
+              type="text"
+              id="ferias-colaborador"
+              name="ferias-colaborador"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="ferias-data-inicio">Data de Início:</label>
+            <input
+              type="date"
+              id="ferias-data-inicio"
+              name="ferias-data-inicio"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="ferias-data-termino">Data de Término:</label>
+            <input
+              type="date"
+              id="ferias-data-termino"
+              name="ferias-data-termino"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="ferias-intervalo">Intervalo de Férias (dias):</label>
+            <input
+              type="text"
+              id="ferias-intervalo"
+              name="ferias-intervalo"
+              readonly
+            />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="ferias-cancel-btn" class="btn-secondary">
+              Cancelar
+            </button>
+            <button type="submit" id="ferias-submit-btn" class="btn-primary">
+              Adicionar Férias
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="enhancements.js"></script>
+    <script>
+      function atualizarDataHora() {
+        const agora = new Date();
+        const data = agora.toLocaleDateString("pt-BR");
+        const hora = agora.toLocaleTimeString("pt-BR");
+        document.getElementById("dataHora").innerText = `${data} ${hora}`;
+      }
+
+      // Atualiza ao carregar
+      atualizarDataHora();
+
+      // Atualiza a cada segundo
+      setInterval(atualizarDataHora, 1000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administração — Portal do Cliente | Logás</title>
+<style>
+  :root{
+    --bg:#070b14; --bg2:#0a1120; --panel:#0f1828; --panel2:#13203a; --line:#22324d;
+    --text:#eef4fd; --muted:#8298b9; --cyan:#3bc4ec; --amber:#f4cb53;
+    --green:#2bd18a; --red:#f1556a; --shadow:0 4px 20px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#0d1730,var(--bg));
+       color:var(--text);font-family:"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 20px;
+         border-bottom:1px solid var(--line);
+         background:linear-gradient(180deg,rgba(20,32,58,.6),transparent)}
+  header .ttl{font-size:17px;font-weight:800}
+  header .ttl span{color:var(--amber)}
+  header .sub{color:var(--muted);font-size:12px;margin-top:3px}
+  header .dir{margin-left:auto;display:flex;gap:10px}
+
+  .btn{background:var(--panel);border:1px solid var(--line);color:var(--text);
+       border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;
+       font-family:inherit}
+  .btn:hover{border-color:var(--cyan);color:var(--cyan)}
+  .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+  .btn.prim{background:var(--amber);border-color:var(--amber);color:#1c1503}
+  .btn.prim:hover{filter:brightness(1.08);color:#1c1503}
+  .btn.mini{padding:5px 9px;font-size:11.5px}
+  .btn.perigo:hover{border-color:var(--red);color:var(--red)}
+
+  main{padding:16px 20px 40px;max-width:1240px;margin:0 auto}
+  .cx{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+      border-radius:12px;padding:14px 16px 16px;box-shadow:var(--shadow);margin-bottom:16px}
+  .cx h2{margin:0 0 12px;font-size:12px;color:var(--amber);font-weight:800;
+         text-transform:uppercase;letter-spacing:1.2px;display:flex;align-items:center;gap:10px}
+  .cx h2 .cnt{margin-left:auto;color:var(--muted);font-size:10.5px;letter-spacing:.5px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;color:var(--muted);font-size:10.5px;text-transform:uppercase;
+     letter-spacing:1px;padding:0 10px 8px;font-weight:700;white-space:nowrap}
+  td{padding:9px 10px;border-top:1px solid var(--line);vertical-align:middle}
+  tr.off td{opacity:.55}
+  td.acoes{white-space:nowrap;text-align:right}
+  td.acoes .btn{margin-left:5px}
+  .tag{font-size:10px;font-weight:800;letter-spacing:.6px;padding:3px 8px;border-radius:20px;
+       text-transform:uppercase;display:inline-block}
+  .tag.on{background:var(--green);color:#04121b}
+  .tag.no{background:var(--muted);color:#04121b}
+  .pontos{color:var(--muted);font-size:12px}
+  .alerta{color:var(--red);font-size:11.5px;margin-top:3px}
+
+  dialog{background:linear-gradient(180deg,var(--panel),var(--bg2));color:var(--text);
+         border:1px solid var(--line);border-radius:14px;padding:0;max-width:560px;width:94%;
+         box-shadow:0 10px 50px rgba(0,0,0,.7)}
+  dialog::backdrop{background:rgba(3,7,15,.72)}
+  .dlg{padding:20px 22px 22px}
+  .dlg h3{margin:0 0 4px;font-size:17px;font-weight:800}
+  .dlg p.exp{margin:0 0 18px;color:var(--muted);font-size:12.5px;line-height:1.45}
+  label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+        color:var(--muted);font-weight:700;margin:0 0 6px}
+  input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--line);
+        color:var(--text);border-radius:9px;padding:10px 12px;font-size:14px;
+        margin-bottom:14px;font-family:inherit}
+  input[type=text]:focus{outline:2px solid var(--amber);outline-offset:1px}
+  input[type=text][disabled]{opacity:.6}
+  .lista{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:9px;
+         padding:8px;background:var(--bg2);margin-bottom:6px}
+  .lista label{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;
+               font-size:13px;color:var(--text);font-weight:400;padding:4px 6px;margin:0;
+               border-radius:6px;cursor:pointer}
+  .lista label:hover{background:var(--panel2)}
+  .lista .livre{color:var(--muted);font-size:11px;margin-left:auto}
+  .conj{display:flex;align-items:flex-start;gap:9px;margin:12px 0 4px;font-size:12.5px;
+        color:var(--muted);line-height:1.4}
+  .dlg .rodape{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  .erro{background:rgba(241,85,106,.12);border:1px solid var(--red);color:#ffd7dd;
+        border-radius:9px;padding:9px 12px;font-size:12.5px;margin-bottom:14px;display:none}
+  .senha{font-family:Consolas,"Courier New",monospace;font-size:23px;letter-spacing:1px;
+         background:var(--bg2);border:1px dashed var(--amber);border-radius:9px;
+         padding:14px;text-align:center;margin:6px 0 12px;user-select:all}
+  .log{font-family:Consolas,"Courier New",monospace;font-size:11.5px;color:var(--muted);
+       max-height:190px;overflow:auto;white-space:pre-wrap;line-height:1.7}
+  .vazio{color:var(--muted);font-size:13px;padding:18px 0;text-align:center}
+  .pano td{font-variant-numeric:tabular-nums}
+  .pano .nm{font-weight:700}
+  .pano .cli{color:var(--muted);font-size:11.5px}
+  .pano .semdono{color:var(--amber);font-size:11.5px}
+  .bola{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;
+        vertical-align:1px}
+  .pano .n{text-align:right}
+  .var{font-size:11px;margin-left:5px}
+  .var.sobe{color:#f59140} .var.desce{color:var(--green)}
+  @media (max-width:640px){
+    th.op,td.op{display:none}
+    main{padding:14px 12px 30px}
+    table{table-layout:fixed}
+    td.acoes{white-space:normal;text-align:left;padding-top:0}
+    td.acoes .btn{margin:6px 6px 0 0}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="ttl">Administração <span>Logás</span></div>
+    <div class="sub" id="sub">Carregando…</div>
+  </div>
+  <div class="dir">
+    <button class="btn prim" id="novo" type="button">Novo cliente</button>
+    <button class="btn" id="sair" type="button">Sair</button>
+  </div>
+</header>
+
+<main>
+  <section class="cx">
+    <h2>Panorama dos pontos <span class="cnt" id="cntPano"></span></h2>
+    <div id="pano"></div>
+  </section>
+
+  <section class="cx">
+    <h2>Clientes com acesso <span class="cnt" id="cnt"></span></h2>
+    <div id="tabela"></div>
+  </section>
+
+  <section class="cx">
+    <h2>Pontos sem cliente vinculado <span class="cnt" id="cntLivres"></span></h2>
+    <div class="pontos" id="livres"></div>
+  </section>
+
+  <section class="cx">
+    <h2>Histórico</h2>
+    <div class="log" id="hist">—</div>
+  </section>
+</main>
+
+<dialog id="dlgCliente">
+  <form class="dlg" id="formCliente" method="dialog">
+    <h3 id="dlgTitulo">Novo cliente</h3>
+    <p class="exp">O login e a senha são o que você entrega ao cliente. A senha é
+      gerada automaticamente e aparece uma única vez, ao salvar.</p>
+
+    <div class="erro" id="dlgErro" role="alert"></div>
+
+    <label for="fLogin">Login</label>
+    <input type="text" id="fLogin" autocapitalize="none" spellcheck="false"
+           placeholder="fortlev">
+
+    <label for="fNome">Nome que o cliente vê na tela</label>
+    <input type="text" id="fNome" placeholder="FORTLEV">
+
+    <label>Pontos deste cliente</label>
+    <div class="lista" id="fPontos"></div>
+
+    <div class="conj">
+      <input type="checkbox" id="fConjunto" style="margin-top:2px">
+      <label for="fConjunto" style="text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;margin:0">
+        São baias da mesma instalação (como Extrema-MG e Lagarto-SE). Marcando isto,
+        o status e a autonomia passam a considerar a baia que está suprindo, em vez
+        de alarmar por causa de uma baia vazia.
+      </label>
+    </div>
+
+    <div class="rodape">
+      <button class="btn" type="button" id="dlgCancelar">Cancelar</button>
+      <button class="btn prim" type="button" id="dlgSalvar">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgSenha">
+  <div class="dlg">
+    <h3>Acesso do cliente</h3>
+    <p class="exp" id="senhaExp"></p>
+    <div><label>Login</label><div class="senha" id="senhaLogin"></div></div>
+    <div><label>Senha</label><div class="senha" id="senhaValor"></div></div>
+    <p class="exp">Anote ou copie agora: a senha não fica guardada em lugar
+      nenhum, só o hash dela. Se perder, gere outra.</p>
+    <div class="rodape">
+      <button class="btn" type="button" id="copiar">Copiar os dois</button>
+      <button class="btn prim" type="button" id="senhaOk">Pronto</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+let ESTADO=null, editando=null;
+
+const fmtDT = s => s ? new Date(s).toLocaleString("pt-BR",
+  {day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}) : "—";
+
+async function api(url, corpo){
+  const opc = corpo ? {method:"POST", headers:{"Content-Type":"application/json"},
+                       body:JSON.stringify(corpo)} : {cache:"no-store"};
+  const r = await fetch(url, opc);
+  if(r.status === 401){ location.href="/admin/entrar"; throw new Error("sessao"); }
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(d.erro || "Falha na operação.");
+  return d;
+}
+
+const CORPANO={ok:"#2bd18a",atencao:"#f4cb53",critico:"#f59140",abaixo:"#f1556a",
+               sem_sinal:"#8298b9",sem_dados:"#8298b9"};
+const ROTPANO={ok:"Normal",atencao:"Atenção",critico:"Crítico",abaixo:"Abaixo da reserva",
+               sem_sinal:"Sem sinal",sem_dados:"Sem leitura"};
+const n1 = v => v==null ? "—" : Number(v).toFixed(1).replace(".",",");
+
+function fmtHoras(h){
+  if(h==null) return "—";
+  if(h<=0) return "0 h";
+  if(h<1) return Math.round(h*60)+" min";
+  return n1(h)+" h";
+}
+
+async function panorama(){
+  let d;
+  try{ d = await api("/admin/api/panorama"); }
+  catch(e){ document.getElementById("pano").innerHTML =
+    '<p class="vazio">'+e.message+'</p>'; return; }
+
+  const ps = d.pontos;
+  const criticos = ps.filter(p=>["abaixo","critico"].includes(p.status)).length;
+  document.getElementById("cntPano").textContent =
+    ps.length + " pontos" + (criticos ? " · " + criticos + " exigindo atenção agora" : "");
+
+  const linhas = ps.map(p=>{
+    const v = (p.semana||{}).variacao_pct;
+    return `<tr>
+      <td><span class="bola" style="background:${CORPANO[p.status]||"#8298b9"}"></span>
+        <span class="nm">${p.ponto}</span>
+        <div class="${p.cliente?"cli":"semdono"}" style="margin-left:16px">
+          ${p.cliente || "sem cliente vinculado"}</div></td>
+      <td class="n">${n1(p.pressao)}</td>
+      <td class="n">${n1(p.consumo_barh)}</td>
+      <td class="n op">${n1(p.media_dia_bar)}
+        ${v==null?"":`<span class="var ${v>0?"sobe":"desce"}">${v>0?"+":""}${v}%</span>`}</td>
+      <td class="n">${fmtHoras(p.horas_ate_limite)}</td>
+      <td class="op">${fmtDT(p.limite_em)}</td>
+      <td class="op">${fmtDT((p.trocas||{}).ultima)}</td>
+      <td style="color:${CORPANO[p.status]||"#8298b9"};font-size:12px">${ROTPANO[p.status]||""}</td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("pano").innerHTML = `<table class="pano"><thead><tr>
+      <th>Ponto</th><th class="n">Bar</th><th class="n">Bar/h</th>
+      <th class="n op">Média/dia</th><th class="n">Autonomia</th>
+      <th class="op">Chega na reserva</th><th class="op">Última troca</th><th>Situação</th>
+    </tr></thead><tbody>${linhas}</tbody></table>`;
+}
+
+async function carregar(){
+  ESTADO = await api("/admin/api/estado");
+  document.getElementById("sub").textContent =
+    ESTADO.admin + " · " + ESTADO.pontos.length + " pontos no dados.js · última leitura "
+    + fmtDT(ESTADO.atualizado);
+  desenharTabela();
+  desenharLivres();
+  panorama();
+  historico();
+}
+
+function desenharTabela(){
+  const cs = ESTADO.clientes;
+  document.getElementById("cnt").textContent = cs.length + (cs.length===1?" cliente":" clientes");
+  const alvo = document.getElementById("tabela");
+  if(!cs.length){
+    alvo.innerHTML = '<p class="vazio">Nenhum cliente cadastrado. Use "Novo cliente" para liberar o primeiro acesso.</p>';
+    return;
+  }
+  const linhas = cs.map(c=>`
+    <tr class="${c.ativo?"":"off"}">
+      <td>
+        <div style="font-weight:700">${c.nome}</div>
+        <div class="pontos">${c.login} · ${c.pontos.join(", ")}${c.conjunto?" (baias da mesma instalação)":""}</div>
+        ${c.inexistentes.length?`<div class="alerta">Não existe no dados.js: ${c.inexistentes.join(", ")}</div>`:""}
+      </td>
+      <td><span class="tag ${c.ativo?"on":"no"}">${c.ativo?"Ativo":"Suspenso"}</span></td>
+      <td class="op">${fmtDT(c.ultimo_acesso)}</td>
+      <td class="acoes">
+        <button class="btn mini" data-ed="${c.login}">Editar</button>
+        <button class="btn mini" data-senha="${c.login}">Nova senha</button>
+        <button class="btn mini" data-sit="${c.login}" data-ativo="${c.ativo?0:1}">${c.ativo?"Suspender":"Reativar"}</button>
+        <button class="btn mini perigo" data-rm="${c.login}">Remover</button>
+      </td>
+    </tr>`).join("");
+  alvo.innerHTML = `<table><thead><tr>
+      <th>Cliente</th><th>Situação</th><th class="op">Último acesso</th><th></th>
+    </tr></thead><tbody>${linhas}</tbody></table>`;
+}
+
+function desenharLivres(){
+  const l = ESTADO.pontos_sem_cliente;
+  document.getElementById("cntLivres").textContent = l.length + " de " + ESTADO.pontos.length;
+  document.getElementById("livres").textContent = l.length ? l.join(" · ")
+    : "Todos os pontos legíveis do dados.js já estão vinculados a algum cliente.";
+}
+
+async function historico(){
+  try{
+    const d = await api("/admin/api/historico?linhas=40");
+    document.getElementById("hist").textContent = d.linhas.length ? d.linhas.join("\n")
+      : "Nada registrado ainda.";
+  }catch(e){ /* histórico é secundário */ }
+}
+
+/* ---------- cadastro ---------- */
+const dlg = document.getElementById("dlgCliente");
+
+function abrirCadastro(login){
+  editando = login || null;
+  const c = login ? ESTADO.clientes.find(x=>x.login===login) : null;
+  document.getElementById("dlgTitulo").textContent = c ? "Editar "+c.nome : "Novo cliente";
+  document.getElementById("dlgErro").style.display = "none";
+  const fl = document.getElementById("fLogin");
+  fl.value = c ? c.login : "";
+  fl.disabled = !!c;
+  document.getElementById("fNome").value = c ? c.nome : "";
+  document.getElementById("fConjunto").checked = c ? c.conjunto : false;
+
+  const usados = {};
+  ESTADO.clientes.forEach(x=>{ if(!c || x.login!==c.login) x.pontos.forEach(p=>usados[p]=x.nome); });
+  document.getElementById("fPontos").innerHTML = ESTADO.pontos.map(p=>`
+    <label><input type="checkbox" value="${p}" ${c&&c.pontos.includes(p)?"checked":""}>
+      <span>${p}</span>
+      ${usados[p]?`<span class="livre">já em ${usados[p]}</span>`:""}
+    </label>`).join("");
+
+  dlg.showModal();
+}
+
+async function salvar(){
+  const erro = document.getElementById("dlgErro");
+  erro.style.display = "none";
+  const corpo = {
+    login: document.getElementById("fLogin").value.trim().toLowerCase(),
+    nome: document.getElementById("fNome").value.trim(),
+    conjunto: document.getElementById("fConjunto").checked,
+    pontos: [...document.querySelectorAll("#fPontos input:checked")].map(i=>i.value),
+  };
+  try{
+    const d = await api("/admin/api/cliente", corpo);
+    dlg.close();
+    await carregar();
+    if(d.senha) mostrarSenha(corpo.login, d.senha, "Cliente criado. Entregue estes dados a ele:");
+  }catch(e){
+    erro.textContent = e.message;
+    erro.style.display = "block";
+  }
+}
+
+/* ---------- senha ---------- */
+const dlgS = document.getElementById("dlgSenha");
+function mostrarSenha(login, senha, texto){
+  document.getElementById("senhaExp").textContent = texto;
+  document.getElementById("senhaLogin").textContent = login;
+  document.getElementById("senhaValor").textContent = senha;
+  dlgS.showModal();
+}
+
+document.getElementById("copiar").addEventListener("click", async ()=>{
+  const txt = "Portal de consumo Logás\n" + location.origin +
+    "\nLogin: " + document.getElementById("senhaLogin").textContent +
+    "\nSenha: " + document.getElementById("senhaValor").textContent;
+  try{
+    await navigator.clipboard.writeText(txt);
+    document.getElementById("copiar").textContent = "Copiado";
+  }catch(e){
+    document.getElementById("copiar").textContent = "Copie manualmente";
+  }
+});
+
+/* ---------- eventos ---------- */
+document.getElementById("novo").addEventListener("click", ()=>abrirCadastro(null));
+document.getElementById("dlgSalvar").addEventListener("click", salvar);
+document.getElementById("dlgCancelar").addEventListener("click", ()=>dlg.close());
+document.getElementById("senhaOk").addEventListener("click", ()=>{
+  dlgS.close();
+  document.getElementById("copiar").textContent = "Copiar os dois";
+});
+document.getElementById("sair").addEventListener("click", async ()=>{
+  await fetch("/admin/sair",{method:"POST"});
+  location.href = "/admin/entrar";
+});
+
+document.getElementById("tabela").addEventListener("click", async ev=>{
+  const b = ev.target.closest("button");
+  if(!b) return;
+  const d = b.dataset;
+  try{
+    if(d.ed) return abrirCadastro(d.ed);
+    if(d.senha){
+      if(!confirm("Gerar uma senha nova para "+d.senha+"? A senha atual deixa de funcionar.")) return;
+      const r = await api("/admin/api/senha", {login:d.senha});
+      await carregar();
+      return mostrarSenha(d.senha, r.senha, "Senha nova. A anterior não vale mais.");
+    }
+    if(d.sit){
+      const ativar = d.ativo === "1";
+      if(!confirm((ativar?"Reativar":"Suspender")+" o acesso de "+d.sit+"?")) return;
+      await api("/admin/api/situacao", {login:d.sit, ativo:ativar});
+      return carregar();
+    }
+    if(d.rm){
+      if(!confirm("Remover "+d.rm+" de vez? O acesso para de funcionar na hora.")) return;
+      await api("/admin/api/remover", {login:d.rm});
+      return carregar();
+    }
+  }catch(e){ alert(e.message); }
+});
+
+carregar();
+</script>
+</body>
+</html>

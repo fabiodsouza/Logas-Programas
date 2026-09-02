@@ -1,0 +1,17 @@
+// MDI block conversion table
+// v6.1-> 7.0
+//#define	MDI_WID	10	/* width of each descriptor */
+//#define	MDI_N	8	/* # items (3 bits) */
+
+	PBHDR		//phdr;		/* primary block header */
+	DESC		//desc;		/* block descriptor */
+	IO_INFO		//di0;		/* digital in info */
+	IO_INFO		//di1;		/* digital in info */
+	IO_INFO		//di2;		/* digital in info */
+	EGUREC		//egu;		/* needed for parsing see technotes */
+	UCHAR		//flags;		/* some bit flags */
+	UCHAR		//almmask;	/* alarm mask */
+	CHAR[80] 	//label[MDI_N][MDI_WID];	/* 9 char labels for each state */
+	PDATA		//pdata;		/* current output */
+	UINT32		//spare1;
+	#EGU_DESC	//LongEguDesc;	    /* CP111197 for longer egu tagnames - new to raptor*/

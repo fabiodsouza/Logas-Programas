@@ -1,0 +1,22 @@
+// HS block conversion table
+// v6.1->7.0
+//#define 	HSSIZ	80		/* entries in trend data block */
+
+   SCHDR	//shdr;			/* secondary block header */
+
+   EGUREC	//egurec;		/* egu info (analog) */
+   
+   FCONST	//interval;		/*the class interval or the column size */
+   UCHAR	//columns; 		/*no of columns */
+   UCHAR	//auto_clear;		/*auto-clear bit toclear after going on scan */
+   UCHAR	//seqnum;		/*seqnum for view updates */
+   UCHAR	//nothing;		/*a UCHAR to maintain even boundaries */
+   UINT16	//big;			/*the largest frequency, for scaling */
+   INT16	//no_values;		/*counter for no_values received in the block*/
+   INT16	//discvh;		/*discarded value high */
+   INT16	//discvl;		/*discarded value low */
+   UINT16	//group;		/*updates the display buffer after reciving no.of.values */
+   UINT16[80]	//disp_buffer[HSSIZ];	/*the display buffer */
+   UINT16[80]	//data_buffer[HSSIZ];	/*the data buffer */
+   #DESC	//desc;			/* jss022097 */
+   #EGU_DESC	//LongEguDesc;		/* for longer egu tagnames - new to raptor*/

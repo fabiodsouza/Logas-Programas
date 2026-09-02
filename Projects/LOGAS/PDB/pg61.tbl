@@ -1,0 +1,17 @@
+// PG block conversion table
+// v6.1 -> 7.0
+
+//#define	PGSTEPS	20		/* number of program steps */
+
+   PBHDR	//phdr;			/* primary block header */
+   DESC		//desc;			/* block descriptor */
+
+   PGSTEP[20]	//pgstep[PGSTEPS];	/* program step sub-structure */
+
+   INT16	//vmax;		/* maximum wait time */
+   INT32	//vtm;		/* current timer (0 if inactive) */
+   UCHAR	//status;		/* status bits:  err, debug, etc. */
+   UCHAR	//vstep;		/* current step */
+   FLOAT	//vlim;		/* comparision limit */
+   INT16	//vw;		/* variable wait time (future) */
+ 

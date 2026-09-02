@@ -1,0 +1,12 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  31/05/2018 14:44:18
+--------------------------------------------------------
+
+31/05/2018 14:44:44 [FIXTOHIST.EXE] 14:44:44 31/05/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+31/05/2018 14:45:02 [fix.exe] Proficy iFIX Software is running!
+

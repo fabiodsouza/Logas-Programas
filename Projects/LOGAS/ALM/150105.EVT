@@ -1,0 +1,14 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/01/2015 09:07:53
+--------------------------------------------------------
+
+05/01/2015 09:08:10 [IOCNTRL.EXE] CreateProcess():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: O sistema não pode encontrar o arquivo especificado.
+
+
+05/01/2015 09:08:11 [IOCNTRL.EXE] ResumeThread():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Identificador inválido.
+
+
+05/01/2015 09:08:11 [IOCNTRL.EXE] Failed to launch driver [MB1]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: A tentativa de encontrar um objeto encontrou um obj05/01/2015 09:08:15 [fix.exe] Proficy iFIX Software is running!
+

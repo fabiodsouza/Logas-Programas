@@ -1,0 +1,11 @@
+// PA block conversion table
+// v6.1-> 7.0
+//#define	NUMBER_PA_INPUTS 	8
+
+PBHDR	    //phdr;									/* primary block header */
+DESC	    //desc;									/* block descriptor */
+PAINPUT[8]  //painput[NUMBER_PA_INPUTS];	/* inputs and descriptions */
+UCHAR[8]    //sort[NUMBER_PA_INPUTS];	  	/* array of sorted indices */
+INT16	    //precision;							/* num. decimal places displayed */
+INT16	    //sort_mode;							
+

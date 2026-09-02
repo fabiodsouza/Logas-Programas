@@ -1,0 +1,13 @@
+{
+  "name": "envio-telemetria-whatsapp",
+  "version": "1.0.0",
+  "description": "Envia a captura mais recente da telemetria no WhatsApp, de hora em hora, sem repetir.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}

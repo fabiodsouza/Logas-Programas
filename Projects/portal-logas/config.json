@@ -1,0 +1,44 @@
+{
+  "dados_js": "D:\\Projeto Print\\teste postagem de Tela telemetria\\Dashboard_Telemetria\\dados.js",
+  "confiar_proxy": false,
+  "min_padrao": 30,
+   "min": {
+    "ORLÂNDIA": 25,
+    "ALSCO": 35,
+    "EXTRUMINAS": 40
+  },
+  "buffer_h": 1,
+  "fallback_barh": 20,
+  "max_bar": 260,
+  "max_queda_barh": 100,
+  "salto_troca": 25,
+  "m3_por_bar": { "ORLÂNDIA": 32 },
+  "auxiliares": {
+    "ORLÂNDIA": [
+      {
+        "ponto": "ORLÂNDIA TEMP",
+        "rotulo": "Temperatura",
+        "unidade": "C",
+        "casas": 0
+      },
+      {
+        "ponto": "ORLÂNDIA P.SAÍDA",
+        "rotulo": "Pressão de saída",
+        "unidade": "Bar",
+        "casas": 1
+      }
+    ]
+  },
+  "viagem_h": {
+    "ALSCO": 0.67,
+    "BELGO": 2,
+    "EXTRUMINAS": 2,
+    "M.PEQUI": 2,
+    "VDL": 2,
+    "MG STEEL": 1.5,
+    "VILMA": 0.5,
+    "G.PERDÃ•ES": 4,
+    "JD CANADÃ": 1,
+    "FORTLEV": 1
+  }
+}

@@ -1,0 +1,26 @@
+// MDO 6.1->7.0
+
+	VERSION	0x011994
+	PBHDR		// phdr;		/* primary block header */
+	DESC		// desc;		/* block descriptor */
+   
+	EGUREC		// degu;		/* egu info (for display of output) */
+ #CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+
+	IO_INFO		// do_io;		/* digital out info */
+
+	UCHAR		// options;	/* some bit flags */
+	CHAR		// spareb;
+	UINT16		// duty;		/* x scan time */
+   
+	UCHAR		// status;		/* some status bits */
+	CHAR		// sparea;
+	UINT16		// cur_state;	/* Current state */
+	UINT16		// counter;	/* duty cycle ctr */
+	PDATA		// pdata;		/* current output (0/1)*/
+	UINT16		// cur_retry;	/* retries so far this pass */
+	UINT16		// max_retry;	/* Max Retries */
+	UINT16		// total_retry;	/* Total retries (diagnostic) */
+	UINT16		// spare2;
+	UINT32		// spare3;
+

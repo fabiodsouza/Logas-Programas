@@ -1,0 +1,21 @@
+// TR block conversion table
+// v6.1->7.0
+// sethu090197 - EGU_DESC, and SCALE_FACTOR for raptor final release
+//#define 	TRSIZ	80		/* entries in trend data block */
+
+SCHDR		//shdr;		/* secondary block header */
+EGUREC		//egurec;	/* egu info (analog) */
+FIELDINFO	//src_blk;	/* get from field name */
+INT16		//time;		/* average time (1 - n) */
+INT16		//avgcnt;	/* average time counter */
+UCHAR		//next_ptr;	/* next data pointer */
+UCHAR		//seqnum;	/* sequence number */
+INT32		//average;	/* running average (subtotal) */
+UINT16[80]	//data[TRSIZ];	/* data array */
+UINT16		//cur_val;	/* current value */
+UINT16		//input;	/* input value */
+UCHAR		//status;	/* status UCHAR */
+UCHAR		//egu_type;	/* egu type of src_blk: whether	digital or analog */
+INT32		//tmpscan;	/* scan time of the primary block pjv012292 */
+#DESC		//desc;		/* block descriptor */
+#EGU_DESC	//LongEguDesc; /* for longer egu tagnames */

@@ -1,0 +1,19 @@
+// CTR 6.1->7.0
+
+	VERSION	0x073096
+	SCHDR	// shdr;		/* secondary block header */
+	DESC	// desc;		/* block descriptor */
+	EGUREC	// egu;		/* egu info (unused for now) */
+ #CHAR[34] //DBCVT BUG	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	FIELDINFO	// gate;
+	INT16	// gate_value;
+	UINT32	// limit;
+	INT16	// options;	/* CLR, PERSIST */
+	INT16	// mode;		/* MODE_ */
+	INT16	// passed;		/* PASS_ */
+
+	INT16	// current;	/* current value */
+	INT16	// previous;	/* previous value */
+	UINT32	// count;		/* current count */
+	#UINT32[4]	// spare;		/* current count */
+

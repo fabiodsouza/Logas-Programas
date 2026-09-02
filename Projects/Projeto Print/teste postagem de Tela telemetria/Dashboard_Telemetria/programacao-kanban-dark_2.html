@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programação Logística — Kanban</title>
+<!-- Telemetria de pressão (mesma pasta). Se faltar, a tela funciona sem pressão. -->
+<script src="dados.js" onerror="window.__SEM_DADOS=1"></script>
+<!-- Tempos de viagem reais (TomTom), gerados por viagem_tomtom.py. Opcional. -->
+<script src="viagem.js" onerror="window.__SEM_VIAGEM=1"></script>
+<!-- Realizado (entregas registradas pelos motoristas no Power App), gerado pelo Power Automate a partir da lista do SharePoint. Opcional. -->
+<script src="realizado.js" onerror="window.__SEM_REAL=1"></script>
+<!-- Frota: motoristas e placas de cavalo (opcional). window.LOGAS_FROTA = {motoristas:[], placas:[], carretas:[]} -->
+<script src="frota.js" onerror="window.__SEM_FROTA=1"></script>
+<style>
+  :root{
+    --maroon:#7a1f1f; --maroon-2:#962727; --bg:#1b1a19; --panel:#242322; --card:#262524;
+    --line:#3b3a39; --ink:#f3f2f1; --muted:#a19f9d; --sel-b:#e06c6c;
+    --ok:#3fb950; --warn:#e3b341; --bad:#f85149; --none:#6b6967;
+    --chip:#2d2c2b; --hover:#33312f; --col-bg:#202020; --grid-line:#2b2a29; --dash:#4a4948; --scroll:#3b3a39;
+    --now-bg:rgba(224,108,108,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
+  body{display:flex;flex-direction:column}
+  .topbar,.ribbon,.daybar,.legend{flex:none}
+  .topbar{height:48px;background:var(--maroon);color:#fff;display:flex;align-items:center;gap:16px;padding:0 16px}
+  .topbar .brand{font-weight:600;font-size:15px}
+  /* ----- Barra de data (destaque para o operador) ----- */
+  .daybar{display:flex;align-items:center;justify-content:center;gap:18px;padding:10px;background:var(--maroon);color:#fff;border-top:1px solid rgba(255,255,255,.12)}
+  .daybar .dlabel{font-size:21px;font-weight:700;text-align:center;text-transform:capitalize;letter-spacing:.3px;min-width:400px}
+  .daybar button{border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.08);color:#fff;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1}
+  .daybar button:hover{background:rgba(255,255,255,.22)}
+  .ribbon{height:46px;background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 12px}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:4px;padding:6px 12px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .btn:hover{background:var(--hover)}
+  .btn.primary{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+  .btn.primary:hover{background:var(--maroon-2)}
+  .layout{display:flex;flex:1;min-height:0}
+  /* ----- Sidebar ----- */
+  .side{width:280px;min-width:280px;border-right:1px solid var(--line);background:var(--panel);overflow-y:auto;padding:12px}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .cal-head .m{font-weight:600;text-transform:capitalize}
+  .nav{display:flex;gap:4px}
+  .nav button{border:none;background:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px;border-radius:4px}
+  .nav button:hover{background:var(--hover)}
+  table.cal{width:100%;border-collapse:collapse;text-align:center}
+  table.cal th{font-size:11px;color:var(--muted);font-weight:600;padding:4px 0}
+  table.cal td{font-size:12px;padding:0}
+  table.cal td .d{width:30px;height:28px;line-height:28px;margin:1px auto;border-radius:50%;cursor:pointer}
+  table.cal td .d:hover{background:var(--hover)}
+  table.cal td .d.other{color:var(--dash)}
+  table.cal td .d.today{outline:1px solid var(--sel-b)}
+  table.cal td .d.sel{background:var(--maroon);color:#fff}
+  table.cal td .d.has::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:var(--sel-b);margin:-6px auto 0}
+  .side h3{font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:16px 0 6px}
+  .base{margin-bottom:6px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .base>summary{list-style:none;cursor:pointer;padding:8px 10px;background:var(--chip);font-weight:600;font-size:12.5px;display:flex;justify-content:space-between;align-items:center}
+  .base>summary::-webkit-details-marker{display:none}
+  .base>summary .cnt{font-weight:400;color:var(--muted);font-size:11px}
+  .pool{padding:6px}
+  .chip{display:flex;align-items:center;gap:8px;padding:6px 8px;margin:4px 0;border:1px solid var(--line);border-radius:6px;background:var(--card);cursor:grab;font-size:12.5px}
+  .chip:active{cursor:grabbing}
+  .chip.assigned{opacity:.4}
+  .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .chip .nm{flex:1;font-weight:500}
+  .chip .pv{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* ----- Seletor de bases (sidebar) ----- */
+  .baserow{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;margin:3px 0;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-weight:600;font-size:12.5px;background:var(--chip)}
+  .baserow:hover{background:var(--hover)}
+  .baserow.active{background:var(--maroon);color:#fff;border-color:var(--maroon)}
+  .baserow .cnt{font-weight:400;font-size:11px;color:var(--muted)}
+  .baserow.active .cnt{color:rgba(255,255,255,.85)}
+  /* ----- Painel principal + barra da base ----- */
+  .mainpane{flex:1;min-width:0;display:flex;flex-direction:column}
+  .basebar{flex:none;display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+  .basebar .bname{font-size:18px;font-weight:700;letter-spacing:.3px}
+  .basebar select{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit}
+  .basebar .meta{color:var(--muted);font-size:12px}
+  /* ----- Board: grade de horários ----- */
+  .board{flex:1;overflow:auto;background:var(--bg)}
+  .sched{display:grid;min-width:max-content}
+  /* modo compacto (visão Todas as bases): cabe tudo na tela, sem rolagem horizontal */
+  .sched.compact{min-width:0;width:100%}
+  .sched.compact .cav-h{padding:5px 6px;font-size:10.5px;gap:4px}
+  .sched.compact .cav-h .truck{width:17px;height:17px;font-size:10px}
+  .sched.compact .cav-h .blk-badge{font-size:8px;padding:0 4px;margin-left:3px}
+  .sched.compact .gutter{font-size:10px;padding-right:4px}
+  .sched.compact .cell{padding:2px}
+  .sched.compact .appt{padding:3px 5px;border-left-width:3px}
+  .sched.compact .appt .nm{font-size:10px}
+  .sched.compact .appt .badge{font-size:8px;padding:0 4px}
+  .sched.compact .appt .meta{font-size:9px}
+  .sched.compact .appt .m-ocup,.sched.compact .appt .m-fleet{display:none}
+  .sched.compact .blk{font-size:8.5px}
+  .sched.compact .cavnome{display:none}
+  .corner{position:sticky;top:0;left:0;z-index:6;background:var(--panel);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .cav-h{position:sticky;top:0;z-index:4;background:var(--panel);border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:8px 10px;display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:13px}
+  .cav-h .t{display:flex;align-items:center;gap:8px}
+  .cav-h .truck{width:24px;height:24px;border-radius:6px;background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  .cav-h .x{border:none;background:none;cursor:pointer;color:var(--muted);font-size:15px}
+  .cav-h .x:hover{color:var(--bad)}
+  .gutter{position:sticky;left:0;z-index:3;background:var(--panel);border-right:1px solid var(--line);border-bottom:1px solid var(--grid-line);font-size:11px;color:var(--muted);text-align:right;padding:3px 6px 0 0}
+  .gutter{color:#7d7b79}
+  .gutter.hh{color:var(--ink);font-weight:600;border-top:1px solid var(--line)}
+  .cell.hh{border-top:1px solid var(--line)}
+  .gutter.now{color:var(--bad);font-weight:700}
+  .cell{border-right:1px solid var(--line);border-bottom:1px solid var(--grid-line);padding:3px}
+  .cell.now{background:var(--now-bg)}
+  .cell.drag{outline:2px dashed var(--sel-b);outline-offset:-2px;background:var(--now-bg)}
+  .cell.blocked{background:repeating-linear-gradient(45deg,rgba(138,136,134,.20),rgba(138,136,134,.20) 7px,transparent 7px,transparent 14px)}
+  .cell.busy{background:repeating-linear-gradient(45deg,rgba(74,163,255,.13),rgba(74,163,255,.13) 7px,transparent 7px,transparent 14px)}
+  .cell.busy .blk{color:#4aa3ff}
+  .cell.blocked .blk{font-size:10px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:4px;padding:2px}
+  .cav-h .lock,.cav-h .lend{border:none;background:none;cursor:pointer;color:var(--muted);font-size:13px;line-height:1}
+  .cav-h .lock:hover{color:var(--warn)}
+  .cav-h .lend:hover{color:#4aa3ff}
+  .blk-badge{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:10px;background:#8a8886;color:#fff;margin-left:6px}
+  .appt{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--sel-b);border-radius:5px;padding:4px 7px;margin-bottom:4px;cursor:grab;box-shadow:0 1px 1px rgba(0,0,0,.3);overflow:hidden}
+  .appt .nm{flex-wrap:wrap;gap:2px 4px}
+  .appt .nm .right{flex-wrap:wrap;justify-content:flex-end}
+  .appt:active{cursor:grabbing}
+  .appt.cancel{opacity:.6}
+  .appt.cancel .nm{ text-decoration:line-through; text-decoration-color:var(--bad) }
+  @keyframes pendpulse{0%,100%{outline-color:#e3801f}50%{outline-color:#ffc38a}}
+  .appt.pend{outline:2px solid #e3801f;outline-offset:-2px;animation:pendpulse 1.6s ease-in-out infinite}
+  .appt .nm{font-weight:600;font-size:12.5px;display:flex;justify-content:space-between;align-items:center}
+  .appt .nm .rm{border:none;background:none;cursor:pointer;color:var(--dash);font-size:13px;line-height:1}
+  .appt .nm .rm:hover{color:var(--bad)}
+  .appt .meta{font-size:10.5px;color:var(--muted);margin-top:2px;display:flex;justify-content:space-between;gap:6px}
+  .appt .meta .pz{display:inline-flex;align-items:center;gap:4px}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--muted);padding:4px 14px;background:var(--bg)}
+  .legend span{display:inline-flex;align-items:center;gap:5px}
+  /* ----- Tabela de comparação ----- */
+  table.comp{width:100%;border-collapse:collapse;font-size:12px}
+  table.comp th,table.comp td{border:1px solid var(--line);padding:5px 8px;text-align:left;white-space:nowrap}
+  table.comp th{background:var(--chip);position:sticky;top:0;font-size:11px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+  table.comp td .pv{color:var(--muted)} table.comp td .rl{font-weight:600}
+  table.comp td.dif{background:rgba(224,108,108,.14)}
+  table.comp td.ok{background:rgba(63,185,80,.12)}
+  table.comp tr:hover td{background:rgba(255,255,255,.03)}
+  .compsep{color:var(--muted);margin:0 4px}
+  /* ----- KPIs por base (ribbon) ----- */
+  .kpis{flex:1;display:flex;gap:6px;align-items:center;overflow-x:auto;padding:0 8px;min-width:0}
+  .kpis::-webkit-scrollbar{height:6px}
+  .kpi{font-size:11px;white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:12px;padding:3px 10px;cursor:pointer}
+  .kpi b{color:var(--ink);margin-left:3px}
+  .kpi.zero{opacity:.55}
+  .kpi.active{background:var(--maroon);border-color:var(--maroon);color:#fff}
+  .kpi.active b{color:#fff}
+  .kpi.tot{font-weight:600;color:var(--ink)}
+  .kpi:hover{border-color:var(--sel-b)}
+  /* ----- Status badge no cartão ----- */
+  .badge{display:inline-block;padding:1px 7px;border-radius:10px;font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap}
+  .appt .nm .right{display:flex;gap:6px;align-items:center}
+  /* ----- Modal de edição ----- */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:50}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:10px;width:580px;max-width:94vw;max-height:92vh;overflow:auto;box-shadow:0 14px 44px rgba(0,0,0,.5)}
+  .modal h2{margin:0;padding:13px 18px;background:var(--maroon);color:#fff;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+  .modal h2 .cls{cursor:pointer;border:none;background:none;color:#fff;font-size:18px;line-height:1}
+  .form{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .fld{display:flex;flex-direction:column;gap:4px}
+  .fld.full{grid-column:1/3}
+  .fld label{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:600}
+  .fld input,.fld select{background:var(--card);border:1px solid var(--line);border-radius:6px;color:var(--ink);padding:7px 8px;font-size:13px;font-family:inherit}
+  .fld .ro{padding:7px 8px;font-size:13px;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:6px}
+  .row2{display:flex;gap:8px}.row2>*{flex:1}
+  .modal .actions{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:8px}
+  .modal .actions .right{display:flex;gap:8px}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:5px}
+  ::-webkit-scrollbar-track{background:transparent}
+  /* ----- Sugestões vindas da Torre de pressão ----- */
+  .imp-badge{display:inline-block;min-width:17px;text-align:center;margin-left:6px;padding:0 5px;border-radius:9px;background:var(--sel-b);color:#fff;font-size:10.5px;font-weight:700;line-height:16px}
+  #aceitarSugeridasBtn{position:relative;border-color:var(--sel-b)}
+  /* cartão sugerido, ainda não aceito pelo operador */
+  @keyframes sugpulse{0%,100%{border-left-color:#c9a227}50%{border-left-color:#ffe08a}}
+  .appt.sugerida{border-left-color:#c9a227;background:repeating-linear-gradient(-45deg,rgba(201,162,39,.09),rgba(201,162,39,.09) 8px,transparent 8px,transparent 16px)}
+  .appt.sugerida .nm{opacity:.95}
+  .appt .aceitar{border:1px solid var(--ok);background:none;color:var(--ok);border-radius:5px;font-size:10px;font-weight:700;padding:1px 8px;cursor:pointer;line-height:16px}
+  .appt .aceitar:hover{background:var(--ok);color:#08210e}
+  .chip.sug-src{outline:1px dashed #c9a227}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <span class="brand">Programação Logística — Kanban</span>
+  </div>
+  <div class="ribbon">
+    <button class="btn" id="today">Hoje</button>
+    <button class="btn" id="clearDay">Limpar dia</button>
+    <div class="kpis" id="kpis"></div>
+    <button class="btn" id="aceitarSugeridasBtn" title="Aceitar todas as entregas sugeridas pela Torre de Controle no dia visível" style="display:none">✓ Aceitar sugeridas<span id="sugeridasBadge" class="imp-badge">0</span></button>
+    <button class="btn" id="comparBtn">Comparar (prev × real)</button>
+    <button class="btn" id="exportBtn">Exportar dia (CSV)</button>
+  </div>
+  <div class="daybar">
+    <button id="prevD" title="Dia anterior">‹</button>
+    <span class="dlabel" id="topDate"></span>
+    <button id="nextD" title="Próximo dia">›</button>
+  </div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--ok)"></i> Pressão OK (≥120)</span>
+    <span><i class="dot" style="background:var(--warn)"></i> Atenção (60–120)</span>
+    <span><i class="dot" style="background:var(--bad)"></i> Crítico (&lt;60)</span>
+    <span><i class="dot" style="background:var(--none)"></i> Sem leitura</span>
+  </div>
+  <div class="layout">
+    <aside class="side">
+      <div class="cal-head">
+        <span class="m" id="calMonth"></span>
+        <span class="nav"><button id="prevM">‹</button><button id="nextM">›</button></span>
+      </div>
+      <table class="cal">
+        <thead><tr><th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th></tr></thead>
+        <tbody id="calBody"></tbody>
+      </table>
+      <h3>Bases <span style="text-transform:none;font-weight:400">(clique para selecionar)</span></h3>
+      <div id="baseList"></div>
+      <h3>Clientes da base <span style="text-transform:none;font-weight:400;color:var(--muted)">(quem zera primeiro no topo)</span></h3>
+      <div id="basePool"></div>
+    </aside>
+    <main class="mainpane">
+      <div class="basebar">
+        <span class="bname" id="bbName">—</span>
+        <select id="bbSelect" title="Trocar base"></select>
+        <span class="meta" id="bbMeta"></span>
+        <span style="flex:1"></span>
+        <button class="btn primary" id="addCav">+ Novo cavalo</button>
+      </div>
+      <div class="board"><div class="sched" id="sched"></div></div>
+    </main>
+  </div>
+
+  <!-- ===== Modal de edição da entrega ===== -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <h2><span id="mTitle">Editar entrega</span><button class="cls" id="mClose" title="Fechar">✕</button></h2>
+      <div class="form">
+        <div class="fld"><label>Cliente</label><select id="fCliente"></select></div>
+        <div class="fld"><label>Base do cliente</label><div class="ro" id="fBase">—</div></div>
+        <div class="fld"><label>Base de origem <span style="text-transform:none;font-weight:400;color:var(--muted)">(de onde sai o cavalo)</span></label><select id="fOrigem"></select></div>
+        <div class="fld"><label>Cavalo</label><select id="fCav"></select></div>
+        <div class="fld"><label>Status</label><select id="fStatus"></select></div>
+        <div class="fld full" id="fCancelWrap" style="display:none"><label>Justificativa do cancelamento</label><input id="fCancelMotivo" placeholder="Por que esta entrega está sendo cancelada?"></div>
+        <div class="fld full"><label>Mesclar com <span style="text-transform:none;font-weight:400;color:var(--muted)">(mesma viagem, mesmo cavalo)</span></label><div id="fMesclaList" style="display:flex;flex-wrap:wrap;gap:6px 12px;max-height:96px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--card)"></div></div>
+        <div class="fld"><label>Carreta</label><input id="fCarreta" list="dlCarretas" placeholder="—"></div>
+        <div class="fld"><label>Motorista</label><input id="fMotorista" list="dlMotoristas" placeholder="—"></div>
+        <div class="fld"><label>Viagem (min)</label><input id="fViagem" type="number" min="0" placeholder="0"></div>
+        <div class="fld"><label>Saída (previsão)</label><div class="row2"><input id="fData" type="date"><input id="fHora" type="time"></div></div>
+        <div class="fld"><label>Bar na saída</label><input id="fBarSaida" type="number" step="0.1" placeholder="—"></div>
+        <div class="fld"><label>Chegada no cliente</label><div class="ro" id="fChegada">—</div></div>
+        <div class="fld"><label>Bar na chegada <span id="fConsumoHint" style="text-transform:none;color:var(--muted);font-weight:400"></span></label><input id="fBarChegada" type="number" step="0.1" placeholder="—"></div>
+        <div class="fld full" style="border-top:1px solid var(--line);padding-top:10px;margin-top:2px;display:flex;justify-content:space-between;align-items:center">
+          <label style="margin:0">Realizado <span style="text-transform:none;font-weight:400;color:var(--muted)">(o que aconteceu de fato)</span></label>
+          <button type="button" class="btn primary" id="fConcluir" style="padding:4px 12px">✓ Concluir entrega</button>
+        </div>
+        <div class="fld"><label>Cavalo realizado (placa)</label><input id="rCav" list="dlPlacas" placeholder="—"></div>
+        <div class="fld"><label>Motorista realizado</label><input id="rMotorista" list="dlMotoristas" placeholder="—"></div>
+        <div class="fld"><label>Carreta realizada</label><input id="rCarreta" list="dlCarretas" placeholder="—"></div>
+        <div class="fld"><label>Saída realizada</label><input id="rSaida" type="time"></div>
+        <div class="fld"><label>Chegada realizada</label><input id="rChegada" type="time"></div>
+        <div class="fld"><label>Bar saída realizado</label><input id="rBarSaida" type="number" step="0.1" placeholder="—"></div>
+        <div class="fld"><label>Bar chegada realizado</label><input id="rBarChegada" type="number" step="0.1" placeholder="—"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="mRemover" style="color:var(--bad);border-color:var(--bad)">Remover entrega</button>
+        <div class="right"><button class="btn" id="mCancel">Cancelar</button><button class="btn primary" id="mSave">Salvar</button></div>
+      </div>
+    </div>
+  </div>
+  <datalist id="dlCarretas"></datalist>
+  <datalist id="dlMotoristas"></datalist>
+  <datalist id="dlPlacas"></datalist>
+
+  <!-- ===== Modal de bloqueio de cavalo ===== -->
+  <div class="overlay" id="ovBlock">
+    <div class="modal" style="width:500px">
+      <h2><span id="blkTitle">Bloquear cavalo</span><button class="cls" id="blkClose" title="Fechar">✕</button></h2>
+      <div class="form">
+        <div class="fld full"><label>Motivo</label><select id="blkMotivo"><option>Oficina</option><option>Lava jato</option><option>Manutenção</option><option>Reservado</option><option>Outro</option></select></div>
+        <div class="fld"><label>De</label><input id="blkDe" type="date"></div>
+        <div class="fld"><label>Até</label><input id="blkAte" type="date"></div>
+        <div class="fld full"><label><input type="checkbox" id="blkDiaTodo" checked style="vertical-align:-2px;margin-right:6px">Dia todo</label></div>
+        <div class="fld" id="blkHoraWrap"><label>Da hora</label><input id="blkHi" type="time"></div>
+        <div class="fld" id="blkHoraWrap2"><label>Até a hora</label><input id="blkHf" type="time"></div>
+        <div class="fld full"><label>Bloqueios deste cavalo</label><div id="blkList"></div></div>
+      </div>
+      <div class="actions"><span style="flex:1"></span><div class="right"><button class="btn" id="blkCancel">Fechar</button><button class="btn primary" id="blkSave">Adicionar bloqueio</button></div></div>
+    </div>
+  </div>
+
+  <!-- ===== Modal de empréstimo de cavalo ===== -->
+  <div class="overlay" id="ovEmp">
+    <div class="modal" style="width:500px">
+      <h2><span id="empTitle">Emprestar cavalo</span><button class="cls" id="empClose" title="Fechar">✕</button></h2>
+      <div class="form">
+        <div class="fld full"><label>Emprestar para a base</label><select id="empDestino"></select></div>
+        <div class="fld"><label>De</label><input id="empDe" type="date"></div>
+        <div class="fld"><label>Até</label><input id="empAte" type="date"></div>
+        <div class="fld full"><label>Empréstimos deste cavalo</label><div id="empList"></div></div>
+      </div>
+      <div class="actions"><span style="flex:1"></span><div class="right"><button class="btn" id="empCancel">Fechar</button><button class="btn primary" id="empSave">Emprestar</button></div></div>
+    </div>
+  </div>
+
+  <!-- ===== Modal de comparação previsto × realizado ===== -->
+  <div class="overlay" id="ovComp">
+    <div class="modal" style="width:min(1200px,96vw)">
+      <h2><span id="compTitle">Comparação — previsto × realizado</span><button class="cls" id="compClose" title="Fechar">✕</button></h2>
+      <div style="padding:12px 18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="compEscopoBase">Base atual</button>
+        <button class="btn" id="compEscopoTodos">Todas as bases</button>
+        <span id="compResumo" style="color:var(--muted);font-size:12px;margin-left:6px"></span>
+        <span style="flex:1"></span>
+        <button class="btn" id="compImport" title="Importar realizado (CSV/JSON) do Power App">Importar realizado</button>
+        <input type="file" id="compFile" accept=".csv,.json,.txt" style="display:none">
+        <button class="btn primary" id="compExport">Exportar CSV</button>
+      </div>
+      <div id="compBody" style="padding:0 18px 16px;overflow:auto;max-height:70vh"></div>
+    </div>
+  </div>
+
+<script>
+/* ===== Configuração da grade de horários ===== */
+const STEP=30, SLOT_H=30, DAY_MIN=24*60;   // faixas de 30 min, cobrindo as 24 horas do dia
+
+/* ===== Bases (despacho) e empresas atendidas — conforme viagem_tomtom.py ===== */
+const REGISTRO = {
+  "BETIM":["ALSCO","BELGO","EXTRUMINAS","M.PEQUI","VDL","MG STEEL","VILMA","G.PERDÕES","JD CANADÁ","FORTLEV"],
+  "IPATINGA":["FERMAG","PLANALTO","TROPICAL","BARRIGÃO"],
+  "POÇOS DE CALDAS":["ACQUION","BALANÇA","POUSO","BAIA 1","BAIA 2","BAIA 3"],
+  "ARACRUZ":["COLATINA","FAZENDA CHAPADÃO","SPINASSÉ"],
+  "RIO JOANES":["BAIA 1 (LAGARTO)","BAIA 2 (LAGARTO)","UMBAÚBA"],
+  "CRAVINHOS":["ORLÂNDIA"],
+  "CAMPO GRANDE":["SEARA"],
+  "BARBACENA":["AMG SP","DOW"]
+};
+
+/* ===== Última pressão por cliente (do dados.js, ao vivo) ===== */
+function ultimaPressao(){
+  const out={}; const L=(window.LOGAS_DADOS&&window.LOGAS_DADOS.leituras)||{};
+  for(const k in L){ const arr=(L[k]||[]).filter(r=>r&&r.p!=null); out[k]=arr.length?arr[arr.length-1].p:null; }
+  return out;
+}
+const PRESSAO = ultimaPressao();
+function nivel(p){ if(p==null) return "none"; if(p<60) return "bad"; if(p<120) return "warn"; return "ok"; }
+const cs=getComputedStyle(document.documentElement);
+const COR={ok:cs.getPropertyValue('--ok').trim(),warn:cs.getPropertyValue('--warn').trim(),bad:cs.getPropertyValue('--bad').trim(),none:cs.getPropertyValue('--none').trim()};
+
+/* ===== Status da entrega ===== */
+const STATUS=["A PROGRAMAR","PROGRAMADO","EM TRÂNSITO","ENTREGUE","ATRASADO","CANCELADO"];
+const STATUS_COR={"A PROGRAMAR":"#8a8886","PROGRAMADO":"#3fb950","EM TRÂNSITO":"#4aa3ff","ENTREGUE":"#6b6967","ATRASADO":"#f85149","CANCELADO":"#9e5b5b"};
+const STATUS_ABBR={"A PROGRAMAR":"A PROG","PROGRAMADO":"PROG","EM TRÂNSITO":"TRÂNS","ENTREGUE":"ENTR","ATRASADO":"ATRAS","CANCELADO":"CANC"};
+function chegadaCalc(day,saida,viagem){
+  if(!saida) return ""; const pp=saida.split(":"); const dt=new Date(day+"T"+pad(+pp[0])+":"+pad(+pp[1])+":00");
+  if(isNaN(dt)) return ""; dt.setMinutes(dt.getMinutes()+(viagem||0));
+  const mesmoDia=ymd(dt)===day; return pad(dt.getHours())+":"+pad(dt.getMinutes())+(mesmoDia?"":" ("+dt.toLocaleDateString("pt-BR")+")");
+}
+
+/* ===== Tempo de viagem (min, só ida) =====
+   1) se houver viagem.js (window.LOGAS_VIAGEM, gerado pelo viagem_tomtom.py) usa o tempo REAL da TomTom;
+   2) senão, estima pela distância base→empresa (coordenadas do viagem_tomtom.py). */
+const BASE_LL={
+  "BETIM":[-19.956313674094236,-44.13045441870082],
+  "IPATINGA":[-19.49428141512894,-42.5641418151882],
+  "POÇOS DE CALDAS":[-21.832402609646568,-46.638100827678535],
+  "ARACRUZ":[-19.83892742835953,-40.0740806431825],
+  "RIO JOANES":[-12.85706473846636,-38.29688919851569],
+  "CRAVINHOS":[-21.338500793014,-47.73450988499415],
+  "CAMPO GRANDE":[-20.492855717543165,-54.73852313179462],
+  "BARBACENA":[-21.218483045099013,-43.74357509319152]
+};
+const EMP_LL={
+  ALSCO:[-19.99688525938805,-44.04234853219335],BELGO:[-19.88015658498822,-43.79436691246574],
+  EXTRUMINAS:[-19.784602405046915,-44.30053450924594],"M.PEQUI":[-19.63405367583952,-44.64858965619242],
+  VDL:[-20.223776765982244,-43.80441798800982],"MG STEEL":[-20.0101038138369,-44.43642493526554],
+  VILMA:[-19.999554235688944,-44.235817118699714],"G.PERDÕES":[-21.163806206103395,-45.12207431634263],
+  "JD CANADÁ":[-20.06183436258079,-43.98785491877735],FORTLEV:[-19.83672647219803,-44.08215546741692],
+  FERMAG:[-19.640920460304503,-43.19905455133256],PLANALTO:[-18.832190089279514,-41.98886114088789],
+  TROPICAL:[-17.799046971057447,-41.786611987253515],"BARRIGÃO":[-20.247201068273977,-42.142691617280825],
+  ACQUION:[-21.836972399653416,-46.65197019071189],"BALANÇA":[-22.186699646902554,-45.84373712545687],
+  POUSO:[-22.227004144603004,-45.939380412239686],
+  "BAIA 1":[-22.879789341622573,-46.37153143232148],"BAIA 2":[-22.879789341622573,-46.37153143232148],"BAIA 3":[-22.879789341622573,-46.37153143232148],
+  COLATINA:[-19.536927166506434,-40.63081675380119],"FAZENDA CHAPADÃO":[-19.408056063696854,-40.23438228591222],
+  "BAIA 1 (LAGARTO)":[-10.942275471289067,-37.664630632932656],"BAIA 2 (LAGARTO)":[-10.942275471289067,-37.664630632932656],
+  "UMBAÚBA":[-11.37995547438915,-37.66215708987112],
+  "ORLÂNDIA":[-20.71725328770959,-47.8803115828694],
+  SEARA:[-20.467447774599314,-54.71663397743636],
+  "AMG SP":[-21.084951701950843,-44.58957361808009],DOW:[-21.4471714105341,-43.60857273399927]
+  /* SPINASSÉ: coordenada pendente (usa a base Aracruz até ser informada) */
+};
+function hav(a,b){ const R=6371,toR=x=>x*Math.PI/180;
+  const dLat=toR(b[0]-a[0]),dLon=toR(b[1]-a[1]);
+  const s=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s)); }
+function viagemMinDe(origem,c){
+  const lv=window.LOGAS_VIAGEM;
+  if(origem===clienteBase(c) && lv&&lv.viagem&&lv.viagem[c]!=null) return Math.round(lv.viagem[c]*60);   // tempo REAL (TomTom), válido só da base do cliente
+  const bll=BASE_LL[origem]; if(!bll) return null;
+  const ell=EMP_LL[c]||BASE_LL[clienteBase(c)]||bll; const km=hav(bll,ell)*1.35;   // fator estrada
+  return Math.max(5, Math.round(km/55*60));                // ~55 km/h médio
+}
+function viagemMin(c){ return viagemMinDe(clienteBase(c),c); }   // padrão: a partir da base do próprio cliente
+
+/* ===== Consumo por cliente (Bar/h), mediano, a partir da telemetria do dados.js ===== */
+function consumoRate(c){
+  const arr=((window.LOGAS_DADOS&&window.LOGAS_DADOS.leituras&&window.LOGAS_DADOS.leituras[c])||[])
+    .filter(r=>r&&r.p!=null).map(r=>({t:new Date(r.t).getTime(),p:r.p}));
+  const rs=[];
+  for(let i=1;i<arr.length;i++){ const dt=(arr[i].t-arr[i-1].t)/3600000, drop=arr[i-1].p-arr[i].p;
+    if(dt>=0.2&&dt<=12&&drop>0){ const r=drop/dt; if(r>0&&r<60) rs.push(r); } }
+  if(!rs.length) return 2; rs.sort((x,y)=>x-y); return rs[Math.floor(rs.length/2)];
+}
+
+/* ===== Estado / persistência por data ===== */
+const LS_ASSIGN="logas_kanban_assign";       // { "YYYY-MM-DD": { cliente: {cav, h} } }
+const LS_CAVS="logas_kanban_cavalos_base";   // { base: ["Cavalo A", ...] }  — cada base tem seus cavalos
+const LS_BASESEL="logas_kanban_basesel";
+function load(k,def){ try{return JSON.parse(localStorage.getItem(k))||def;}catch(e){return def;} }
+function save(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+const LS_CANCEL="logas_kanban_canceladas";   // { "YYYY-MM-DD": [ {cliente, cav, saida, motivoCancel, ...} ] } — histórico
+let canceladas = load(LS_CANCEL, {});
+function dayCancel(day){ if(!canceladas[day]) canceladas[day]=[]; return canceladas[day]; }
+function persist(){ save(LS_ASSIGN,assign); save(LS_CANCEL,canceladas); }
+
+let cavBase = load(LS_CAVS, {});
+function cavalosDe(b){ if(!Array.isArray(cavBase[b])||!cavBase[b].length) cavBase[b]=["Cavalo A","Cavalo B"]; return cavBase[b]; }
+function saveCavs(){ save(LS_CAVS,cavBase); }
+const TODOS="— TODAS AS BASES —";
+let baseSel = load(LS_BASESEL, null); if(!baseSel || (baseSel!==TODOS && !REGISTRO[baseSel])) baseSel=Object.keys(REGISTRO)[0];
+let assign  = load(LS_ASSIGN, {});
+/* migração: formato antigo {cliente:"Cavalo X"} -> {cliente:{cav,h}} */
+for(const dia in assign){ const m=assign[dia]; for(const c in m){ if(typeof m[c]==="string") m[c]={cav:m[c],saida:"08:00"}; } }
+persist();
+/* garante que cada base tenha os cavalos já usados em programações salvas (evita entrega "invisível") */
+for(const dia in assign){ for(const c in assign[dia]){ const b=clienteBase(c), cav=assign[dia][c].cav;
+  if(b&&cav&&!cav.includes(" · ")){ const list=cavalosDe(b); if(!list.includes(cav)) list.push(cav); } } }   // ignora cavalos emprestados ("Cavalo X · Base")
+saveCavs();
+
+/* frota (motoristas, carretas e placas de cavalo) — formada ao digitar ou importada */
+const LS_MOT="logas_motoristas", LS_CAR="logas_carretas", LS_PLACAS="logas_placas";
+let motoristas=load(LS_MOT,[]), carretas=load(LS_CAR,[]), placas=load(LS_PLACAS,[]);
+function fillDatalist(id,arr){ document.getElementById(id).innerHTML=arr.map(x=>`<option value="${x}"></option>`).join(""); }
+/* frota.js (opcional): window.LOGAS_FROTA = {motoristas:[], placas:[], carretas:[]} — carregada no início */
+(function(){ const F=window.LOGAS_FROTA; if(!F) return;
+  const merge=(arr,vals)=>{ (vals||[]).forEach(v=>{ v=String(v).trim(); if(v&&!arr.includes(v)) arr.push(v); }); };
+  merge(motoristas,F.motoristas); merge(placas,F.placas); merge(carretas,F.carretas);
+  save(LS_MOT,motoristas); save(LS_PLACAS,placas); save(LS_CAR,carretas);
+})();
+function allClientes(){ const o=[]; for(const b in REGISTRO) REGISTRO[b].forEach(c=>o.push(c)); return o; }
+const CONSUMO={}; allClientes().forEach(c=>CONSUMO[c]=consumoRate(c));
+
+/* ===== Realizado (entregas registradas no Power App → lista SharePoint → realizado.js) ===== */
+const _canon={}; allClientes().forEach(c=>_canon[c.toUpperCase().trim()]=c);
+function canonCliente(nome){ if(nome==null) return null; return _canon[String(nome).toUpperCase().trim()]||String(nome); }
+let realizadoAvulsos=[];   // registros do app sem entrega planejada correspondente
+function parseDataHora(s){ if(!s) return null; s=String(s).trim();
+  const m=s.match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/) || s.match(/(\d{2})\/(\d{2})\/(\d{4})[ T](\d{2}):(\d{2})/);
+  if(!m) return null;
+  const iso = s.indexOf("/")>=0 ? {data:m[3]+"-"+m[2]+"-"+m[1],hora:m[4]+":"+m[5]} : {data:m[1]+"-"+m[2]+"-"+m[3],hora:m[4]+":"+m[5]};
+  return iso; }
+function aplicarRealizado(registros){
+  if(!Array.isArray(registros)) return 0; realizadoAvulsos=[]; let n=0;
+  registros.forEach(reg=>{
+    const cli=canonCliente(reg.cliente);
+    const real={};
+    if(reg.cavalo!=null&&reg.cavalo!=="") real.cav=String(reg.cavalo);          // placa do cavalo
+    if(reg.carreta!=null&&reg.carreta!=="") real.carreta=String(reg.carreta);
+    if(reg.motorista!=null&&reg.motorista!=="") real.motorista=String(reg.motorista);
+    if(reg.saida) real.saida=String(reg.saida).slice(0,5);
+    if(reg.chegada) real.chegada=String(reg.chegada).slice(0,5);
+    if(reg.barSaida!=null&&reg.barSaida!=="") real.barSaida=parseFloat(reg.barSaida);
+    if(reg.barChegada!=null&&reg.barChegada!=="") real.barChegada=parseFloat(reg.barChegada);   // PRESSAO_CHEGADA
+    if(reg.barFinal!=null&&reg.barFinal!=="") real.barFinal=parseFloat(reg.barFinal);           // PRESSAO_FINALIZADA
+    if(reg.abastecimento!=null&&reg.abastecimento!=="") real.abastecimento=String(reg.abastecimento);
+    if(reg.nf!=null&&reg.nf!=="") real.nf=String(reg.nf);
+    let dia=normDataReal(reg.data);
+    if(reg.dataHora){ const dt=parseDataHora(reg.dataHora); if(dt){ if(!dia) dia=dt.data; if(!real.chegada) real.chegada=dt.hora; } }
+    /* alimenta a frota (autocompletar) a partir do próprio realizado */
+    if(real.motorista && !motoristas.includes(real.motorista)) motoristas.push(real.motorista);
+    if(real.cav && !placas.includes(real.cav)) placas.push(real.cav);
+    if(real.carreta) String(real.carreta).split(/[,;+\/]/).map(s=>s.trim()).filter(Boolean).forEach(cc=>{ if(!carretas.includes(cc)) carretas.push(cc); });
+    const d = dia && assign[dia] && assign[dia][cli];
+    if(d){ d.real=real; if(real.chegada && d.status!=="CANCELADO") d.status="ENTREGUE"; n++; }
+    else { realizadoAvulsos.push({dia,cliente:cli,real,base:reg.base||clienteBase(cli)}); }
+  });
+  try{ save(LS_MOT,motoristas); save(LS_PLACAS,placas); save(LS_CAR,carretas); }catch(e){}
+  return n;
+}
+if(window.LOGAS_REALIZADO && Array.isArray(window.LOGAS_REALIZADO.registros)) aplicarRealizado(window.LOGAS_REALIZADO.registros);
+/* autonomia (horas até zerar): pressão atual ÷ consumo. Menor = mais crítico. */
+function autonomiaH(c){ const p=PRESSAO[c]; if(p==null) return null; const r=CONSUMO[c]||2; return r>0? p/r : Infinity; }
+function autTxt(h){ if(h==null) return ""; if(!isFinite(h)) return "—"; if(h<1) return Math.round(h*60)+"min"; if(h<10) return h.toFixed(1)+"h"; return Math.round(h)+"h"; }
+
+/* bloqueios de cavalo (oficina, lava jato, manutenção...) */
+const LS_BLOCKS="logas_kanban_blocks";
+let blocks=load(LS_BLOCKS,[]);
+/* migração: bloqueios antigos por hora (hStart/hEnd) -> minutos (mStart/mEnd) */
+blocks.forEach(b=>{ if(b.mStart==null){ b.mStart=(b.hStart!=null?b.hStart:0)*60; b.mEnd=(b.hEnd!=null?b.hEnd+1:24)*60; } });
+function saveBlocks(){ save(LS_BLOCKS,blocks); }
+function bloqueado(base,cav,day,slotMin){ return blocks.find(b=>b.base===base&&b.cav===cav&&day>=b.from&&day<=b.to&&slotMin>=b.mStart&&slotMin<b.mEnd)||null; }
+function blocoDoDia(base,cav,day){ return blocks.find(b=>b.base===base&&b.cav===cav&&day>=b.from&&day<=b.to)||null; }
+
+/* empréstimo de cavalo entre bases (ex.: Betim empresta um cavalo p/ Barbacena) */
+const LS_EMPREST="logas_kanban_emprestimos";
+let emprestimos=load(LS_EMPREST,[]);   // {base(origem), cav, destino, from, to}
+function saveEmp(){ save(LS_EMPREST,emprestimos); }
+function empSaida(base,cav,day){ return emprestimos.find(e=>e.base===base&&e.cav===cav&&day>=e.from&&day<=e.to)||null; }
+function empEntradas(base,day){ return emprestimos.filter(e=>e.destino===base&&day>=e.from&&day<=e.to); }
+/* colunas efetivas de uma base num dia: próprios (menos os emprestados p/ fora) + emprestados de entrada */
+function cavalosDoDia(base,day){
+  const out=[];
+  cavalosDe(base).forEach(cav=>{ const e=empSaida(base,cav,day); out.push(e?{nome:cav,tipo:"saiu",rec:e}:{nome:cav,tipo:"proprio"}); });
+  empEntradas(base,day).forEach(e=>out.push({nome:e.cav+" · "+e.base,tipo:"entrou",origem:e.base,rec:e}));
+  return out;
+}
+function nomesCavalosDia(base,day){ return cavalosDoDia(base,day).filter(x=>x.tipo!=="saiu").map(x=>x.nome); }
+
+let viewDate=new Date(); viewDate.setHours(0,0,0,0);
+let calMonth=new Date(viewDate.getFullYear(),viewDate.getMonth(),1);
+
+const pad=x=>String(x).padStart(2,"0");
+function ymd(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function dayAssign(){ const k=ymd(viewDate); if(!assign[k]) assign[k]={}; return assign[k]; }
+function fmtLong(d){ return d.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"}); }
+function clienteBase(c){ for(const b in REGISTRO) if(REGISTRO[b].includes(c)) return b; return ""; }
+/* tempo em minutos do dia (frações de hora) */
+function toMin(hhmm){ const p=(hhmm||"0:0").split(":"); return (+p[0])*60+(+p[1]||0); }
+function minToHHMM(m){ m=((Math.round(m)%DAY_MIN)+DAY_MIN)%DAY_MIN; return pad(Math.floor(m/60))+":"+pad(m%60); }
+function saidaDe(d){ return d.saida || (d.h!=null?pad(d.h)+":00":"08:00"); }
+function slotDe(d){ return Math.floor(toMin(saidaDe(d))/STEP)*STEP; }
+/* horário (dia + HH:MM) já passou em relação a agora? */
+function passou(day,hhmm){ const pp=(hhmm||"0:0").split(":"); const dt=new Date(day+"T"+pad(+pp[0])+":"+pad(+pp[1]||0)+":00"); return !isNaN(dt) && dt.getTime()<Date.now(); }
+/* janela de ocupação do cavalo: ida + 1h (troca de carreta) + volta */
+const TROCA_MIN=60;
+function llDe(c){ return EMP_LL[c]||BASE_LL[clienteBase(c)]||null; }
+function legMin(a,b){ if(!a||!b) return 0; return Math.round(hav(a,b)*1.35/55*60); }   // trecho estrada (min)
+/* base de onde o cavalo sai (origem); padrão = base do próprio cliente */
+function baseDaEntrega(d,cliente){ return (d&&d.origem)||clienteBase(cliente); }
+/* rota da viagem mesclada: origem -> p1 -> p2 -> ... -> origem (só os deslocamentos) */
+function rotaMin(paradas,origem){
+  if(!paradas||!paradas.length) return 0;
+  const base=BASE_LL[origem||clienteBase(paradas[0])]; let tot=0, prev=base;
+  paradas.forEach(c=>{ const ll=llDe(c); tot+=legMin(prev,ll); prev=ll; });
+  return tot+legMin(prev,base);
+}
+function durEntrega(d){
+  if(d.paradas && d.paradas.length>1) return rotaMin(d.paradas,d.origem) + TROCA_MIN*d.paradas.length;   // mesclada: rota + troca por parada
+  const v=d.viagem!=null?d.viagem:0; return v*2 + TROCA_MIN;                                             // simples: ida + volta + troca
+}
+function janela(d){ const ini=toMin(saidaDe(d)); return {ini, fim:ini+durEntrega(d)}; }
+/* clientes que são "parada secundária" de alguma viagem mesclada no dia (ficam ocupados, sem cartão próprio) */
+function secundariasDia(day){ const set=new Set(); const m=assign[day]||{}; for(const k in m){ const d=m[k]; if(d.paradas&&d.paradas.length>1) d.paradas.slice(1).forEach(x=>set.add(x)); } return set; }
+/* horário de chegada em cada parada da viagem mesclada */
+function temposParadas(d){
+  const paradas=(d.paradas&&d.paradas.length)?d.paradas:[]; if(!paradas.length) return [];
+  const base=BASE_LL[clienteBase(paradas[0])]; let t=toMin(saidaDe(d)), prev=base; const out=[];
+  paradas.forEach(pc=>{ const ll=llDe(pc); t+=legMin(prev,ll); out.push({c:pc,ch:t}); t+=TROCA_MIN; prev=ll; });
+  return out;
+}
+/* entrega que já passou do horário previsto e não foi confirmada (sem realizado, não entregue/cancelada) */
+function pendenteConfirmacao(d){
+  if(!d || d.status==="ENTREGUE" || d.status==="CANCELADO" || d.real) return false;
+  const day=ymd(viewDate), hoje=ymd(new Date());
+  if(day>hoje) return false;                 // dia futuro: ainda não é hora
+  const now = day<hoje ? Infinity : (new Date().getHours()*60+new Date().getMinutes());
+  const saidaMin=toMin(saidaDe(d)); const cp=chegadaPrevMin(d);
+  const naoSaiu  = (d.status==="PROGRAMADO"||d.status==="A PROGRAMAR") && saidaMin < now;   // já deveria ter saído
+  const naoChegou = (cp!=null?cp:saidaMin) < now;                                           // já deveria ter chegado
+  return naoSaiu || naoChegou;
+}
+/* retorna a entrega conflitante (mesmo cavalo/base/dia com janela sobreposta) ou null */
+function conflitoCav(day,base,cav,exceptC,ini,fim){
+  const a=assign[day]||{};
+  for(const c in a){ if(c===exceptC) continue; const d=a[c];
+    if(d.cav!==cav || baseDaEntrega(d,c)!==base || d.status==="CANCELADO") continue;
+    const j=janela(d); if(ini<j.fim && j.ini<fim) return {c,ini:j.ini,fim:j.fim}; }
+  return null;
+}
+
+/* ===== Calendário ===== */
+function renderCal(){
+  document.getElementById("calMonth").textContent=calMonth.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+  const body=document.getElementById("calBody"); body.innerHTML="";
+  const first=new Date(calMonth); const start=new Date(first); start.setDate(1-first.getDay());
+  const today=new Date(); today.setHours(0,0,0,0); let cur=new Date(start);
+  for(let w=0;w<6;w++){ const tr=document.createElement("tr");
+    for(let i=0;i<7;i++){ const td=document.createElement("td");
+      const d=document.createElement("div"); d.className="d"; d.textContent=cur.getDate();
+      if(cur.getMonth()!==calMonth.getMonth()) d.classList.add("other");
+      if(ymd(cur)===ymd(today)) d.classList.add("today");
+      if(ymd(cur)===ymd(viewDate)) d.classList.add("sel");
+      if((assign[ymd(cur)]&&Object.keys(assign[ymd(cur)]).length)||(canceladas[ymd(cur)]&&canceladas[ymd(cur)].length)) d.classList.add("has");
+      const dd=new Date(cur); d.onclick=()=>{viewDate=dd;viewDate.setHours(0,0,0,0);renderAll();};
+      td.appendChild(d); tr.appendChild(td); cur.setDate(cur.getDate()+1);
+    } body.appendChild(tr);
+  }
+}
+
+/* ===== Sidebar: seletor de base + clientes da base ativa ===== */
+function selecionarBase(b){ baseSel=b; save(LS_BASESEL,baseSel); renderAll(); }
+function renderBaseList(){
+  const wrap=document.getElementById("baseList"); wrap.innerHTML=""; const a=dayAssign();
+  const totalDia=Object.keys(a).length;
+  const rTodos=document.createElement("div"); rTodos.className="baserow"+(baseSel===TODOS?" active":"");
+  rTodos.innerHTML=`<span>📋 Todas as bases</span><span class="cnt">${totalDia}</span>`;
+  rTodos.onclick=()=>selecionarBase(TODOS); wrap.appendChild(rTodos);
+  for(const base in REGISTRO){
+    const clientes=REGISTRO[base]; const prog=clientes.filter(c=>a[c]).length;
+    const row=document.createElement("div"); row.className="baserow"+(base===baseSel?" active":"");
+    row.innerHTML=`<span>${base}</span><span class="cnt">${prog}/${clientes.length}</span>`;
+    row.onclick=()=>selecionarBase(base);
+    wrap.appendChild(row);
+  }
+}
+function renderBasePool(){
+  const wrap=document.getElementById("basePool"); wrap.innerHTML=""; const a=dayAssign();
+  if(baseSel===TODOS){ wrap.innerHTML='<div style="color:var(--muted);font-size:12px;padding:8px">Vendo todas as bases (somente leitura). Selecione uma base para programar/arrastar clientes.</div>'; return; }
+  const sec=secundariasDia(ymd(viewDate));
+  const pool=document.createElement("div"); pool.className="pool";
+  /* ordena por criticidade = menor autonomia (quem zera primeiro) no topo; sem leitura por último */
+  const ordenados=[...REGISTRO[baseSel]].sort((x,y)=>{
+    const ax=autonomiaH(x), ay=autonomiaH(y);
+    return (ax==null?Infinity:ax)-(ay==null?Infinity:ay);
+  });
+  ordenados.forEach(c=>{ const p=PRESSAO[c]; const nv=nivel(p); const aut=autonomiaH(c); const ocupado=!!a[c]||sec.has(c);
+    const chip=document.createElement("div"); chip.className="chip"+(ocupado?" assigned":"");
+    chip.draggable=!ocupado; chip.dataset.cliente=c;
+    chip.title = (sec.has(c)?"(mesclada em outra viagem) ":"") + (p!=null ? `${p.toFixed(0)} Bar · consumo ~${(CONSUMO[c]||2).toFixed(1)} Bar/h · autonomia ${autTxt(aut)}` : "sem leitura");
+    chip.innerHTML=`<span class="dot" style="background:${COR[nv]}"></span><span class="nm">${c}</span><span class="pv">${p!=null?p.toFixed(0)+" Bar":"—"}${aut!=null?' · <b style="font-weight:600">'+autTxt(aut)+'</b>':""}</span>`;
+    chip.addEventListener("dragstart",e=>{ if(ocupado){e.preventDefault();return;} e.dataTransfer.setData("text/plain",c); });
+    pool.appendChild(chip);
+  });
+  wrap.appendChild(pool);
+}
+function renderBasebar(){
+  const a=dayAssign();
+  document.getElementById("bbName").textContent = baseSel===TODOS ? "TODAS AS BASES" : baseSel;
+  const sel=document.getElementById("bbSelect");
+  sel.innerHTML=[TODOS,...Object.keys(REGISTRO)].map(b=>`<option ${b===baseSel?"selected":""}>${b}</option>`).join("");
+  document.getElementById("addCav").style.display = baseSel===TODOS ? "none" : "";
+  const pend=Object.keys(a).filter(c=>{ const d=a[c]; const inBase=(baseSel===TODOS)||baseDaEntrega(d,c)===baseSel; return inBase && pendenteConfirmacao(d); }).length;
+  const avisoPend = pend? ` · <b style="color:#e3801f">⚠ ${pend} a confirmar</b>` : "";
+  if(baseSel===TODOS){
+    document.getElementById("bbMeta").innerHTML = Object.keys(a).length+" entrega(s) programada(s) no dia (todas as bases)"+avisoPend;
+    return;
+  }
+  const n=REGISTRO[baseSel].filter(c=>a[c]).length;
+  const cols=cavalosDoDia(baseSel,ymd(viewDate)); const nDisp=cols.filter(x=>x.tipo!=="saiu").length; const nEmp=cols.filter(x=>x.tipo==="entrou").length;
+  document.getElementById("bbMeta").innerHTML=n+" entrega(s) · "+nDisp+" cavalo(s) disponíveis"+(nEmp?" ("+nEmp+" emprestado(s))":"")+avisoPend;
+}
+
+/* ===== Grade de horários (board) ===== */
+function buildAppt(c,a){
+  const d=a[c]; const p=PRESSAO[c]; const st=d.status||"PROGRAMADO";
+  const cancel=st==="CANCELADO";
+  const sugerida = d.origemSugestao==="pressao" && d.aceito===false && !cancel;
+  const merged=d.paradas&&d.paradas.length>1;
+  const hora=saidaDe(d);
+  const cheg=(!merged&&d.viagem)?chegadaCalc(ymd(viewDate),hora,d.viagem):"";
+  const ret=minToHHMM(janela(d).fim);
+  const pend = !sugerida && pendenteConfirmacao(d);
+  const compacto = baseSel===TODOS;
+  const stTxt = compacto ? (STATUS_ABBR[st]||st) : st;
+  const ap=document.createElement("div"); ap.className="appt"+(cancel?" cancel":"")+(pend?" pend":"")+(sugerida?" sugerida":""); ap.draggable=true; ap.dataset.cliente=c;
+  ap.style.borderLeftColor=cancel?STATUS_COR.CANCELADO:(sugerida?"#c9a227":(STATUS_COR[st]||COR[nivel(p)])); ap.style.cursor="pointer";
+  const foraBase = d.origem && d.origem!==clienteBase(c);
+  const titulo = merged
+    ? `<b>Viagem mesclada</b> <span class="badge" style="background:#4aa3ff">${d.paradas.length} paradas</span>`
+    : c + (foraBase?` <span class="badge" style="background:#a06a2c" title="cliente de outra base">${clienteBase(c)}</span>`:"");
+  const rotaTxt = merged ? temposParadas(d).map(x=>`${x.c} ${minToHHMM(x.ch)}`).join(" → ") : "";
+  const seloDireita = sugerida
+    ? `<button class="aceitar" title="Aceitar esta sugestão da Torre">✓ aceitar</button><span class="badge" style="background:#c9a227">SUGERIDA</span><button class="rm" title="Descartar sugestão">✕</button>`
+    : `${pend?`<span class="badge" style="background:#e3801f" title="passou do horário previsto e não foi confirmada">⚠${compacto?"":" CONFIRMAR"}</span>`:""}<span class="badge" style="background:${STATUS_COR[st]}">${stTxt}</span><button class="rm" title="Remover">✕</button>`;
+  ap.innerHTML=`<div class="nm">${titulo}<span class="right">${seloDireita}</span></div>
+    <div class="meta"><span>${foraBase?"⇢ ":""}${clienteBase(c)} · saída ${hora}${cheg?" → "+cheg:""}</span><span class="pz"><i class="dot" style="background:${COR[nivel(p)]}"></i>${p!=null?p.toFixed(0)+" Bar":"s/ leitura"}</span></div>
+    ${sugerida?`<div class="meta"><span style="color:#c9a227">Sugerida pela Torre — aceite ou ajuste (clique para editar).</span></div>`:""}
+    ${pend?`<div class="meta"><span style="color:#e3801f">Passou do horário e sem confirmação — foi feita? Clique para concluir.</span></div>`:""}
+    ${merged ? `<div class="meta"><span style="color:var(--ink)">${rotaTxt}</span></div>` : ""}
+    ${cancel ? `<div class="meta"><span style="color:var(--bad)">Cancelada: ${d.motivoCancel||"—"}</span></div>`
+             : `<div class="meta m-ocup"><span style="color:var(--muted)">cavalo ocupado até ${ret}${merged?" (rota+troca)":(d.viagem?" (ida+volta+1h)":"")}</span></div>`}
+    ${(d.motorista||d.carreta)?`<div class="meta m-fleet"><span>${[d.motorista,d.carreta].filter(Boolean).join(" · ")}</span></div>`:""}`;
+  ap.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",c));
+  ap.addEventListener("click",ev=>{ if(ev.target.closest(".rm")||ev.target.closest(".aceitar")) return; openEditor(c); });
+  ap.querySelector(".rm").onclick=ev=>{ ev.stopPropagation(); if(sugerida) descartarSugerida(c); else { delete a[c]; persist(); renderAll(); } };
+  const btnAceitar=ap.querySelector(".aceitar");
+  if(btnAceitar) btnAceitar.onclick=ev=>{ ev.stopPropagation(); aceitarSugerida(c); };
+  return ap;
+}
+/* cartão de entrega CANCELADA (histórico: fica visível, mas não ocupa nem arrasta) */
+function buildCancelCard(rec,day,idx){
+  const p=PRESSAO[rec.cliente];
+  const ap=document.createElement("div"); ap.className="appt cancel";
+  ap.style.borderLeftColor=STATUS_COR.CANCELADO; ap.style.cursor="default";
+  ap.innerHTML=`<div class="nm">${rec.cliente}<span class="right"><span class="badge" style="background:${STATUS_COR.CANCELADO}">CANCELADO</span><button class="rm" title="Excluir do histórico">✕</button></span></div>
+    <div class="meta"><span>${clienteBase(rec.cliente)} · ${saidaDe(rec)}</span><span class="pz"><i class="dot" style="background:${COR[nivel(p)]}"></i>${p!=null?p.toFixed(0)+" Bar":"s/ leitura"}</span></div>
+    <div class="meta"><span style="color:var(--bad)">Cancelada: ${rec.motivoCancel||"—"}</span></div>`;
+  ap.querySelector(".rm").onclick=ev=>{ ev.stopPropagation(); if(!confirm("Excluir do histórico a entrega cancelada de "+rec.cliente+"?")) return; dayCancel(day).splice(idx,1); persist(); renderAll(); };
+  return ap;
+}
+function renderBoard(){
+  const sched=document.getElementById("sched"); sched.innerHTML="";
+  const a=dayAssign(); const diaKey=ymd(viewDate);
+  const todos = baseSel===TODOS;
+  /* colunas: normal = cavalos da base; TODOS = todas as (base,cavalo) com entrega no dia */
+  let cols;
+  if(todos){
+    /* cavalos em atividade no dia: com entrega, emprestados (saída/entrada) ou bloqueados */
+    cols=[];
+    for(const base in REGISTRO){
+      cavalosDoDia(base,diaKey).forEach(cl=>{ const cav=cl.nome;
+        const temEntrega = Object.keys(a).some(c=>baseDaEntrega(a[c],c)===base && a[c].cav===cav)
+          || (canceladas[diaKey]||[]).some(r=>baseDaEntrega(r,r.cliente)===base && r.cav===cav);
+        const ativo = cl.tipo==="saiu" || cl.tipo==="entrou" || !!blocoDoDia(base,cav,diaKey) || temEntrega;
+        if(ativo) cols.push({base,cav,nome:cav,tipo:cl.tipo,rec:cl.rec,origem:cl.origem});
+      });
+    }
+  } else {
+    cols=cavalosDoDia(baseSel,diaKey).map(cl=>({base:baseSel,cav:cl.nome,nome:cl.nome,tipo:cl.tipo,rec:cl.rec,origem:cl.origem}));
+  }
+  sched.classList.toggle("compact", todos);
+  sched.style.gridTemplateColumns = todos
+    ? `44px repeat(${Math.max(cols.length,1)}, minmax(0,1fr))`      // Todas as bases: colunas dividem a largura da tela
+    : `62px repeat(${Math.max(cols.length,1)}, minmax(210px,1fr))`;
+  sched.style.gridAutoRows=`minmax(${SLOT_H}px, auto)`;
+  const today=new Date(); const ehHoje=diaKey===ymd(today);
+  const slotAgora=Math.floor((today.getHours()*60+today.getMinutes())/STEP)*STEP;
+  /* janelas de ocupação por coluna (chave base|cavalo) */
+  const kcol=cl=>cl.base+"|"+cl.cav;
+  const ocup={}; cols.forEach(cl=>ocup[kcol(cl)]=[]);
+  Object.keys(a).forEach(c=>{ const d=a[c]; const k=baseDaEntrega(d,c)+"|"+d.cav; if(!ocup[k]||d.status==="CANCELADO") return;
+    const j=janela(d); ocup[k].push({ini:j.ini,fim:j.fim,start:slotDe(d),c}); });
+  function emRota(k,s){ for(const j of (ocup[k]||[])){ if(j.start===s) continue; if(s<j.fim && j.ini<s+STEP) return j; } return null; }
+
+  /* cabeçalho */
+  const corner=document.createElement("div"); corner.className="corner"; sched.appendChild(corner);
+  if(!cols.length){ const vazio=document.createElement("div"); vazio.className="cav-h"; vazio.style.gridColumn="2 / -1"; vazio.innerHTML=`<span class="t" style="color:var(--muted)">Nenhuma programação neste dia.</span>`; sched.appendChild(vazio); }
+  cols.forEach((cl,idx)=>{
+    const cav=cl.cav; const letra=cav.replace(/\s*·.*/,"").replace(/Cavalo\s*/i,"")||(idx+1);
+    const bloco=blocoDoDia(cl.base,cav,diaKey);
+    const h=document.createElement("div"); h.className="cav-h"; if(cl.tipo==="saiu") h.style.opacity=".55";
+    let badges="";
+    if(todos) badges+=`<span class="blk-badge" style="background:#555" title="base">${cl.base}</span>`;
+    if(cl.tipo==="saiu") badges+=`<span class="blk-badge" title="emprestado">→ ${cl.rec.destino}</span>`;
+    else if(cl.tipo==="entrou") badges+=`<span class="blk-badge" style="background:#4aa3ff" title="emprestado de ${cl.origem}">de ${cl.origem}</span>`;
+    else if(bloco) badges+=`<span class="blk-badge" title="indisponível: ${bloco.motivo}">🔒 ${bloco.motivo}</span>`;
+    const botoes = todos ? ""
+      : cl.tipo==="proprio"
+        ? `<button class="lock" title="Bloquear / liberar">🔒</button><button class="lend" title="Emprestar para outra base">↔</button><button class="x" title="Remover cavalo">✕</button>`
+        : `<button class="lend" title="Encerrar empréstimo">↩</button>`;
+    h.innerHTML=`<span class="t"><span class="truck">${letra}</span><span class="cavnome">${cav}</span>${badges}</span><span style="display:flex;gap:6px">${botoes}</span>`;
+    if(!todos && cl.tipo==="proprio"){
+      h.querySelector(".lock").onclick=()=>abrirBloqueio(cav);
+      h.querySelector(".lend").onclick=()=>abrirEmprestimo(cav);
+      h.querySelector(".x").onclick=()=>{
+        const proprios=cavalosDe(baseSel);
+        if(proprios.length<=1){alert("Mantenha ao menos um cavalo nesta base.");return;}
+        if(!confirm("Remover "+cav+" da base "+baseSel+"? As empresas voltam para a lista.")) return;
+        for(const c in a) if(baseDaEntrega(a[c],c)===baseSel && a[c].cav===cav) delete a[c];
+        cavBase[baseSel]=proprios.filter(x=>x!==cav); saveCavs(); persist(); renderAll();
+      };
+    } else if(!todos){
+      h.querySelector(".lend").onclick=()=>{ if(confirm("Encerrar o empréstimo deste cavalo?")){ const i=emprestimos.indexOf(cl.rec); if(i>=0) emprestimos.splice(i,1); saveEmp(); renderAll(); } };
+    }
+    sched.appendChild(h);
+  });
+
+  /* linhas por faixa de tempo (24 h em passos de STEP min) */
+  for(let s=0;s<DAY_MIN;s+=STEP){
+    const ehHora=(s%60===0);
+    const g=document.createElement("div"); g.className="gutter"+(ehHoje&&s===slotAgora?" now":"")+(ehHora?" hh":"");
+    g.textContent=minToHHMM(s); sched.appendChild(g);
+    cols.forEach(cl=>{
+      const cav=cl.cav; const base=cl.base; const saiu=cl.tipo==="saiu"; const k=kcol(cl);
+      const bl=saiu?null:bloqueado(base,cav,diaKey,s);
+      const rota=emRota(k,s);
+      const cell=document.createElement("div");
+      cell.className="cell"+(ehHoje&&s===slotAgora?" now":"")+(ehHora?" hh":"")+((bl||saiu)?" blocked":"")+(rota&&!bl&&!saiu?" busy":"");
+      if(saiu) cell.title="Emprestado a "+cl.rec.destino; else if(bl) cell.title="Indisponível: "+bl.motivo; else if(rota) cell.title="Cavalo em rota para "+rota.c+" (até "+minToHHMM(rota.fim)+")";
+      Object.keys(a).filter(c=>baseDaEntrega(a[c],c)===base && a[c].cav===cav && slotDe(a[c])===s).forEach(c=>cell.appendChild(buildAppt(c,a)));
+      (canceladas[diaKey]||[]).forEach((rec,i)=>{ if(baseDaEntrega(rec,rec.cliente)===base && rec.cav===cav && slotDe(rec)===s) cell.appendChild(buildCancelCard(rec,diaKey,i)); });
+      if(saiu){ const lab=document.createElement("div"); lab.className="blk"; lab.textContent="↔ emprestado a "+cl.rec.destino; cell.appendChild(lab); }
+      else if(bl){ const lab=document.createElement("div"); lab.className="blk"; lab.textContent="🔧 "+bl.motivo; cell.appendChild(lab); }
+      else if(rota && rota.ini<s && rota.ini>=s-STEP){ const lab=document.createElement("div"); lab.className="blk"; lab.textContent="↘ em rota até "+minToHHMM(rota.fim); cell.appendChild(lab); }
+      if(!todos){
+        cell.addEventListener("dragover",e=>{e.preventDefault();cell.classList.add("drag");});
+        cell.addEventListener("dragleave",()=>cell.classList.remove("drag"));
+        cell.addEventListener("drop",e=>{
+          e.preventDefault(); cell.classList.remove("drag");
+          const c=e.dataTransfer.getData("text/plain"); if(!c) return;
+          if(saiu){ alert(cav+" está emprestado a "+cl.rec.destino+" nesse dia."); return; }
+          if(diaKey<ymd(today) || (ehHoje && s<slotAgora)){ alert("Não é possível programar às "+minToHHMM(s)+" — esse horário já passou. Escolha um horário à frente (ou use o editor para registrar uma entrega atrasada)."); return; }
+          if(bloqueado(base,cav,diaKey,s)){ alert(cav+" está indisponível ("+bl.motivo+") nesse horário."); return; }
+          const prev=a[c]||{}; const viag=(prev.viagem!=null?prev.viagem:viagemMinDe(prev.origem||base,c))||0;
+          const ini=s, fim=s+viag*2+TROCA_MIN;
+          const cf=conflitoCav(diaKey,base,cav,c,ini,fim);
+          if(cf){ alert(cav+" já está com a entrega de "+cf.c+" das "+minToHHMM(cf.ini)+" às "+minToHHMM(cf.fim)+".\nEscolha outro horário ou outro cavalo."); return; }
+          const hhmm=minToHHMM(s); a[c]={...prev,cav,origem:(prev.origem||base),saida:hhmm,h:Math.floor(s/60),min:s,viagem:(prev.viagem!=null?prev.viagem:viagemMinDe(prev.origem||base,c)),origemSugestao:undefined,aceito:undefined,autoCav:undefined}; persist(); renderAll();
+        });
+      }
+      sched.appendChild(cell);
+    });
+  }
+}
+
+/* ===== Novo cavalo ===== */
+function novoCavalo(){
+  const cavs=cavalosDe(baseSel); const letras="ABCDEFGHIJKLMNOPQRSTUVWXYZ"; let i=0,nome;
+  do{ nome="Cavalo "+(letras[i]||("#"+(i+1))); i++; }while(cavs.includes(nome));
+  const inp=prompt("Nome do cavalo para a base "+baseSel+":",nome); if(inp===null) return;
+  const nm=inp.trim()||nome; if(cavs.includes(nm)){alert("Já existe nesta base.");return;}
+  cavs.push(nm); saveCavs(); renderAll();
+}
+
+/* KPIs de total programado por base no dia (chips clicáveis na ribbon) */
+function renderKpis(){
+  const el=document.getElementById("kpis"); if(!el) return;
+  const a=dayAssign(); const cont={}; let total=0;
+  for(const b in REGISTRO) cont[b]=0;
+  for(const c in a){ const d=a[c]; if(d.status==="CANCELADO") continue; const b=baseDaEntrega(d,c); if(cont[b]!=null){ cont[b]++; total++; } }
+  let html=`<span class="kpi tot${baseSel===TODOS?" active":""}" data-b="${TODOS}" title="Ver todas as bases">Total<b>${total}</b></span>`;
+  for(const b in REGISTRO) html+=`<span class="kpi${cont[b]?"":" zero"}${b===baseSel?" active":""}" data-b="${b}" title="${cont[b]} entrega(s) programada(s) — clique para abrir">${b}<b>${cont[b]}</b></span>`;
+  el.innerHTML=html;
+  el.querySelectorAll(".kpi").forEach(k=>k.onclick=()=>selecionarBase(k.dataset.b));
+}
+function renderAll(){
+  document.getElementById("topDate").textContent=fmtLong(viewDate);
+  renderCal(); renderKpis(); renderBaseList(); renderBasePool(); renderBasebar(); renderBoard();
+}
+
+/* ===== Editor de entrega (modal) ===== */
+let editCliente=null, barChegTocado=false;
+const $=id=>document.getElementById(id);
+function recalcDerivados(){
+  const day=$("fData").value, t=$("fHora").value, viagem=parseInt($("fViagem").value)||0, c=$("fCliente").value;
+  $("fChegada").textContent=chegadaCalc(day,t,viagem)||"—";
+  const rate=CONSUMO[c]!=null?CONSUMO[c]:2;
+  $("fConsumoHint").textContent="(consumo ~"+rate.toFixed(1)+" Bar/h)";
+  if(!barChegTocado){
+    const bs=parseFloat($("fBarSaida").value);
+    $("fBarChegada").value = isNaN(bs) ? "" : Math.max(0, bs - rate*(viagem/60)).toFixed(0);
+  }
+}
+function preencherCavalos(origem,sel){
+  let nomes=nomesCavalosDia(origem,ymd(viewDate)); if(sel&&!nomes.includes(sel)) nomes=[sel,...nomes];
+  $("fCav").innerHTML=nomes.map(x=>`<option ${x===sel?"selected":""}>${x}</option>`).join("");
+}
+function openEditor(c){
+  const a=dayAssign(); const d=a[c]||{}; editCliente=c; barChegTocado=(d.barChegada!=null);
+  const origem=d.origem||clienteBase(c);
+  $("fCliente").innerHTML=REGISTRO[clienteBase(c)].map(x=>`<option ${x===c?"selected":""}>${x}</option>`).join("");
+  $("fBase").textContent=clienteBase(c);
+  $("fOrigem").innerHTML=Object.keys(REGISTRO).map(b=>`<option ${b===origem?"selected":""}>${b}</option>`).join("");
+  preencherCavalos(origem,d.cav);
+  $("fStatus").innerHTML=STATUS.map(s=>`<option ${s===(d.status||"PROGRAMADO")?"selected":""}>${s}</option>`).join("");
+  fillDatalist("dlCarretas",carretas); fillDatalist("dlMotoristas",motoristas); fillDatalist("dlPlacas",placas);
+  $("fCarreta").value=d.carreta||""; $("fMotorista").value=d.motorista||"";
+  $("fViagem").value=d.viagem!=null?d.viagem:(viagemMinDe(origem,c)!=null?viagemMinDe(origem,c):"");
+  $("fBarSaida").value=d.barSaida!=null?d.barSaida:(PRESSAO[c]!=null?PRESSAO[c].toFixed(0):"");
+  $("fData").value=ymd(viewDate);
+  $("fHora").value=saidaDe(d);
+  if(d.barChegada!=null) $("fBarChegada").value=d.barChegada;
+  $("fCancelMotivo").value=d.motivoCancel||""; toggleCancel();
+  /* opções de mescla: outros clientes da base livres (ou já mesclados nesta entrega) */
+  const base=clienteBase(c), sec=secundariasDia(ymd(viewDate)); const jaMescl=(d.paradas||[]).slice(1);
+  const cands=REGISTRO[base].filter(x=> x!==c && (jaMescl.includes(x) || (!a[x] && !sec.has(x))) );
+  $("fMesclaList").innerHTML = cands.length ? cands.map(x=>`<label style="font-size:12px;display:inline-flex;gap:5px;align-items:center;white-space:nowrap"><input type="checkbox" class="msc" value="${x}" ${jaMescl.includes(x)?"checked":""}>${x}</label>`).join("") : '<span style="color:var(--muted);font-size:12px">Nenhuma empresa livre para mesclar.</span>';
+  const r=d.real||{};
+  $("rCav").value=r.cav||""; $("rMotorista").value=r.motorista||""; $("rCarreta").value=r.carreta||"";
+  $("rSaida").value=r.saida||""; $("rChegada").value=r.chegada||"";
+  $("rBarSaida").value=r.barSaida!=null?r.barSaida:""; $("rBarChegada").value=r.barChegada!=null?r.barChegada:"";
+  recalcDerivados(); $("overlay").classList.add("open");
+}
+function concluirEntrega(){
+  const c=$("fCliente").value; const n=new Date(); const nowH=pad(n.getHours())+":"+pad(n.getMinutes());
+  $("rCav").value=$("fCav").value; $("rMotorista").value=$("fMotorista").value; $("rCarreta").value=$("fCarreta").value;
+  $("rSaida").value=$("fHora").value; $("rChegada").value=nowH;
+  $("rBarSaida").value=$("fBarSaida").value;
+  $("rBarChegada").value = (PRESSAO[c]!=null?PRESSAO[c].toFixed(0):$("fBarChegada").value);
+  $("fStatus").value="ENTREGUE"; toggleCancel();
+}
+function toggleCancel(){ $("fCancelWrap").style.display = $("fStatus").value==="CANCELADO" ? "flex" : "none"; }
+function fecharEditor(){ $("overlay").classList.remove("open"); editCliente=null; }
+function salvarEditor(){
+  if(!editCliente) return;
+  const a=dayAssign(); const novoC=$("fCliente").value; const targetDay=$("fData").value||ymd(viewDate);
+  const t=$("fHora").value||"08:00";
+  const status=$("fStatus").value;
+  const mescladas=[...document.querySelectorAll("#fMesclaList .msc:checked")].map(x=>x.value);
+  const origem=$("fOrigem").value||clienteBase(novoC);
+  const dados={ cav:$("fCav").value, origem, saida:t, h:Math.floor(toMin(t)/60), min:toMin(t),
+    carreta:$("fCarreta").value.trim(), motorista:$("fMotorista").value.trim(),
+    viagem:$("fViagem").value!==""?parseInt($("fViagem").value):null,
+    barSaida:$("fBarSaida").value!==""?parseFloat($("fBarSaida").value):null,
+    barChegada:$("fBarChegada").value!==""?parseFloat($("fBarChegada").value):null,
+    status, motivoCancel: status==="CANCELADO"?$("fCancelMotivo").value.trim():"" };
+  if(mescladas.length) dados.paradas=[novoC,...mescladas];   // viagem mesclada: primeira parada é o cliente principal
+  /* dados realizados (o que aconteceu de fato) */
+  const real={};
+  if($("rCav").value.trim()) real.cav=$("rCav").value.trim();
+  if($("rMotorista").value.trim()) real.motorista=$("rMotorista").value.trim();
+  if($("rCarreta").value.trim()) real.carreta=$("rCarreta").value.trim();
+  if($("rSaida").value) real.saida=$("rSaida").value;
+  if($("rChegada").value) real.chegada=$("rChegada").value;
+  if($("rBarSaida").value!=="") real.barSaida=parseFloat($("rBarSaida").value);
+  if($("rBarChegada").value!=="") real.barChegada=parseFloat($("rBarChegada").value);
+  if(Object.keys(real).length) dados.real=real;
+  if(real.motorista&&!motoristas.includes(real.motorista)){ motoristas.push(real.motorista); save(LS_MOT,motoristas); }
+  if(real.carreta&&!carretas.includes(real.carreta)){ carretas.push(real.carreta); save(LS_CAR,carretas); }
+  /* CANCELADO: registra no histórico (fica visível) e LIBERA a empresa para reprogramar */
+  if(status==="CANCELADO"){
+    if(!$("fCancelMotivo").value.trim()){ alert("Informe a justificativa do cancelamento."); return; }
+    dayCancel(targetDay).push({...dados, cliente:novoC, canceladaEm:new Date().toISOString()});
+    delete a[editCliente];   // some da programação ativa; empresa volta a ficar disponível
+    persist(); fecharEditor(); renderAll(); return;
+  }
+  if(!assign[targetDay]) assign[targetDay]={};
+  if((novoC!==editCliente || targetDay!==ymd(viewDate)) && assign[targetDay][novoC]){ alert("Esse cliente já está programado nesse dia."); return; }
+  /* aviso de horário passado — só quando é nova ou o horário mudou para o passado (não incomoda ao editar entrega já passada) */
+  const prevD=a[editCliente]; const mesmoTempo = prevD && saidaDe(prevD)===t && targetDay===ymd(viewDate);
+  if(passou(targetDay,t) && !mesmoTempo){
+    const dBR=new Date(targetDay+"T00:00:00").toLocaleDateString("pt-BR");
+    if(!confirm("A saída ("+dBR+" "+t+") já passou. Programar mesmo assim?")) return;
+  }
+  /* conflito: mesmo cavalo não pode estar em duas entregas sobrepostas (janela = rota + troca) */
+  const ini=toMin(t), fim=ini+durEntrega(dados);
+  const cf=conflitoCav(targetDay, origem, dados.cav, editCliente, ini, fim);
+  if(cf){ alert(dados.cav+" já está com a entrega de "+cf.c+" das "+minToHHMM(cf.ini)+" às "+minToHHMM(cf.fim)+".\nAjuste o horário ou troque de cavalo."); return; }
+  delete a[editCliente]; assign[targetDay][novoC]=dados;
+  mescladas.forEach(sc=>{ if(assign[targetDay][sc]) delete assign[targetDay][sc]; });   // secundárias entram na viagem, sem cartão próprio
+  if(dados.motorista&&!motoristas.includes(dados.motorista)){ motoristas.push(dados.motorista); save(LS_MOT,motoristas); }
+  if(dados.carreta&&!carretas.includes(dados.carreta)){ carretas.push(dados.carreta); save(LS_CAR,carretas); }
+  persist(); fecharEditor(); renderAll();
+}
+function removerEditor(){ if(!editCliente) return; const a=dayAssign(); delete a[editCliente]; persist(); fecharEditor(); renderAll(); }
+$("fCliente").onchange=e=>{ const c=e.target.value; $("fBase").textContent=clienteBase(c);
+  const v=viagemMinDe($("fOrigem").value,c); $("fViagem").value=v!=null?v:""; barChegTocado=false;
+  $("fBarSaida").value=PRESSAO[c]!=null?PRESSAO[c].toFixed(0):""; recalcDerivados(); };
+$("fOrigem").onchange=e=>{ const origem=e.target.value; preencherCavalos(origem,null);
+  const v=viagemMinDe(origem,$("fCliente").value); $("fViagem").value=v!=null?v:""; barChegTocado=false; recalcDerivados(); };
+["fData","fHora","fViagem","fBarSaida"].forEach(id=>$(id).addEventListener("input",recalcDerivados));
+$("fBarChegada").addEventListener("input",()=>{ barChegTocado=true; });
+$("fStatus").addEventListener("change",toggleCancel);
+$("fConcluir").onclick=concluirEntrega;
+$("mClose").onclick=fecharEditor; $("mCancel").onclick=fecharEditor; $("mSave").onclick=salvarEditor; $("mRemover").onclick=removerEditor;
+$("overlay").addEventListener("click",e=>{ if(e.target===$("overlay")) fecharEditor(); });
+
+/* ===== Bloqueio de cavalo (modal) ===== */
+let blkCav=null;
+function toggleBlkHoras(){ const dt=$("blkDiaTodo").checked; $("blkHoraWrap").style.display=dt?"none":"flex"; $("blkHoraWrap2").style.display=dt?"none":"flex"; }
+function renderBlkList(){
+  const wrap=$("blkList"); const arr=blocks.filter(b=>b.base===baseSel&&b.cav===blkCav);
+  if(!arr.length){ wrap.innerHTML='<span style="color:var(--muted);font-size:12px">Nenhum bloqueio cadastrado.</span>'; return; }
+  const fmt=d=>new Date(d+"T00:00:00").toLocaleDateString("pt-BR");
+  wrap.innerHTML=arr.map(b=>{ const i=blocks.indexOf(b);
+    const per=b.from===b.to?fmt(b.from):fmt(b.from)+" – "+fmt(b.to);
+    const hh=(b.mStart<=0&&b.mEnd>=DAY_MIN)?"dia todo":(minToHHMM(b.mStart)+"–"+minToHHMM(b.mEnd));
+    return `<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin:4px 0;font-size:12px"><span>🔒 ${b.motivo} · ${per} · ${hh}</span><button class="btn" data-i="${i}" style="padding:2px 8px;color:var(--bad);border-color:var(--bad)">remover</button></div>`;
+  }).join("");
+  wrap.querySelectorAll("button[data-i]").forEach(btn=>btn.onclick=()=>{ blocks.splice(+btn.dataset.i,1); saveBlocks(); renderBlkList(); renderAll(); });
+}
+function abrirBloqueio(cav){
+  blkCav=cav; $("blkTitle").textContent="Bloquear "+cav+" — base "+baseSel;
+  $("blkMotivo").value="Oficina"; $("blkDe").value=ymd(viewDate); $("blkAte").value=ymd(viewDate);
+  $("blkDiaTodo").checked=true; $("blkHi").value="00:00"; $("blkHf").value="23:30";
+  toggleBlkHoras(); renderBlkList(); $("ovBlock").classList.add("open");
+}
+function salvarBloqueio(){
+  const de=$("blkDe").value, ate=$("blkAte").value||de; if(!de){ alert("Informe a data."); return; }
+  const from=de<=ate?de:ate, to=de<=ate?ate:de;
+  let mS=0,mE=DAY_MIN;
+  if(!$("blkDiaTodo").checked){ mS=toMin($("blkHi").value||"00:00"); mE=toMin($("blkHf").value||"23:59"); if(mE<=mS) mE=mS+STEP; }
+  blocks.push({base:baseSel,cav:blkCav,from,to,mStart:mS,mEnd:mE,motivo:$("blkMotivo").value});
+  saveBlocks(); renderBlkList(); renderAll();
+}
+$("blkDiaTodo").addEventListener("change",toggleBlkHoras);
+$("blkSave").onclick=salvarBloqueio;
+$("blkClose").onclick=()=>$("ovBlock").classList.remove("open");
+$("blkCancel").onclick=()=>$("ovBlock").classList.remove("open");
+$("ovBlock").addEventListener("click",e=>{ if(e.target===$("ovBlock")) $("ovBlock").classList.remove("open"); });
+
+/* ===== Empréstimo de cavalo (modal) ===== */
+let empCav=null;
+function renderEmpList(){
+  const wrap=$("empList"); const arr=emprestimos.filter(e=>e.base===baseSel&&e.cav===empCav);
+  if(!arr.length){ wrap.innerHTML='<span style="color:var(--muted);font-size:12px">Nenhum empréstimo cadastrado.</span>'; return; }
+  const fmt=d=>new Date(d+"T00:00:00").toLocaleDateString("pt-BR");
+  wrap.innerHTML=arr.map(e=>{ const i=emprestimos.indexOf(e); const per=e.from===e.to?fmt(e.from):fmt(e.from)+" – "+fmt(e.to);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin:4px 0;font-size:12px"><span>↔ ${e.destino} · ${per}</span><button class="btn" data-i="${i}" style="padding:2px 8px;color:var(--bad);border-color:var(--bad)">encerrar</button></div>`;
+  }).join("");
+  wrap.querySelectorAll("button[data-i]").forEach(btn=>btn.onclick=()=>{ emprestimos.splice(+btn.dataset.i,1); saveEmp(); renderEmpList(); renderAll(); });
+}
+function abrirEmprestimo(cav){
+  empCav=cav; $("empTitle").textContent="Emprestar "+cav+" — base "+baseSel;
+  $("empDestino").innerHTML=Object.keys(REGISTRO).filter(b=>b!==baseSel).map(b=>`<option>${b}</option>`).join("");
+  $("empDe").value=ymd(viewDate); $("empAte").value=ymd(viewDate);
+  renderEmpList(); $("ovEmp").classList.add("open");
+}
+function salvarEmprestimo(){
+  const destino=$("empDestino").value, de=$("empDe").value, ate=$("empAte").value||de;
+  if(!destino||!de){ alert("Escolha a base de destino e a data."); return; }
+  const from=de<=ate?de:ate, to=de<=ate?ate:de;
+  emprestimos.push({base:baseSel,cav:empCav,destino,from,to}); saveEmp(); renderEmpList(); renderAll();
+}
+$("empSave").onclick=salvarEmprestimo;
+$("empClose").onclick=()=>$("ovEmp").classList.remove("open");
+$("empCancel").onclick=()=>$("ovEmp").classList.remove("open");
+$("ovEmp").addEventListener("click",e=>{ if(e.target===$("ovEmp")) $("ovEmp").classList.remove("open"); });
+
+/* ===== Comparação previsto × realizado ===== */
+let compScope="base";
+function chegadaPrevMin(d){
+  if(d.paradas&&d.paradas.length>1){ const tp=temposParadas(d); return tp.length?tp[tp.length-1].ch:null; }
+  if(d.viagem==null) return null; return toMin(saidaDe(d))+d.viagem;
+}
+function comparaLinhas(){
+  const dia=ymd(viewDate); const a=assign[dia]||{};
+  const bases = (compScope==="todos"||baseSel===TODOS) ? Object.keys(REGISTRO) : [baseSel];
+  const rows=[];
+  Object.keys(a).forEach(c=>{ const d=a[c]; const b=baseDaEntrega(d,c); if(!bases.includes(b)) return; rows.push({base:b,cliente:c,d}); });
+  rows.sort((x,y)=> (Object.keys(REGISTRO).indexOf(x.base)-Object.keys(REGISTRO).indexOf(y.base)) || toMin(saidaDe(x.d))-toMin(saidaDe(y.d)));
+  /* realizados do app sem entrega planejada correspondente */
+  realizadoAvulsos.filter(x=>x.dia===dia && bases.includes(x.base)).forEach(x=>rows.push({base:x.base,cliente:x.cliente,d:{real:x.real,semPrevisao:true,status:"SEM PREVISÃO"}}));
+  return {dia,rows};
+}
+function celCmp(prev,real){ const p=(prev==null||prev==="")?"—":prev; const r=(real==null||real==="")?"":real;
+  const dif = r!=="" && String(r)!==String(p);
+  return {html:`<span class="pv">${p}</span>${r!==""?`<span class="compsep">→</span><span class="rl">${r}</span>`:""}`, dif}; }
+function renderComparar(){
+  const {dia,rows}=comparaLinhas();
+  $("compTitle").textContent="Comparação previsto × realizado — "+((compScope==="todos"||baseSel===TODOS)?"todas as bases":baseSel)+" · "+fmtLong(viewDate);
+  $("compResumo").textContent=rows.length+" entrega(s) · "+rows.filter(x=>x.d.real).length+" concluída(s)";
+  $("compEscopoBase").classList.toggle("primary", !(compScope==="todos"||baseSel===TODOS));
+  $("compEscopoTodos").classList.toggle("primary", (compScope==="todos"||baseSel===TODOS));
+  if(!rows.length){ $("compBody").innerHTML='<div style="color:var(--muted);padding:16px">Nenhuma entrega neste dia/escopo.</div>'; return; }
+  let h='<table class="comp"><thead><tr><th>Base</th><th>Cliente</th><th>Cavalo (prev→placa)</th><th>Motorista</th><th>Carreta</th><th>Saída</th><th>Chegada</th><th>Bar chegada</th><th>Bar final</th><th>Abastec.</th><th>Atraso</th><th>Status</th></tr></thead><tbody>';
+  rows.forEach(({base,cliente,d})=>{ const r=d.real||{}; const semP=d.semPrevisao;
+    const cav=celCmp(semP?"—":d.cav,r.cav), mot=celCmp(semP?"—":(d.motorista||"—"),r.motorista), car=celCmp(semP?"—":(d.carreta||"—"),r.carreta);
+    const saida=celCmp(semP?"—":saidaDe(d),r.saida);
+    const cp=semP?null:chegadaPrevMin(d); const chega=celCmp(cp!=null?minToHHMM(cp):"—",r.chegada);
+    const bc=celCmp(d.barChegada!=null?d.barChegada:"—", r.barChegada!=null?r.barChegada:"");
+    const bfin = r.barFinal!=null?r.barFinal:""; const abast = r.abastecimento||"";
+    let atraso="—", cls="";
+    if(r.chegada && cp!=null){ const dm=toMin(r.chegada)-cp; atraso=(dm>0?"+":"")+dm+" min"; cls = dm>15?"dif":(dm<=0?"ok":""); }
+    h+=`<tr><td>${base}</td><td><b>${cliente}</b></td>`+
+       `<td>${cav.html}</td>`+
+       `<td class="${mot.dif?"dif":""}">${mot.html}</td>`+
+       `<td class="${car.dif?"dif":""}">${car.html}</td>`+
+       `<td>${saida.html}</td><td>${chega.html}</td><td>${bc.html}</td>`+
+       `<td class="rl">${bfin!==""?bfin:"—"}</td><td class="rl">${abast!==""?abast:"—"}</td>`+
+       `<td class="${cls}">${atraso}</td><td>${d.status||"PROGRAMADO"}</td></tr>`;
+  });
+  h+='</tbody></table>';
+  $("compBody").innerHTML=h;
+}
+function openComparar(){ compScope = baseSel===TODOS?"todos":"base"; renderComparar(); $("ovComp").classList.add("open"); }
+function exportComparar(){
+  const {dia,rows}=comparaLinhas();
+  const L=[["Data","Base","Cliente","Cavalo prev","Placa real","Motorista prev","Motorista real","Carreta prev","Carreta real","Saída prev","Chegada prev","Chegada real","Bar chegada prev","Bar chegada real","Bar final real","Abastecimento","NF","Atraso (min)","Status"]];
+  rows.forEach(({base,cliente,d})=>{ const r=d.real||{}; const semP=d.semPrevisao; const cp=semP?null:chegadaPrevMin(d); const atr=(r.chegada&&cp!=null)?(toMin(r.chegada)-cp):"";
+    L.push([dia,base,cliente,semP?"":(d.cav||""),r.cav||"",semP?"":(d.motorista||""),r.motorista||"",semP?"":(d.carreta||""),r.carreta||"",semP?"":saidaDe(d),cp!=null?minToHHMM(cp):"",r.chegada||"",semP?"":(d.barChegada!=null?d.barChegada:""),r.barChegada!=null?r.barChegada:"",r.barFinal!=null?r.barFinal:"",r.abastecimento||"",r.nf||"",atr,d.status||"PROGRAMADO"]); });
+  const csv=L.map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv"}); const url=URL.createObjectURL(blob);
+  const a2=document.createElement("a"); a2.href=url; a2.download="comparacao_"+dia+".csv"; a2.click(); URL.revokeObjectURL(url);
+}
+function normDataReal(s){ if(!s) return s; s=String(s).trim();
+  let m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/); if(m) return m[3]+"-"+m[2]+"-"+m[1];
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m) return m[1]+"-"+m[2]+"-"+m[3]; return s; }
+function parseCSVReal(text){
+  const linhas=text.replace(/\r/g,"").split("\n").filter(l=>l.trim()!==""); if(!linhas.length) return [];
+  const delim=linhas[0].includes(";")?";":",";
+  const split=l=>{ const o=[]; let cur="",q=false; for(let i=0;i<l.length;i++){ const ch=l[i];
+    if(ch==='"'){ if(q&&l[i+1]==='"'){cur+='"';i++;} else q=!q; } else if(ch===delim&&!q){ o.push(cur);cur=""; } else cur+=ch; } o.push(cur); return o; };
+  const head=split(linhas[0]).map(h=>h.trim().toLowerCase().replace(/[^a-z0-9]/g,""));
+  const map={
+    cliente:["cliente","empresa","client","titulo"],
+    datahora:["dataehorainicial","datahora","datahorainicial"],
+    data:["data","dia","date"],
+    cavalo:["placacavalo","cavalo","cav","caminhao","cavalorealizado","placa"],
+    carreta:["carreta1","carreta","carretarealizado"],
+    motorista:["nomemotorista","motorista","motoristarealizado","driver"],
+    saida:["saida","saidareal","horasaida","saidarealizada"],
+    chegada:["chegada","chegadareal","horachegada","chegadarealizada"],
+    barchegada:["pressaochegada","barchegada","barnachegada","barchegadareal"],
+    barfinal:["pressaofinalizada","pressaofinal","barfinal"],
+    barsaida:["barsaida","barnasaida","barsaidareal"],
+    abastecimento:["abastecimentoqty","abastecimento","abastqty","qtd"],
+    nf:["notafiscal","nf","nota","m2nfe"],
+    base:["baseorigem","base"]
+  };
+  const col=k=>{ for(const alt of map[k]){ const i=head.indexOf(alt); if(i>=0) return i; } return -1; };
+  const ci={}; for(const k in map) ci[k]=col(k);
+  const regs=[];
+  for(let r=1;r<linhas.length;r++){ const cells=split(linhas[r]); const g=k=>ci[k]>=0?(cells[ci[k]]||"").trim():"";
+    regs.push({cliente:g("cliente"),dataHora:g("datahora"),data:normDataReal(g("data")),cavalo:g("cavalo"),carreta:g("carreta"),motorista:g("motorista"),saida:g("saida"),chegada:g("chegada"),barChegada:g("barchegada"),barFinal:g("barfinal"),barSaida:g("barsaida"),abastecimento:g("abastecimento"),nf:g("nf"),base:g("base")}); }
+  return regs;
+}
+$("comparBtn").onclick=openComparar;
+$("compClose").onclick=()=>$("ovComp").classList.remove("open");
+$("compEscopoBase").onclick=()=>{ compScope="base"; renderComparar(); };
+$("compEscopoTodos").onclick=()=>{ compScope="todos"; renderComparar(); };
+$("compExport").onclick=exportComparar;
+$("compImport").onclick=()=>$("compFile").click();
+$("compFile").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ let regs=[]; const txt=String(rd.result||"");
+    try{ if(f.name.toLowerCase().endsWith(".json")||/^\s*[\[{]/.test(txt)){ const j=JSON.parse(txt); regs=Array.isArray(j)?j:(j.registros||[]); regs=regs.map(x=>({...x,data:normDataReal(x.data)})); } else regs=parseCSVReal(txt); }
+    catch(err){ alert("Não consegui ler o arquivo: "+err.message); return; }
+    const n=aplicarRealizado(regs); persist(); renderComparar(); renderAll();
+    alert("Importado: "+n+" casada(s) com o planejado"+(realizadoAvulsos.length?" · "+realizadoAvulsos.length+" sem previsão":"")+"."); };
+  rd.readAsText(f,"utf-8"); e.target.value=""; };
+$("ovComp").addEventListener("click",e=>{ if(e.target===$("ovComp")) $("ovComp").classList.remove("open"); });
+
+/* ===== Toolbar ===== */
+document.getElementById("bbSelect").onchange=e=>selecionarBase(e.target.value);
+document.getElementById("addCav").onclick=novoCavalo;
+document.getElementById("today").onclick=()=>{ viewDate=new Date(); viewDate.setHours(0,0,0,0); calMonth=new Date(viewDate.getFullYear(),viewDate.getMonth(),1); renderAll(); };
+document.getElementById("prevM").onclick=()=>{ calMonth.setMonth(calMonth.getMonth()-1); renderCal(); };
+document.getElementById("nextM").onclick=()=>{ calMonth.setMonth(calMonth.getMonth()+1); renderCal(); };
+function pulaDia(n){ viewDate.setDate(viewDate.getDate()+n); calMonth=new Date(viewDate.getFullYear(),viewDate.getMonth(),1); renderAll(); }
+document.getElementById("prevD").onclick=()=>pulaDia(-1);
+document.getElementById("nextD").onclick=()=>pulaDia(1);
+document.getElementById("clearDay").onclick=()=>{
+  const dk=ymd(viewDate); const a=dayAssign();
+  if(baseSel===TODOS){
+    if(!confirm("Limpar TODA a programação de "+fmtLong(viewDate)+" (todas as bases, inclui canceladas)?")) return;
+    assign[dk]={}; canceladas[dk]=[]; persist(); renderAll(); return;
+  }
+  if(confirm("Limpar a programação da base "+baseSel+" em "+fmtLong(viewDate)+" (inclui canceladas)?")){
+    Object.keys(a).forEach(c=>{ if(baseDaEntrega(a[c],c)===baseSel) delete a[c]; });
+    if(canceladas[dk]) canceladas[dk]=canceladas[dk].filter(r=>baseDaEntrega(r,r.cliente)!==baseSel);
+    persist(); renderAll();
+  }
+};
+document.getElementById("exportBtn").onclick=()=>{
+  const a=dayAssign(); const dia=ymd(viewDate);
+  const basesExp = baseSel===TODOS ? Object.keys(REGISTRO) : [baseSel];
+  const linhas=[["Data","Base origem","Cavalo","Carreta","Motorista","Cliente","Base cliente","Paradas (mescla)","Viagem (min)","Saída","Chegada","Bar saída","Bar chegada","Status","Justificativa"]];
+  const linhaEntrega=(base,cav,c,d)=>{ const saida=saidaDe(d); const merged=d.paradas&&d.paradas.length>1;
+    return [dia,base,cav,d.carreta||"",d.motorista||"",c,clienteBase(c),merged?d.paradas.join(" → "):"",d.viagem!=null?d.viagem:"",saida,
+      merged?minToHHMM(janela(d).fim):(d.viagem?chegadaCalc(dia,saida,d.viagem):""),d.barSaida!=null?d.barSaida:(PRESSAO[c]!=null?PRESSAO[c].toFixed(0):""),
+      d.barChegada!=null?d.barChegada:"",d.status||"PROGRAMADO",d.motivoCancel||""]; };
+  basesExp.forEach(base=>{
+    nomesCavalosDia(base,dia).forEach(cav=>{
+      const itens=Object.keys(a).filter(c=>baseDaEntrega(a[c],c)===base && a[c].cav===cav).map(c=>({c,d:a[c]}));
+      (canceladas[dia]||[]).forEach(r=>{ if(baseDaEntrega(r,r.cliente)===base && r.cav===cav) itens.push({c:r.cliente,d:r}); });
+      itens.sort((x,y)=>toMin(saidaDe(x.d))-toMin(saidaDe(y.d)))
+        .forEach(({c,d})=>linhas.push(linhaEntrega(base,cav,c,d))); });
+  });
+  /* cavalos bloqueados neste dia */
+  const bloqs=blocks.filter(b=>basesExp.includes(b.base) && dia>=b.from && dia<=b.to).sort((x,y)=>x.mStart-y.mStart);
+  linhas.push([]); linhas.push(["CAVALOS BLOQUEADOS NESTE DIA"]); linhas.push(["Base","Cavalo","Motivo","De","Até","Início","Fim"]);
+  if(bloqs.length){
+    bloqs.forEach(b=>{ const diaTodo=(b.mStart<=0&&b.mEnd>=DAY_MIN);
+      linhas.push([b.base,b.cav,b.motivo,b.from,b.to,diaTodo?"dia todo":minToHHMM(b.mStart),diaTodo?"":minToHHMM(b.mEnd)]); });
+  } else { linhas.push(["—","nenhum cavalo bloqueado","","","","",""]); }
+  /* empréstimos ativos neste dia */
+  const emps=emprestimos.filter(e=>(basesExp.includes(e.base)||basesExp.includes(e.destino)) && dia>=e.from && dia<=e.to);
+  if(emps.length){
+    linhas.push([]); linhas.push(["EMPRÉSTIMOS DE CAVALO NESTE DIA"]); linhas.push(["Cavalo","Origem","Destino","De","Até"]);
+    emps.forEach(e=>linhas.push([e.cav,e.base,e.destino,e.from,e.to]));
+  }
+  const csv=linhas.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv"}); const url=URL.createObjectURL(blob);
+  const slug=(baseSel===TODOS?"todas":baseSel).normalize("NFD").replace(/[^\w]+/g,"_");
+  const a2=document.createElement("a"); a2.href=url; a2.download="programacao_"+slug+"_"+dia+".csv"; a2.click(); URL.revokeObjectURL(url);
+};
+
+/* ==================================================================
+   PONTE COM A TORRE DE CONTROLE (painel de pressão)
+   A Torre publica a programação num canal compartilhado do navegador
+   (localStorage["logas_sugestoes_pressao"]). Este Kanban lê o canal e
+   MATERIALIZA as entregas no quadro sozinho — o operador não importa nada.
+   Cada entrega vinda da Torre nasce como "sugerida" (origemSugestao:"pressao",
+   aceito:false) e aparece destacada; o operador aceita, ajusta ou descarta.
+   Regra de não-destruição: só criamos/atualizamos entregas ainda sugeridas.
+   Assim que o operador aceita, edita, arrasta ou conclui, ela deixa de ser
+   sugestão e a Torre não a toca mais.
+   ================================================================== */
+const LS_FEED_PRESSAO="logas_sugestoes_pressao";
+const LS_PLANO_PRESSAO="logas_plano";                 // plano editável da Torre (fallback antigo)
+const LS_SUG_DESCARTADAS="logas_kanban_sug_descartadas";  // { enviadoEm, sigs:[] } — descartes deste envio
+
+function _lerFeedObj(){ try{ return JSON.parse(localStorage.getItem(LS_FEED_PRESSAO))||null; }catch(e){ return null; } }
+function lerItensPressao(){
+  const f=_lerFeedObj(); if(f&&Array.isArray(f.itens)) return f.itens;
+  try{ const a=JSON.parse(localStorage.getItem(LS_PLANO_PRESSAO)); return Array.isArray(a)?a:[]; }catch(e){ return []; }
+}
+function feedGerado(){ const f=_lerFeedObj(); return f&&f.gerado?new Date(f.gerado):null; }
+/* assinatura de uma sugestão: cliente + dia + hora de saída */
+function sigSug(cliente,dia,hhmm){ return cliente+"|"+dia+"|"+hhmm; }
+/* descartes válidos só para o envio atual (novo enviadoEm zera a lista) */
+function descartadasAtuais(){
+  const f=_lerFeedObj(); const env=(f&&f.enviadoEm)||"";
+  let d; try{ d=JSON.parse(localStorage.getItem(LS_SUG_DESCARTADAS)); }catch(e){ d=null; }
+  if(!d || d.enviadoEm!==env) return new Set();
+  return new Set(Array.isArray(d.sigs)?d.sigs:[]);
+}
+function registrarDescarte(sig){
+  const f=_lerFeedObj(); const env=(f&&f.enviadoEm)||"";
+  const set=descartadasAtuais(); set.add(sig);
+  save(LS_SUG_DESCARTADAS,{enviadoEm:env,sigs:[...set]});
+}
+
+/* Converte um item da Torre {cli,cavalo,carreta,mot,saida:"YYYY-MM-DDTHH:MM"} numa
+   entrega no formato do Kanban. Usa o cadastro DESTE Kanban (base, viagem, pressão).
+   Devolve {dia, cliente, dados} ou null se o cliente não existe aqui. */
+function sugestaoParaEntrega(s){
+  const cliente=canonCliente(s.cli);
+  const base=clienteBase(cliente); if(!base) return null;
+  const saida=String(s.saida||"");
+  const dia=saida.slice(0,10) || ymd(new Date());
+  const hhmm=saida.slice(11,16) || "08:00";
+  const viagem=viagemMinDe(base,cliente);
+  const barSaida=PRESSAO[cliente]!=null ? +PRESSAO[cliente].toFixed(0) : null;
+  const rate=CONSUMO[cliente]!=null?CONSUMO[cliente]:2;
+  const barChegada=(barSaida!=null && viagem!=null) ? Math.max(0,+(barSaida-rate*(viagem/60)).toFixed(0)) : null;
+  const cavTorre=(s.cavalo||"").trim();       // cavalo definido na Torre (respeitado); vazio => o Kanban distribui
+  const dados={
+    cav:cavTorre, autoCav:!cavTorre,           // autoCav: precisa de atribuição por disponibilidade
+    origem:undefined,                          // deixa o Kanban resolver a base pelo cadastro dele
+    saida:hhmm, h:Math.floor(toMin(hhmm)/60), min:toMin(hhmm),
+    carreta:(s.carreta||"").trim(), motorista:(s.mot||"").trim(),
+    viagem:viagem!=null?viagem:null, barSaida, barChegada,
+    status:"A PROGRAMAR", motivoCancel:"",
+    origemSugestao:"pressao", aceito:false
+  };
+  return {dia, cliente, dados, base};
+}
+
+/* Escolhe um cavalo para uma entrega que veio sem cavalo definido, considerando o que já
+   está no dia/base: evita quem tem a janela sobreposta e, entre os livres, prefere o menos
+   carregado — assim as entregas se distribuem pela frota em vez de empilhar num só. */
+function cargaCavalo(day,base,cav,exceptC){
+  const a=assign[day]||{}; let tot=0;
+  for(const c in a){ if(c===exceptC) continue; const d=a[c];
+    if(d.cav!==cav || baseDaEntrega(d,c)!==base || d.status==="CANCELADO") continue;
+    tot+=durEntrega(d); }
+  return tot;
+}
+function escolherCavalo(day,base,cliente,dados){
+  const candidatos=nomesCavalosDia(base,day);
+  const lista=(candidatos&&candidatos.length)?candidatos:cavalosDe(base).slice();
+  if(!lista.length) return "Cavalo A";
+  const ini=toMin(saidaDe(dados)), fim=ini+durEntrega(dados);
+  const livres=[], ocupados=[];
+  lista.forEach(cav=>{
+    const conf=conflitoCav(day,base,cav,cliente,ini,fim);
+    (conf?ocupados:livres).push(cav);
+  });
+  if(livres.length){
+    /* entre os livres, o menos carregado no dia (espalha a frota) */
+    livres.sort((x,y)=>cargaCavalo(day,base,x,cliente)-cargaCavalo(day,base,y,cliente));
+    return livres[0];
+  }
+  /* todos conflitam: escolhe o que libera mais cedo, deixando o menor choque para o operador */
+  ocupados.sort((x,y)=>{
+    const cx=conflitoCav(day,base,x,cliente,ini,fim), cy=conflitoCav(day,base,y,cliente,ini,fim);
+    return (cx?cx.fim:0)-(cy?cy.fim:0);
+  });
+  return ocupados[0];
+}
+
+/* Materializa no assign as entregas enviadas pela Torre. Só age se o feed foi
+   explicitamente enviado (enviado:true). Não toca no que o operador já aceitou/mexeu. */
+function sincronizarSugestoes(){
+  const f=_lerFeedObj();
+  if(!f || !f.enviado || !Array.isArray(f.itens)) return 0;
+  const descartadas=descartadasAtuais();
+  let novas=0, atualizadas=0; let mexeuCav=false; const diasBases=new Set();
+  /* Fase 1: cria/atualiza as entregas (cavalo da Torre quando houver; senão fica p/ atribuir) */
+  f.itens.forEach(s=>{
+    const conv=sugestaoParaEntrega(s); if(!conv) return;
+    const {dia,cliente,dados,base}=conv;
+    if(descartadas.has(sigSug(cliente,dia,dados.saida))) return;   // operador descartou nesta remessa
+    if(!assign[dia]) assign[dia]={};
+    const atual=assign[dia][cliente];
+    if(atual){
+      const aindaSugestao = atual.origemSugestao==="pressao" && atual.aceito===false;
+      if(!aindaSugestao) return;                                   // preserva o que o operador já mexeu
+      const cavTorre=(s.cavalo||"").trim();
+      /* mantém o cavalo que já estava (atribuído ou designado); só troca se a Torre mandar um novo */
+      if(cavTorre){ dados.cav=cavTorre; dados.autoCav=false; }
+      else { dados.cav=atual.cav||""; dados.autoCav=(atual.autoCav!==false && !atual.cav) ? true : !atual.cav; }
+      dados.carreta = dados.carreta || atual.carreta || "";
+      dados.motorista = dados.motorista || atual.motorista || "";
+      assign[dia][cliente]=dados; atualizadas++;
+    } else {
+      assign[dia][cliente]=dados; novas++;
+    }
+    diasBases.add(dia+"|"+base);
+    if(dados.motorista && !motoristas.includes(dados.motorista)) motoristas.push(dados.motorista);
+    if(dados.carreta && !carretas.includes(dados.carreta)) carretas.push(dados.carreta);
+  });
+  /* Fase 2: distribui cavalos para as entregas sugeridas sem cavalo, por dia/base,
+     na ordem do horário de saída, evitando conflito e balanceando a carga. */
+  diasBases.forEach(key=>{
+    const [dia,base]=key.split("|"); const a=assign[dia]||{};
+    const pend=Object.keys(a).filter(c=>{
+      const d=a[c]; return d.origemSugestao==="pressao" && d.aceito===false && d.autoCav && baseDaEntrega(d,c)===base;
+    }).sort((x,y)=>toMin(saidaDe(a[x]))-toMin(saidaDe(a[y])));
+    pend.forEach(c=>{
+      const d=a[c]; const cav=escolherCavalo(dia,base,c,d);
+      d.cav=cav;
+      const lst=cavalosDe(base); if(cav && !lst.includes(cav)){ lst.push(cav); mexeuCav=true; }
+    });
+  });
+  if(mexeuCav) saveCavs();
+  if(novas||atualizadas){ save(LS_MOT,motoristas); save(LS_CAR,carretas); persist(); }
+  return novas+atualizadas;
+}
+
+/* Descartar: remove a sugestão do quadro e evita que ela volte no mesmo envio da Torre.
+   Um novo envio (novo enviadoEm) traz tudo de volta, pois é uma decisão nova da Torre. */
+function descartarSugerida(c){
+  const dia=ymd(viewDate); const a=dayAssign(); const d=a[c]; if(!d) return;
+  registrarDescarte(sigSug(c,dia,saidaDe(d)));
+  delete a[c]; persist(); renderAll(); atualizarBadgeSugeridas();
+}
+
+/* Aceitar: a entrega deixa de ser sugestão e vira PROGRAMADO (some o destaque). */
+function aceitarSugerida(c){
+  const a=dayAssign(); const d=a[c]; if(!d) return;
+  d.origemSugestao=undefined; d.aceito=undefined; d.autoCav=undefined;
+  if(d.status==="A PROGRAMAR") d.status="PROGRAMADO";
+  persist(); renderAll(); atualizarBadgeSugeridas();
+}
+/* Aceitar todas as sugeridas do dia visível (respeita a base selecionada). */
+function aceitarTodasSugeridas(){
+  const a=dayAssign(); let n=0;
+  for(const c in a){ const d=a[c];
+    const inBase=(baseSel===TODOS)||baseDaEntrega(d,c)===baseSel;
+    if(inBase && d.origemSugestao==="pressao" && d.aceito===false){
+      d.origemSugestao=undefined; d.aceito=undefined; d.autoCav=undefined;
+      if(d.status==="A PROGRAMAR") d.status="PROGRAMADO"; n++;
+    }
+  }
+  if(n){ persist(); renderAll(); }
+  atualizarBadgeSugeridas();
+}
+/* quantas sugeridas ainda pendentes no dia visível (para o botão/badge) */
+function contarSugeridasDia(){
+  const a=dayAssign(); let n=0;
+  for(const c in a){ const d=a[c];
+    const inBase=(baseSel===TODOS)||baseDaEntrega(d,c)===baseSel;
+    if(inBase && d.origemSugestao==="pressao" && d.aceito===false) n++;
+  }
+  return n;
+}
+function atualizarBadgeSugeridas(){
+  const btn=document.getElementById("aceitarSugeridasBtn"); const badge=document.getElementById("sugeridasBadge");
+  if(!btn) return; const n=contarSugeridasDia();
+  if(n>0){ btn.style.display="inline-flex"; badge.textContent=n; } else btn.style.display="none";
+}
+
+document.getElementById("aceitarSugeridasBtn").onclick=aceitarTodasSugeridas;
+
+/* Sincroniza e redesenha. Chamado no load, no intervalo, ao focar a janela e quando a
+   Torre grava no localStorage em outra aba do mesmo navegador. */
+function sincronizarERenderizar(){
+  const antes=JSON.stringify(assign);
+  sincronizarSugestoes();
+  if(JSON.stringify(assign)!==antes) renderAll();
+  atualizarBadgeSugeridas();
+}
+
+sincronizarSugestoes();
+renderAll();
+atualizarBadgeSugeridas();
+
+/* a cada minuto: linha do "agora", avisos e sincronização com a Torre (janela fechada) */
+setInterval(()=>{ if(!document.querySelector(".overlay.open")){ sincronizarSugestoes(); renderAll(); atualizarBadgeSugeridas(); } }, 60000);
+/* a Torre gravou em outra aba: materializa na hora */
+window.addEventListener("storage",e=>{ if(e.key===LS_FEED_PRESSAO){ sincronizarERenderizar(); } });
+/* ao voltar o foco para o Kanban, pega o que a Torre enviou enquanto estava em outra aba */
+window.addEventListener("focus",()=>{ if(!document.querySelector(".overlay.open")) sincronizarERenderizar(); });
+</script>
+</body>
+</html>

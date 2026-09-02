@@ -1,0 +1,14 @@
+24/03/2021 21:20:03 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  24/03/2021 21:26:31
+--------------------------------------------------------
+
+24/03/2021 21:27:00 [IOCNTRL.EXE] Failed to launch driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+24/03/2021 21:27:16 [fix.exe] Proficy iFIX Software is running!
+
+24/03/2021 23:50:31 [fix.exe] Shutdown attempt in progress...
+

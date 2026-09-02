@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administração — Portal do Cliente | Logás</title>
+<style>
+  :root{
+    --bg:#070b14; --panel:#0f1828; --panel2:#13203a; --line:#22324d;
+    --text:#eef4fd; --muted:#8298b9; --cyan:#3bc4ec; --red:#f1556a; --amber:#f4cb53;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:radial-gradient(1200px 600px at 70% -10%,#0d1730,var(--bg));
+       color:var(--text);font-family:"Segoe UI",system-ui,Arial,sans-serif;
+       display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{width:100%;max-width:380px;background:linear-gradient(180deg,var(--panel),#0a1120);
+        border:1px solid var(--line);border-radius:14px;padding:28px 26px 24px;
+        box-shadow:0 4px 30px rgba(0,0,0,.55)}
+  h1{margin:0;font-size:19px;font-weight:800;letter-spacing:.4px}
+  h1 span{color:var(--amber)}
+  p.sub{margin:6px 0 22px;color:var(--muted);font-size:13px;line-height:1.45}
+  label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+        color:var(--muted);font-weight:700;margin-bottom:6px}
+  input{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);
+        border-radius:9px;padding:11px 12px;font-size:15px;margin-bottom:16px;font-family:inherit}
+  input:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:var(--amber)}
+  button{width:100%;background:var(--amber);color:#1c1503;border:0;border-radius:9px;
+         padding:12px;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:.3px}
+  button:hover{filter:brightness(1.08)}
+  button[disabled]{opacity:.6;cursor:progress}
+  .erro{background:rgba(241,85,106,.12);border:1px solid var(--red);color:#ffd7dd;
+        border-radius:9px;padding:10px 12px;font-size:13px;margin-bottom:16px;display:none}
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Administração <span>Logás</span></h1>
+  <p class="sub">Cadastro de clientes e liberação de acessos.</p>
+
+  <div class="erro" id="erro" role="alert"></div>
+
+  <form id="f">
+    <label for="login">Login</label>
+    <input id="login" name="login" autocapitalize="none" autocomplete="username" required>
+    <label for="senha">Senha</label>
+    <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+    <button id="b" type="submit">Entrar</button>
+  </form>
+</main>
+
+<script>
+const f=document.getElementById("f"), b=document.getElementById("b"), erro=document.getElementById("erro");
+f.addEventListener("submit", async ev=>{
+  ev.preventDefault();
+  erro.style.display="none"; b.disabled=true; b.textContent="Entrando…";
+  try{
+    const r=await fetch("/admin/entrar",{method:"POST",body:new FormData(f)});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok && d.destino){ location.href=d.destino; return; }
+    erro.textContent=d.erro||"Não foi possível entrar.";
+    erro.style.display="block";
+    document.getElementById("senha").value="";
+  }catch(e){
+    erro.textContent="Sem conexão com o servidor.";
+    erro.style.display="block";
+  }
+  b.disabled=false; b.textContent="Entrar";
+});
+</script>
+</body>
+</html>

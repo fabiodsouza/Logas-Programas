@@ -1,0 +1,10 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  09/12/2019 00:23:20
+--------------------------------------------------------
+
+09/12/2019 00:23:35 [IOCNTRL.EXE] Failed to launch driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+09/12/2019 00:23:41 [fix.exe] Proficy iFIX Software is running!
+

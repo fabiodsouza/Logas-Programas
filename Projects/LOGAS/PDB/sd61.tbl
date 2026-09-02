@@ -1,0 +1,101 @@
+// SD block conversion table
+// v6.1 -> 7.0
+//#define	  SD_NGROUPS	50	/* number of groups */
+//#define	  SD_OPG	25	/* number of observations per group */
+//typedef struct 
+// {
+//   FLOAT		xbar;		/* XBAR value */
+//   FLOAT		range;		/* range */
+//   FLOAT		sigma;		/* STD. DEV. value */
+// } SDGROUP;
+//typedef struct 
+// {
+//	FLOAT		xbar;		/* current value = latest XBAR */
+//	FLOAT		uclx;		/* upper control limit for XBAR */
+//	FLOAT		lclx;		/* lower control limit for XBAR */
+//	FLOAT		uwlx;		/* upper warning limit for XBAR */
+//	FLOAT		lwlx;		/* lower warning limit for XBAR */
+//	FLOAT		uslx;		/* upper specification limit for XBAR */
+//	FLOAT		lslx;		/* lower specification limit for XBAR */
+// } X_INFO;
+//typedef struct 
+// {
+//	FLOAT		r;		/* latest range */
+//	FLOAT		uclr;		/* upper control limit for ranges */
+//	FLOAT		lclr;		/* lower control limit for ranges */
+//	FLOAT		rbar;		/* avg of ranges (RBAR) */
+// } R_INFO;
+//typedef struct 
+// {
+//	FLOAT		sigma;		/* latest std. dev. */
+//	FLOAT		ucls;		/* upper std. dev. limit for SBAR */
+//	FLOAT		lcls;		/* lower std. dev. limit for SBAR */
+//	FLOAT		sbar;		/* avg of SIGMAs (SBAR) */
+// } S_INFO;
+
+	PBHDR	//pbhdr;		/* primary block header */
+	LBI	//input;		/* 'get from' info */
+	LBI	//scan_qual;	/* scan qualifier info */
+	DESC	//desc;		/* block descriptor */
+
+	EGUREC	//egu;		/* egu info (analog) */
+
+	INT16	//wait;		/* wait time between groups */
+
+	UCHAR	//nobsrv;		/* # of observations per group */
+	UCHAR	//ngrp;		/* # of groups to use (MAX = SD_NGROUPS) */
+	UCHAR	//calc_option;	/* xbb, rbar & sbar calculation option */
+	UCHAR	//limit_option;	/* limit calculation option */
+
+	UCHAR	//x_ctrl_len;	/* # of groups for X control limit alarming */
+	UCHAR	//x_warn_len;	/* # of groups for X warning limit alarming */
+	UCHAR	//r_ctrl_len;	/* # of groups for R control limit alarming */
+	UCHAR	//x_trend_len;	/* # of groups for X trend runs alarming */
+	UCHAR	//x_crit_len;	/* # of groups for X critical runs alarming */
+	UCHAR	//x_run_len;	/* # of groups for X length of runs alarming */
+	UCHAR	//x_spec_len;	/* # of groups for X spec limit alarming */
+	UCHAR	//s_ctrl_len;	/* # of groups for S control limit alarming */
+	UCHAR	//allen;		/* all enable (bit mask) (0 disables test) */
+	UCHAR   //prev_state;	/* to store the previous state of the
+				*  scan qualifier
+				*/
+	UCHAR	//options;	/* block operation status:  nv, done */
+	UCHAR	//nseq;		/* sequence number */
+	UCHAR	//grp_cnt;	/* number of groups */
+	UCHAR	//grp_ptr;	/* index for puts into groups (next put) */
+	UCHAR	//obs_cnt;	/* count of current observations */
+	UCHAR	//allst;		/* all status (bit mask) */
+
+	INT32	//cwait;		/* current wait counter */
+	FLOAT	//xbb;		/* avg of XBARs (XBARBAR) */
+	// decompose these info structs into component floats
+	//X_INFO	//x_info;		/* structure containing XBAR info */
+	FLOAT		//xbar;		/* current value = latest XBAR */
+	FLOAT		//uclx;		/* upper control limit for XBAR */
+	FLOAT		//lclx;		/* lower control limit for XBAR */
+	FLOAT		//uwlx;		/* upper warning limit for XBAR */
+	FLOAT		//lwlx;		/* lower warning limit for XBAR */
+	FLOAT		//uslx;		/* upper specification limit for XBAR */
+	FLOAT		//lslx;		/* lower specification limit for XBAR */
+	
+	//R_INFO	r_info;		/* structure containing RBAR info */
+	FLOAT		//r;		/* latest range */
+	FLOAT		//uclr;		/* upper control limit for ranges */
+	FLOAT		//lclr;		/* lower control limit for ranges */
+	FLOAT		//rbar;		/* avg of ranges (RBAR) */
+	
+	//S_INFO	s_info;		/* structure containing SBAR info */
+  	FLOAT		//sigma;		/* latest std. dev. */
+	FLOAT		//ucls;		/* upper std. dev. limit for SBAR */
+	FLOAT		//lcls;		/* lower std. dev. limit for SBAR */
+	FLOAT		//sbar;		/* avg of SIGMAs (SBAR) */
+
+	FLOAT	//lastobs;	/* last observation */
+	FLOAT	//proc_std_dev;	/* Process Standard Deviation - rdk1108 */
+	FLOAT	//cpk;		/* process capability index */
+	FLOAT[25]	//obsrvs[SD_OPG];	/* current observations */
+
+	//SDGROUP[50]	//groups[SD_NGROUPS];	/* XBAR, STD. DEV. & RANGE values */
+	// Decompose into three floats x 50 groups
+	FLOAT[150]
+	#EGU_DESC	//LongEguDesc;	// sethu090197-for longer egu tagnames

@@ -1,0 +1,67 @@
+// SQT conversion table
+// v6.1->7.0
+//#define SQL_STATE_SIZE		6
+//#define SQL_NAME_SIZE		9	/* Max chars in sql name (8+NULL) */
+//#define DBIDFLD_SIZE		27	/* swr061094 Max chars in DBID (26+NULL) */
+// from timlib.h
+//typedef struct 
+// {
+//   INT16 tic;     	/* hundredths of a second */
+//   INT16 sec;     /* seconds */
+//   INT16 minute;  /* minutes - 5/5/91 cs CONFLICTS with MIN macro */
+//   INT16 hr;      /* hours */
+//   INT16 day;     /* days */
+//   INT16 mon;     /* months */
+//   INT16 yr;      /* year */
+//   INT16 wday;    /* day of the week; 0 = Sunday */
+//   INT16 yday;    /* day of the year */
+//   INT16 isdst;   /* non-zero = daylight saving time, 0 = standard time */
+// } TMDT , TIM_REC;
+
+	PBHDR		//pbhdr;	  	/* primary block header */
+	DESC		//desc;		/* block descriptor */
+	UCHAR		//ev_date1;	/* ev. start date (dow | day | all | none */
+	UCHAR		//ev_date2;	/* ev. ebd date (dow | day | all | none */
+	INT32		//ev_time1;	/* Event start time (sec past mid) */
+	INT32		//ev_time2;	/* Event end time (sec past mid) */
+	INT32		//ev_period;	/* event period in seconds */
+	UCHAR		//manual_trip;	/* manual trip field */
+	UCHAR		//reset;		/* SQD reset */
+	UCHAR		//seq_num;	/* Sequence # (inc'ed when SAC runs */
+	UCHAR		//spare_ch1;	/* Spare char 1 */
+	FIELDINFO	//ev_tag;		/* Event Scan Qualifier */
+	FIELDINFO	//conf_tag;	/* Confirmation tag */
+
+	//decompose into components
+	//TMDT		xac_tmdt;	/* last transaction date and time */
+	INT16		//tic;     	/* hundredths of a second */
+	INT16		//sec;     /* seconds */
+	INT16		//minute;  /* minutes - 5/5/91 cs CONFLICTS with MIN macro */
+	INT16		//hr;      /* hours */
+	INT16		//day;     /* days */
+	INT16		//mon;     /* months */
+	INT16		//yr;      /* year */
+	INT16		//wday;    /* day of the week; 0 = Sunday */
+	INT16		//yday;    /* day of the year */
+	INT16		//isdst;   /* non-zero = daylight saving time, 0 = standard time */
+
+	INT16		//ev_type;	/* Event type indicator	*/
+	INT16		//ev_state;	/* State of block byte */
+	INT32		//per_timer;	/* period count down timer */
+	CHAR[9]		//sql[SQL_NAME_SIZE];/* Sequel command name */
+	UCHAR		//ev_tag_type;	/* what type of trigger..COS, LtoH, etc */
+	INT16		//sql_type;	/* for future database copatability */
+	CHAR[41]	//ev_value[DESCSIZ];/* previos value of ev tag */
+	CHAR		//cmd_type;	/* Command type */
+	CHAR[6]		//sql_state[SQL_STATE_SIZE];/* 5 (+NULL) char state code */
+	INT16		//rows;
+	INT16		//cols;
+	INT16		//retries;
+	CHAR[27]	//dbid[DBIDFLD_SIZE];	
+	CHAR		//backup;		/* backup enable or disable */
+	INT16		//new_alm;	/* new alarm from background task */
+	UCHAR		//table_mode;	/* Single, Multiple or Array */
+	UCHAR		//spare_ch3;
+	INT16		//proc_com;	/* procedure complete NMA032696 */
+	INT32		//db_err;		/*  Database error code.  */
+

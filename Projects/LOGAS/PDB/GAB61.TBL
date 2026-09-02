@@ -1,0 +1,16 @@
+// GAB 6.1->7.0
+
+	VERSION	0x081094
+	PBHDR	// pbhdr		 block header
+	DESC	// desc
+
+	LBI[16]	// subtag
+	CHAR[192]	//almdata (16 x 12 bytes)
+
+	UCHAR	// enab;		/* Composite enab */
+	UCHAR	// nalm;		/* Composite enab */
+	UINT16	// options;
+	IO_INFO	// io;	/* contact output info */
+	UINT16	// spare1;
+	UINT32[4]	// spares[4];
+

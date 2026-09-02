@@ -1,0 +1,22 @@
+//AO block conversion table
+// 6.1 -> 7.0  02/28/97
+
+   PBHDR	    //phdr;		/* primary block header */
+   DESC		    //desc;		/* block descriptor */
+    
+   EGUREC	    //egurec;		/* egu info (analog) */
+   IO_INFO	    //ao_io;		/* IOREC and IODNAME */
+   
+   UCHAR	    //status;		/* status bits:  or, nv */
+   UCHAR	    //xx;		/* force next field on even boundary */
+
+   FLOAT	    //target;		/* target value */
+   FLOAT	    //coldstart;	/* cold start */
+   FLOAT	    //lolim;		/* operator low limit */
+   FLOAT	    //hilim;		/* operator high limit */
+   FLOAT	    //ratelim;	/* operator rate of change limit */
+
+   PDATA	    //pdata;		/* current value */
+   #EGU_DESC	    //LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+   #SCALE_FACTOR    //ScaleFactor;	    /* for more precious scalling - new to raptor*/
+

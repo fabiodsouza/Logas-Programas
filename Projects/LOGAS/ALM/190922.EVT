@@ -1,0 +1,70 @@
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 05:59:35
+--------------------------------------------------------
+
+22/09/2019 05:59:53 [fix.exe] Proficy iFIX Software is running!
+
+22/09/2019 09:27:16 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 09:41:10
+--------------------------------------------------------
+
+22/09/2019 09:41:18 [fix.exe] Proficy iFIX Software is running!
+
+22/09/2019 09:42:27 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 09:43:11
+--------------------------------------------------------
+
+22/09/2019 09:43:15 [fix.exe] Proficy iFIX Software is running!
+
+22/09/2019 15:20:20 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 17:08:57
+--------------------------------------------------------
+
+22/09/2019 17:09:06 [fix.exe] Proficy iFIX Software is running!
+
+22/09/2019 17:10:08 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 17:11:48
+--------------------------------------------------------
+
+22/09/2019 17:11:53 [fix.exe] Proficy iFIX Software is running!
+
+22/09/2019 17:12:44 [IOCNTRL.EXE] Failed to stop driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+
+22/09/2019 17:12:50 [IOCNTRL.EXE] Failed to destroy driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+22/09/2019 17:12:52 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 17:19:10
+--------------------------------------------------------
+
+22/09/2019 17:19:25 [fix.exe] Proficy iFIX Software is running!
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/09/2019 19:41:19
+--------------------------------------------------------
+
+22/09/2019 19:41:58 [fix.exe] Proficy iFIX Software is running!
+

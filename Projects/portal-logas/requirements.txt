@@ -1,0 +1,7 @@
+# Funciona no Python 3.8 (o pip escolhe sozinho a ultima versao compativel de cada
+# pacote). O uvicorn vai sem [standard] de proposito: os extras precisam de
+# bibliotecas compiladas que faltam wheel para 3.8 em Windows antigo.
+fastapi>=0.110
+uvicorn>=0.20
+python-multipart>=0.0.9
+openpyxl>=3.1

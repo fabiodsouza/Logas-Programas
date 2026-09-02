@@ -1,0 +1,20 @@
+	VERSION	0x090197
+	SCHDR		//shdr;		/* secondary block header */
+	EGUREC		//egurec;		/* egu info (analog) */
+	FIELDINFO	//src_blk;	/* get from field name */
+	INT16		//time;		/* average time (1 - n) */
+	INT16		//avgcnt;		/* average time counter */
+	UINT16		//next_ptr;	/* next data pointer */
+	UINT16		//seqnum;		/* sequence number */
+	INT32		//average;	/* running average (subtotal) */
+	UINT16[600]		//data[ETRSIZ];	/* data array */
+	UINT16		//cur_val;	/* latest completed average */
+	UINT16		//fifo_out;	/* current 'FIFO OUT' value */
+	UCHAR		//status;		/* status UCHAR */
+	UCHAR		//spare;
+	INT32		//tmpscan;	/* scan time of the primary block pjv012292 */
+	INT32		//total_late;	// sgu040997 time we running behind the scan rate
+	UINT32	//	last_time;	// sgu040997 last updata time in ticks
+	UINT32[2]		spare2[2];
+	DESC		//desc;	
+	EGU_DESC	//EguDesc	

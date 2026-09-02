@@ -1,0 +1,26 @@
+// BB Block conversion table
+// v6.1 -> 7.0
+// added DESC
+
+	PBHDR		//phdr;		/* primary block header */
+    
+	EGUREC		//egurec;		/* egu info (analog) */
+	EGUREC		//dig_egurec;    	/* egu info (digital) */
+
+
+	IO_INFO[2]	//io_info[2];	/* llb 121393 combine arrays of IODNAME and IOREC */
+ 
+	UCHAR		//status;		/* status bits: cs, am */
+	UCHAR		//xx;		/* force next field on even word boundary */
+   
+	INT32		//c1on;		/* c1 turn on limit */
+	INT32		//c1off;		/* c1 turn off limit */
+	INT32		//c2on;		/* c2 turn on limit */
+	INT32		//c2off;		/* c2 turn off limit */
+
+	INT16		//man_req;	/* operator manual request */
+	PDATA		//pdata;		/* current value */
+
+	#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames - new to raptor*/
+	#SCALE_FACTOR	//ScaleFactor;	    /* for more precious scalling - new to raptor*/
+	#DESC		//desc;		    // sethu012698

@@ -1,0 +1,12 @@
+// RB block conversion table
+// v6.1->7.0
+
+   SCHDR	//shdr;		/* secondary block header */
+   EGUREC	//egurec;	/* output egu info (analog) */
+   FCONST	//ratio; 	/* ratio */
+   GETFROM	//bias;		/* bias */
+   GETFROM	//offset;	/* offset */
+
+   PDATA	//pdata;	/* current scaled output */
+   #DESC	//desc;		//jss022097
+   #EGU_DESC	//LongEguDesc;	/* for longer egu tagnames - new to raptor*/

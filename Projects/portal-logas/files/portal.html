@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consumo de GNC | Logás</title>
+<script src="/static/vendor/chart.umd.js"></script>
+<style>
+  :root{
+    --bg:#070b14; --bg2:#0a1120; --panel:#0f1828; --panel2:#13203a; --line:#22324d;
+    --text:#eef4fd; --muted:#8298b9; --cyan:#3bc4ec;
+    --green:#2bd18a; --yellow:#f4cb53; --orange:#f59140; --red:#f1556a;
+    --shadow:0 4px 20px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 70% -10%,#0d1730,var(--bg));
+       color:var(--text);font-family:"Segoe UI",system-ui,Arial,sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+         padding:12px 20px;border-bottom:1px solid var(--line);
+         background:linear-gradient(180deg,rgba(20,32,58,.6),transparent)}
+  header .ttl{font-size:17px;font-weight:800;letter-spacing:.4px}
+  header .ttl span{color:var(--cyan)}
+  header .sub{color:var(--muted);font-size:12px;margin-top:3px}
+  header .dir{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .btn{background:var(--panel);border:1px solid var(--line);color:var(--text);
+       border-radius:9px;padding:8px 13px;font-size:12.5px;font-weight:700;cursor:pointer;
+       font-family:inherit;letter-spacing:.2px}
+  .btn:hover{border-color:var(--cyan);color:var(--cyan)}
+  .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+  .btn.on{background:var(--cyan);border-color:var(--cyan);color:#04121b}
+
+  main{padding:16px 20px 40px;max-width:1240px;margin:0 auto}
+  .cards{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(258px,1fr))}
+  .cell{position:relative;border-radius:12px;padding:13px 14px 14px;
+        background:linear-gradient(180deg,var(--panel2),var(--bg2));
+        border:1px solid var(--line);border-top:4px solid var(--green)}
+  .cell .nm{font-size:14px;font-weight:800;letter-spacing:.3px;color:#dbe6f6}
+  .cell .pr{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;
+            line-height:1.15;margin-top:6px}
+  .cell .pr small{font-size:12px;color:var(--muted);font-weight:600;margin-left:3px}
+  .cell dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:12px 0 0;
+           font-size:12.5px}
+  .cell dt{color:var(--muted)}
+  .cell dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+  .pill{position:absolute;top:12px;right:13px;font-size:10px;font-weight:800;
+        letter-spacing:.7px;padding:4px 9px;border-radius:20px;text-transform:uppercase}
+  .obs{margin:10px 0 0;font-size:11.5px;color:var(--muted);line-height:1.4}
+
+  section.hist{margin-top:22px;background:linear-gradient(180deg,var(--panel),var(--bg2));
+               border:1px solid var(--line);border-radius:12px;padding:14px 16px 16px;
+               box-shadow:var(--shadow)}
+  .hrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .hrow h2{margin:0;font-size:12px;color:var(--cyan);font-weight:800;
+           text-transform:uppercase;letter-spacing:1.2px;flex:1 1 auto}
+  select{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+         border-radius:9px;padding:8px 10px;font-size:12.5px;font-family:inherit}
+  .wrap{position:relative;height:340px}
+  .grid2{display:grid;gap:16px;grid-template-columns:1fr;margin-top:16px}
+  @media (min-width:900px){.grid2{grid-template-columns:1.35fr 1fr}}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;margin:0 0 14px}
+  .stat .rot{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:1px;
+             font-weight:700}
+  .stat .val{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px}
+  .stat .val small{font-size:11.5px;color:var(--muted);font-weight:600;margin-left:3px}
+  .var.sobe{color:var(--orange)} .var.desce{color:var(--green)}
+  .trocas{list-style:none;margin:0;padding:0;font-size:13px}
+  .trocas li{display:flex;align-items:baseline;gap:10px;padding:8px 2px;
+             border-top:1px solid var(--line)}
+  .trocas li:first-child{border-top:0}
+  .trocas .qd{font-variant-numeric:tabular-nums}
+  .trocas .de{color:var(--muted);font-size:11.5px;margin-left:auto;white-space:nowrap}
+  footer{color:var(--muted);font-size:11.5px;padding:0 20px 26px;max-width:1240px;
+         margin:0 auto;line-height:1.5}
+  .vazio{color:var(--muted);font-size:13px;padding:26px 0;text-align:center}
+  @media (max-width:560px){
+    .wrap{height:260px}
+    header{padding:10px 14px}
+    main{padding:14px 14px 30px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="ttl">Consumo de <span>GNC</span></div>
+    <div class="sub" id="sub">Carregando…</div>
+  </div>
+  <div class="dir">
+    <button class="btn" id="xls" type="button">Baixar Excel</button>
+    <button class="btn" id="sair" type="button">Sair</button>
+  </div>
+</header>
+
+<main>
+  <div class="cards" id="cards"></div>
+
+  <section class="hist">
+    <div class="hrow">
+      <h2>Histórico de pressão</h2>
+      <select id="ponto" aria-label="Ponto"></select>
+      <button class="btn" data-h="24" type="button">24 h</button>
+      <button class="btn on" data-h="72" type="button">72 h</button>
+      <button class="btn" data-h="168" type="button">7 dias</button>
+      <button class="btn" data-h="720" type="button">30 dias</button>
+    </div>
+    <div class="wrap"><canvas id="cv"></canvas></div>
+  </section>
+
+  <div class="grid2">
+    <section class="hist" style="margin-top:0">
+      <div class="hrow">
+        <h2>Consumo por dia</h2>
+        <button class="btn on" data-d="14" type="button">2 semanas</button>
+        <button class="btn" data-d="30" type="button">1 mês</button>
+      </div>
+      <div class="stats" id="statsDia"></div>
+      <div class="wrap" style="height:230px"><canvas id="cvDia"></canvas></div>
+    </section>
+
+    <section class="hist" style="margin-top:0">
+      <div class="hrow"><h2>Reabastecimentos</h2></div>
+      <div class="stats" id="statsTroca"></div>
+      <ul class="trocas" id="listaTrocas"></ul>
+    </section>
+  </div>
+</main>
+
+<footer id="rodape"></footer>
+
+<script>
+const COR={ok:"var(--green)",atencao:"var(--yellow)",critico:"var(--orange)",
+           abaixo:"var(--red)",sem_sinal:"var(--muted)",sem_dados:"var(--muted)"};
+const ROTULO={ok:"Normal",atencao:"Atenção",critico:"Crítico",
+              abaixo:"Abaixo da reserva",sem_sinal:"Sem sinal",sem_dados:"Sem leitura"};
+
+let DADOS=null, horas=72, grafico=null;
+
+const fmtNum = v => Number(v).toFixed(2).replace(".", ",");
+const fmtDT  = s => s ? new Date(s).toLocaleString("pt-BR",
+  {day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}) : "—";
+
+// Converte Bar em m3 quando o config.json tem o fator do ponto; senão fica em Bar.
+let M3 = null;
+function un(bar, por, dec){
+  if(bar == null) return "—";
+  const d = dec === undefined ? 2 : dec;
+  const sufixo = por === "h" ? "/h" : (por === "d" ? "/dia" : "");
+  const v = M3 ? bar*M3 : bar;
+  return Number(v).toFixed(d).replace(".", ",") + (M3 ? " m³" : " Bar") + sufixo;
+}
+
+function fmtH(h){
+  if(h==null) return "—";
+  if(h<=0) return "0 h";
+  if(h<1) return Math.round(h*60)+" min";
+  return (Math.round(h*10)/10).toString().replace(".",",")+" h";
+}
+
+async function carregar(){
+  const r = await fetch("/api/consumo?horas="+horas, {cache:"no-store"});
+  if(r.status === 401){ location.href = "/entrar"; return; }
+  if(!r.ok){ document.getElementById("sub").textContent = "Falha ao buscar os dados. Tentando de novo em instantes."; return; }
+  DADOS = await r.json();
+  desenhar();
+}
+
+function desenhar(){
+  document.title = DADOS.cliente + " — Consumo de GNC | Logás";
+  document.getElementById("sub").textContent =
+    DADOS.cliente + " · última leitura registrada em " + fmtDT(DADOS.atualizado);
+
+  const cards = document.getElementById("cards");
+  cards.innerHTML = "";
+  if(!DADOS.pontos.length){
+    cards.innerHTML = '<p class="vazio">Nenhum ponto vinculado a este acesso. Fale com a Logás.</p>';
+    return;
+  }
+
+  DADOS.pontos.forEach(p=>{
+    const st = DADOS.conjunto && p.status_conjunto ? p.status_conjunto : p.status;
+    const h  = DADOS.conjunto && p.horas_conjunto !== undefined ? p.horas_conjunto : p.horas_ate_limite;
+    const chegada = DADOS.conjunto ? p.chegada_conjunto : p.chegada_prevista;
+    const el = document.createElement("article");
+    el.className = "cell";
+    el.style.borderTopColor = COR[st] || "var(--muted)";
+
+    M3 = p.m3_por_bar || null;
+    let linhas = "";
+    if(p.pressao !== null){
+      linhas += `<dt>Reserva mínima</dt><dd>${fmtNum(p.minimo)} Bar</dd>`;
+      const cons = DADOS.conjunto && p.consumo_conjunto ? p.consumo_conjunto : p.consumo_barh;
+      linhas += `<dt>Consumo médio</dt><dd>${un(cons,"h")}${p.consumo_estimado?" *":""}</dd>`;
+      linhas += `<dt>Autonomia até a reserva</dt><dd>${fmtH(h)}</dd>`;
+      if(p.limite_em && h!=null && h>0) linhas += `<dt>Chega na reserva</dt><dd>${fmtDT(p.limite_em)}</dd>`;
+      if(chegada) linhas += `<dt>Reabastecimento previsto</dt><dd>${fmtDT(chegada)}</dd>`;
+      linhas += `<dt>Medido em</dt><dd>${fmtDT(p.medido_em)}</dd>`;
+    }
+
+    let obs = "";
+    if(p.sem_sinal) obs = "Sem leitura nova desde " + fmtDT(p.medido_em) +
+      ". O valor acima é uma projeção pelo consumo médio.";
+    else if(p.consumo_estimado) obs = "* Consumo estimado: ainda não há quedas suficientes medidas neste ponto.";
+    if(DADOS.conjunto){
+      const sup = (DADOS.pontos.find(x=>x.suprindo)||{}).ponto;
+      if(p.suprindo) obs = "Baia em uso agora. " + obs;
+      else if(p.pressao !== null && p.pressao <= p.minimo && sup)
+        obs = "Baia esgotada; o consumo está sendo atendido pela " + sup + ". " + obs;
+    }
+
+    el.innerHTML =
+      `<div class="pill" style="background:${COR[st]||"var(--muted)"};color:#04121b">${ROTULO[st]||""}</div>
+       <div class="nm">${p.ponto}</div>
+       <div class="pr" style="color:${COR[st]||"var(--muted)"}">${p.pressao===null?"—":fmtNum(p.pressao)}<small>Bar</small></div>
+       <dl>${linhas}</dl>
+       ${obs?`<p class="obs">${obs}</p>`:""}`;
+    cards.appendChild(el);
+  });
+
+  const sel = document.getElementById("ponto");
+  const atual = sel.value;
+  sel.innerHTML = DADOS.pontos.map(p=>`<option>${p.ponto}</option>`).join("");
+  if(DADOS.pontos.some(p=>p.ponto===atual)) sel.value = atual;
+  sel.style.display = DADOS.pontos.length>1 ? "" : "none";
+
+  grafo();
+  grafoDia();
+  trocas();
+  document.getElementById("rodape").textContent =
+    "As leituras vêm da foto do manômetro do seu ponto. Autonomia e reabastecimento são estimativas "
+    + "calculadas pelo consumo médio recente e podem variar com a operação. Dúvida em algum número? Fale com a Logás.";
+}
+
+function grafo(){
+  const nome = document.getElementById("ponto").value || (DADOS.pontos[0]||{}).ponto;
+  const p = DADOS.pontos.find(x=>x.ponto===nome);
+  if(!p) return;
+  const serie = p.historico || [];
+  const curto = horas <= 48;
+  const labels = serie.map(r=>{
+    const d = new Date(r.t);
+    return curto ? d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})
+                 : d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})
+                   + " " + d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  });
+  const valores = serie.map(r=>r.p);
+
+  if(grafico) grafico.destroy();
+  grafico = new Chart(document.getElementById("cv"), {
+    type:"line",
+    data:{labels, datasets:[
+      {label:"Pressão (Bar)", data:valores, borderColor:"#3bc4ec",
+       backgroundColor:"rgba(59,196,236,.14)", borderWidth:2, pointRadius:2,
+       tension:.3, fill:true, spanGaps:true},
+      {label:"Reserva mínima", data:labels.map(()=>p.minimo), borderColor:"#f1556a",
+       borderDash:[6,5], borderWidth:1.5, pointRadius:0, fill:"start",
+       backgroundColor:"rgba(241,85,106,.10)"},
+      {label:"Carreta trocada", borderColor:"#2bd18a", backgroundColor:"#2bd18a",
+       showLine:false, pointRadius:5, pointStyle:"triangle",
+       data:serie.map((r,i)=>{
+         const ant = serie[i-1];
+         return (ant && r.p!=null && ant.p!=null && r.p-ant.p >= 25) ? r.p : null;
+       })}
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false, animation:false,
+      interaction:{mode:"index", intersect:false},
+      scales:{
+        x:{ticks:{color:"#8298b9", maxRotation:0, autoSkip:true, maxTicksLimit:10},
+           grid:{color:"rgba(34,50,77,.6)"}},
+        y:{beginAtZero:true, ticks:{color:"#8298b9"}, grid:{color:"rgba(34,50,77,.6)"},
+           title:{display:true, text:"Bar", color:"#8298b9"}}
+      },
+      plugins:{legend:{labels:{color:"#8298b9", boxWidth:12}}}
+    }
+  });
+}
+
+let diasJanela = 14, gDia = null;
+
+function pontoAtual(){
+  const nome = document.getElementById("ponto").value || (DADOS.pontos[0]||{}).ponto;
+  return DADOS.pontos.find(x=>x.ponto===nome) || DADOS.pontos[0];
+}
+
+function grafoDia(){
+  const p = pontoAtual();
+  if(!p) return;
+  M3 = p.m3_por_bar || null;
+  const serie = (p.por_dia||[]).slice(-diasJanela);
+  const hoje = new Date().toISOString().slice(0,10);
+  // O dia de hoje ainda está em andamento, então não entra na média.
+  const fechados = serie.filter(d=>d.dia !== hoje);
+  const media = fechados.length ? fechados.reduce((a,d)=>a+d.bar,0)/fechados.length : null;
+  const maior = fechados.length ? fechados.reduce((a,d)=>d.bar>a.bar?d:a) : null;
+
+  const s = p.semana || {};
+  const v = s.variacao_pct;
+  document.getElementById("statsDia").innerHTML = `
+    <div class="stat"><div class="rot">Média por dia</div>
+      <div class="val">${un(media,"",0)}</div></div>
+    <div class="stat"><div class="rot">Últimos 7 dias</div>
+      <div class="val">${un(s.atual,"",0)}</div></div>
+    <div class="stat"><div class="rot">7 dias anteriores</div>
+      <div class="val">${un(s.anterior,"",0)}
+        ${v==null?"":`<small class="var ${v>0?"sobe":"desce"}">${v>0?"+":""}${v}%</small>`}</div></div>
+    ${maior?`<div class="stat"><div class="rot">Dia de maior consumo</div>
+      <div class="val" style="font-size:15px;padding-top:5px">${maior.dia.slice(8,10)}/${maior.dia.slice(5,7)}
+        <small>${un(maior.bar,"",0)}</small></div></div>`:""}`;
+
+  const labels = serie.map(d=>d.dia.slice(8,10)+"/"+d.dia.slice(5,7));
+  const valores = serie.map(d=>M3 ? d.bar*M3 : d.bar);
+  const cores = serie.map(d=>d.dia===hoje ? "rgba(59,196,236,.35)" : "rgba(59,196,236,.75)");
+
+  if(gDia) gDia.destroy();
+  gDia = new Chart(document.getElementById("cvDia"), {
+    type:"bar",
+    data:{labels, datasets:[{label:(M3?"m³":"Bar")+" por dia", data:valores,
+          backgroundColor:cores, borderRadius:3, borderSkipped:false}]},
+    options:{
+      responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>Number(c.parsed.y).toFixed(0)+(M3?" m³":" Bar")
+          + (labels[c.dataIndex]===new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})?" (dia em andamento)":"")}}},
+      scales:{
+        x:{ticks:{color:"#8298b9",maxRotation:0,autoSkip:true,maxTicksLimit:12},
+           grid:{display:false}},
+        y:{beginAtZero:true, ticks:{color:"#8298b9"}, grid:{color:"rgba(34,50,77,.6)"},
+           title:{display:true, text:M3?"m³":"Bar", color:"#8298b9"}}
+      }
+    }
+  });
+}
+
+function trocas(){
+  const p = pontoAtual();
+  M3 = (p && p.m3_por_bar) || null;
+  const t = (p && p.trocas) || {};
+  const alvo = document.getElementById("listaTrocas");
+  document.getElementById("statsTroca").innerHTML = `
+    <div class="stat"><div class="rot">Última</div>
+      <div class="val" style="font-size:15px;padding-top:5px">${fmtDT(t.ultima)}
+        ${t.horas_desde_ultima!=null?`<small>há ${fmtH(t.horas_desde_ultima)}</small>`:""}</div></div>
+    <div class="stat"><div class="rot">Nos últimos 7 dias</div>
+      <div class="val">${t.em_7_dias!=null?t.em_7_dias:"—"}</div></div>
+    <div class="stat"><div class="rot">Intervalo médio</div>
+      <div class="val" style="font-size:17px;padding-top:6px">${fmtH(t.intervalo_medio_h)}</div></div>`;
+
+  const ev = t.eventos || [];
+  alvo.innerHTML = ev.length ? ev.map(e=>`
+      <li><span class="qd">${fmtDT(e.t)}</span>
+          <span class="de">${fmtNum(e.de)} → ${fmtNum(e.para)} Bar</span></li>`).join("")
+    : '<li style="color:var(--muted)">Nenhuma troca registrada no período.</li>';
+}
+
+document.querySelectorAll("[data-d]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("[data-d]").forEach(o=>o.classList.remove("on"));
+  b.classList.add("on");
+  diasJanela = Number(b.dataset.d);
+  grafoDia();
+}));
+
+function excel(){
+  location.href = "/api/excel?horas=" + horas;
+}
+
+document.querySelectorAll("[data-h]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("[data-h]").forEach(o=>o.classList.remove("on"));
+  b.classList.add("on");
+  horas = Number(b.dataset.h);
+  carregar();
+}));
+document.getElementById("ponto").addEventListener("change", ()=>{grafo(); grafoDia(); trocas();});
+document.getElementById("xls").addEventListener("click", excel);
+document.getElementById("sair").addEventListener("click", async ()=>{
+  await fetch("/sair",{method:"POST"});
+  location.href = "/entrar";
+});
+
+carregar();
+setInterval(carregar, 300000);   // atualiza a cada 5 min
+</script>
+</body>
+</html>

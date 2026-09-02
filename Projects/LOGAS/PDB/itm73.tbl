@@ -1,0 +1,31 @@
+// ITM 
+// iFIX40 -> iFIX45
+
+	VERSION	0x041800
+	
+	SCHDR		// phdr;		/* block header */
+	DESC		// desc;		/* block descriptor */
+
+	EGUREC		//egu;		/* egu info (unused for now) */
+	FIELDINFO	//gate;
+	FIELDINFO	//reset;
+	UINT32		//limit;		// interval limit (milliseconds)
+	UINT32		//tlimit;		// total limit (seconds)
+	INT16		//options;	/* CLR, IALM_, HCLR, CCLR  */
+	INT16		//passed;		/* PASS_ */
+	INT16		//seqnum;		// for G_DATA
+	INT16		//current_gate;	// Current Gate (0/1)
+	INT16		//current_input;	// Current Input (0/1)
+	INT16		//current_state;	// Current State (0/1)
+	INT16		//previous_state;	// Previous State (0/1)
+	INT16		//current_reset;	// current reset (0/1)
+	INT16		//previous_reset;	// Previous reset (0/1)
+	INT16		//SampleCount;	// used to compute average interval
+
+	UINT32		//CurrentCount;	// Current Interval so far (ms)
+	UINT32		//StartTime;	// StartTime (ms)
+	UINT32[80]	//Intervals[N_ITEMS];
+	UINT32		//total;			// total interval (seconds!)
+	UINT32		//tmpscan;		// copy of primary block scan time.
+	UINT32[2]	//spare[2];
+	

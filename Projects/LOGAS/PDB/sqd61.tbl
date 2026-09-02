@@ -1,0 +1,14 @@
+// SQD conversion table
+// v6.1-> 7.0
+//#define SQD_FIELDS	20
+
+	SCHDR		//schdr;	  	/* secondary block header */
+	DESC		//desc;		/* block descriptor */
+
+	CHAR[1040]	//name[SQD_FIELDS](20) x [NAMESIZ](52);
+
+	VSP[20]		//vsp[SQD_FIELDS];
+	CHAR[20]	//dir[SQD_FIELDS];	/* direction for all fields */
+	CHAR[20]	//rst[SQD_FIELDS];	/* reset for all fields */
+	CHAR		//state;		/* various states */
+	CHAR		//align;

@@ -1,0 +1,50 @@
+05/03/2015 08:52:01 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/03/2015 08:52:08
+--------------------------------------------------------
+
+05/03/2015 08:52:18 [IOCNTRL.EXE] CreateProcess():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: O sistema não pode encontrar o arquivo especificado.
+
+
+05/03/2015 08:52:19 [IOCNTRL.EXE] ResumeThread():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Identificador inválido.
+
+
+05/03/2015 08:52:19 [IOCNTRL.EXE] Failed to launch driver [MB1]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: A tentativa de encontrar um objeto encontrou um obj05/03/2015 08:52:22 [fix.exe] Proficy iFIX Software is running!
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/03/2015 10:47:27
+--------------------------------------------------------
+
+05/03/2015 10:47:53 [fix.exe] Proficy iFIX Startup ERROR!
+
+05/03/2015 10:48:16 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/03/2015 10:48:18
+--------------------------------------------------------
+
+05/03/2015 10:48:23 [fix.exe] Proficy iFIX Startup ERROR!
+
+05/03/2015 10:48:30 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  05/03/2015 10:48:56
+--------------------------------------------------------
+
+05/03/2015 10:49:04 [IOCNTRL.EXE] CreateProcess():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: O sistema não pode encontrar o arquivo especificado.
+
+
+05/03/2015 10:49:05 [IOCNTRL.EXE] ResumeThread():   Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Identificador inválido.
+
+
+05/03/2015 10:49:05 [IOCNTRL.EXE] Failed to launch driver [MB1]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: A tentativa de encontrar um objeto encontrou um obj05/03/2015 10:49:09 [fix.exe] Proficy iFIX Software is running!
+

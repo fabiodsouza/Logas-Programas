@@ -1,0 +1,18 @@
+// DO block conversion table
+// v6.1 -> 7.0
+
+   PBHDR	//phdr;		/* primary block header */
+   DESC		//desc;		/* block descriptor */
+   EGUREC	//egurec;	/* open/close tags */
+
+   IO_INFO	//do_io;	/* IOREC + IODNAME */
+   
+   UCHAR	//status;	/* misc option/status bits */
+   UCHAR	//csv;		/* cold satrt value */
+   UCHAR	//target;	/* target value */
+   UCHAR	//spare;
+
+   PDATA	//pdata;	/* current scaled output */
+ 
+   UCHAR[4]	//spare2[4];	/* 4 bytes of spare space */
+   #EGU_DESC	//LongEguDesc;	/* for longer egu tagnames - new to raptor*/

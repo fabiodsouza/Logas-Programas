@@ -1,0 +1,169 @@
+13/04/2015 14:43:41,4 LOGAS SECURITY VIOLATION: LOGISTICA1 access to APPLICATION FEATURE System User Login                          
+13/04/2015 14:43:43,2 LOGISTICA1  logged out as Application User                                                                    
+13/04/2015 14:43:50,5 SYSTEM ADMINISTRATOR  logged in as Application User                                                           
+13/04/2015 14:43:52,6 [LOGAS   ]   SAC - Cold Start                                                                                 
+13/04/2015 14:43:52,6 [LOGAS   ]   SAC - Initialization Complete                                                                    
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_GSL                      I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_GSL                      Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_ALSCO                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_ALSCO                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_ALSCO                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_ALSCO                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_GSL1                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_GSL1                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_GSL2                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_GSL2                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_ATEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_ATEC                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_ALTEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_ALTEC                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_ALTEC                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_ALTEC                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_ALTEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_ALTEC                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_ALTEC                       I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_ALTEC                       Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_ALTEC                       I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_ALTEC                       Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_BACKER                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_BACKER                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_BACKER                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_BACKER                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_BACKER                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_BACKER                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_BACKER                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_BACKER                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_BACKER                      I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_BACKER                      Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_BACKER                      I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_BACKER                      Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_C_OESTE                  I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_C_OESTE                  Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_C_OSTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_C_OSTE                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_C_OESTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_C_OESTE                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_C_OESTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_C_OESTE                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_C_OESTE                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_C_OESTE                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_C_OESTE                     I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_C_OESTE                     Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_BIOCOR                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_ARMAZ_BIOCOR                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_BIOCOR                   I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  VAZAO_H_BIOCOR                   Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_BIOCOR                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_BIOCOR                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_BIOCOR                    I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_BIOCOR                    Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_BIOCOR                      I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_BIOCOR                      Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_BIOCOR                      I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT2_BIOCOR                      Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_GSL                       I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  P_REDE_GSL                       Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_GSL                         I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  TOT1_GSL                         Placing primary block off scan                                   
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_GSL                       I/O - General Error. Command rejected                            
+13/04/2015 14:43:53,1 [LOGAS   ]  T_REDE_GSL                       Placing primary block off scan                                   
+13/04/2015 14:44:09,8 Proficy iFIX Software is running!                                                                             
+13/04/2015 14:44:46,2 Can't get server Handle                                                                                       
+13/04/2015 14:45:46,2 Recovered from server handle error                                                                            
+13/04/2015 14:45:46,2 Can't get default collector                                                                                   
+13/04/2015 14:45:46,4 Shutdown attempt in progress...                                                                               
+13/04/2015 14:45:49,3 [LOGAS   ]  SAC stopped                                                                                       
+13/04/2015 14:45:49,7 MBE - Driver stopped                                                                                          
+13/04/2015 14:46:20,6 LOGAS SECURITY VIOLATION: LOGISTICA1 access to APPLICATION FEATURE Enable Ctrl-Alt-Del                        
+13/04/2015 14:46:20,6 LOGAS SECURITY VIOLATION: LOGISTICA1 access to APPLICATION FEATURE Enable Task Switching                      
+13/04/2015 14:46:20,9 [LOGAS   ]   SAC - Cold Start                                                                                 
+13/04/2015 14:46:20,9 [LOGAS   ]   SAC - Initialization Complete                                                                    
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_GSL                      I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_GSL                      Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_ALSCO                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_ALSCO                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_ALSCO                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_ALSCO                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_GSL1                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_GSL1                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_GSL2                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_GSL2                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_ATEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_ATEC                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_ALTEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_ALTEC                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_ALTEC                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_ALTEC                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_ALTEC                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_ALTEC                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_ALTEC                       I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_ALTEC                       Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_ALTEC                       I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_ALTEC                       Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_BACKER                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_BACKER                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_BACKER                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_BACKER                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_BACKER                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_BACKER                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_BACKER                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_BACKER                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_BACKER                      I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_BACKER                      Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_BACKER                      I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_BACKER                      Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_C_OESTE                  I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_C_OESTE                  Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_C_OSTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_C_OSTE                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_C_OESTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_C_OESTE                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_C_OESTE                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_C_OESTE                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_C_OESTE                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_C_OESTE                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_C_OESTE                     I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_C_OESTE                     Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_BIOCOR                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_ARMAZ_BIOCOR                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_BIOCOR                   I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  VAZAO_H_BIOCOR                   Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_BIOCOR                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_BIOCOR                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_BIOCOR                    I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_BIOCOR                    Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_BIOCOR                      I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_BIOCOR                      Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_BIOCOR                      I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT2_BIOCOR                      Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_GSL                       I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  P_REDE_GSL                       Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_GSL                         I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  TOT1_GSL                         Placing primary block off scan                                   
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_GSL                       I/O - General Error. Command rejected                            
+13/04/2015 14:46:21,1 [LOGAS   ]  T_REDE_GSL                       Placing primary block off scan                                   
+13/04/2015 14:46:26,8 LOGAS SECURITY VIOLATION: LOGISTICA1 access to APPLICATION FEATURE WorkSpace Configure                        
+13/04/2015 14:46:29,4 LOGAS SECURITY VIOLATION: LOGISTICA1 access to APPLICATION FEATURE System User Login                          
+13/04/2015 14:46:30,6 LOGISTICA1  logged out as Application User                                                                    
+13/04/2015 14:46:36,4 SYSTEM ADMINISTRATOR  logged in as Application User                                                           
+13/04/2015 14:47:17,5 Can't get server Handle                                                                                       
+13/04/2015 14:48:17,6 Recovered from server handle error                                                                            
+13/04/2015 14:48:17,6 Can't get default collector                                                                                   
+13/04/2015 14:49:17,7 MBE - Driver started                                                                                          
+13/04/2015 14:54:22,7 [LOGAS   ] P_ARMAZ_ALSCO was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                    
+13/04/2015 14:54:22,7 [LOGAS   ] Process database Modified - modified P_ARMAZ_ALSCO by LOGAS::SYSTEM ADMINISTRATOR                  
+13/04/2015 14:54:33,8 [LOGAS   ] P_ARMAZ_GSL was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                      
+13/04/2015 14:54:33,8 [LOGAS   ] Process database Modified - modified P_ARMAZ_GSL by LOGAS::SYSTEM ADMINISTRATOR                    
+13/04/2015 14:54:45,9 [LOGAS   ] P_REDE_GSL was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                       
+13/04/2015 14:54:45,9 [LOGAS   ] Process database Modified - modified P_REDE_GSL by LOGAS::SYSTEM ADMINISTRATOR                     
+13/04/2015 14:54:59,6 [LOGAS   ] TOT1_GSL was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                         
+13/04/2015 14:54:59,6 [LOGAS   ] Process database Modified - modified TOT1_GSL by LOGAS::SYSTEM ADMINISTRATOR                       
+13/04/2015 14:55:11,1 [LOGAS   ] T_REDE_GSL was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                       
+13/04/2015 14:55:11,1 [LOGAS   ] Process database Modified - modified T_REDE_GSL by LOGAS::SYSTEM ADMINISTRATOR                     
+13/04/2015 14:55:24,0 [LOGAS   ] VAZAO_H_GSL1 was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                     
+13/04/2015 14:55:24,0 [LOGAS   ] Process database Modified - modified VAZAO_H_GSL1 by LOGAS::SYSTEM ADMINISTRATOR                   
+13/04/2015 14:55:28,4 [LOGAS   ] VAZAO_H_GSL2 was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                     
+13/04/2015 14:55:28,4 [LOGAS   ] Process database Modified - modified VAZAO_H_GSL2 by LOGAS::SYSTEM ADMINISTRATOR                   
+13/04/2015 14:55:41,2 [LOGAS   ] P_REDE_ALSCO was placed ON scan by LOGAS::SYSTEM ADMINISTRATOR                                     
+13/04/2015 14:55:41,2 [LOGAS   ] Process database Modified - modified P_REDE_ALSCO by LOGAS::SYSTEM ADMINISTRATOR                   
+13/04/2015 14:55:46,7 [LOGAS   ] Process database was saved to file 'LOGAS' by LOGAS::SYSTEM ADMINISTRATOR                          

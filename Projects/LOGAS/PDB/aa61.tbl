@@ -1,0 +1,30 @@
+// AA Block Conversion Table
+// v6.1 -> 7.0
+// sethu090197 - EGU_DESC, and SCALE_FACTOR for raptor final release
+//		 Also changed 'suspend from a FIELDINFO to GETFROM. Note that the
+//		label I have given is AA_GETFROM so that it can be handled as a special
+//		case in DBCON (there is no AA_GETFROM structure)
+
+//define	MAX_ALARMS	8		/* max. alarms allowed */
+
+PBHDR		//phdr;			/* primary block header */
+AA_GETFROM	//suspend;		/* alarm suspend tag - Note: special handling required */
+GETFROM		//remote_ack;		/* remote alarm ack tag */
+GETFROM		//deviation;		/* deviation setpoint tag */
+IO_INFO		//aa_io;		/* IOREC + IODNAME */
+ALARM_DEF[8]	//alarm[MAX_ALARMS];	/* alarms array */
+FLOAT		//deadband;		/* alarm deadband */
+DESC		//desc;			/* block descriptor */
+EGUREC		//egu;			/* egu info */
+UCHAR		//smooth;			/* smoothing constant */
+UCHAR		//security_area;		/* operator write protection */
+PDATA		//last_value;	/* last value if in AUTO, or current */
+PDATA		//cur_value;	/* current scaled value of block */
+#UINT16		//flags
+#UINT16		//Reserved1
+#UINT16		//Reserved2
+#UINT16[6]	//Reserved3[6]
+#EGU_DESC	//LongEguDesc;	    /* for longer egu tagnames */
+#SCALE_FACTOR	//ScaleFactor;	    /* for more precious scalling */
+
+

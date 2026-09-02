@@ -1,0 +1,271 @@
+/*
+ * Envio da telemetria no WhatsApp - de hora em hora, sem repetir.
+ *
+ * O que faz:
+ *   - Conecta no WhatsApp por QR Code (igual ao WhatsApp Web). A sessao fica salva.
+ *   - A cada hora pega a imagem MAIS RECENTE da pasta de capturas.
+ *   - Se a imagem for igual a ultima enviada, NAO reenvia.
+ *   - Envia para UM OU VARIOS destinos (numeros, grupos, voce mesmo).
+ *
+ * Ver os grupos deste WhatsApp (para pegar o nome exato):
+ *   iniciar_envio_whatsapp.bat grupos
+ */
+
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const net = require('net');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+// ---- LOG EM ARQUIVO ----
+// Grava tudo que aparece na tela tambem em "log_envio.txt", para que o
+// processo OCULTO (segundo plano) deixe rastro do que esta acontecendo.
+const arquivoLog = path.join(__dirname, 'log_envio.txt');
+function _carimbo() {
+  try { return new Date().toLocaleString('pt-BR'); } catch (e) { return ''; }
+}
+function _gravar(linha) {
+  // Se a linha ja comeca com data entre colchetes, nao duplica o carimbo.
+  const prefixo = /^\[/.test(linha) ? '' : '[' + _carimbo() + '] ';
+  try { fs.appendFileSync(arquivoLog, prefixo + linha + '\r\n'); } catch (e) { /* ignora */ }
+}
+const _logOriginal = console.log;
+console.log = function (...args) {
+  const linha = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+  _gravar(linha);
+  _logOriginal.apply(console, args);
+};
+// Captura tambem ERROS (console.error) e quedas inesperadas, para que o
+// processo OCULTO registre a CAUSA quando o WhatsApp nao conecta.
+const _errOriginal = console.error;
+console.error = function (...args) {
+  const linha = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+  _gravar('ERRO: ' + linha);
+  _errOriginal.apply(console, args);
+};
+process.on('uncaughtException', (e) => {
+  _gravar('CRASH (uncaughtException): ' + (e && e.stack ? e.stack : e));
+});
+process.on('unhandledRejection', (e) => {
+  _gravar('CRASH (unhandledRejection): ' + (e && e.stack ? e.stack : e));
+});
+
+// ---- TRAVA DE INSTANCIA UNICA ----
+// Garante que so UM envio rode por vez (evita fotos duplicadas).
+// Se ja houver um rodando, esta copia se encerra na hora.
+const PORTA_TRAVA = 53117;
+const _trava = net.createServer();
+_trava.once('error', (err) => {
+  if (err && err.code === 'EADDRINUSE') {
+    console.log('Ja existe um envio rodando neste PC. Encerrando esta copia.');
+    process.exit(0);
+  }
+});
+_trava.listen(PORTA_TRAVA, '127.0.0.1');
+
+// ============================ CONFIG ============================
+const CONFIG = {
+  // Pasta de capturas COMPARTILHADA na maquina Windows 8 (lida pela rede).
+  // Se o nome nao resolver, troque por IP, ex.: '\\\\192.168.0.50\\capturas'.
+  pastaCapturas: '\\\\Windows\\capturas',
+
+  // LISTA DE DESTINOS - pode colocar quantos quiser. Tipos disponiveis:
+  //   { tipo: 'numero', valor: '5531999998888' }       -> codigo do pais (55) + DDD + numero, so digitos
+  //   { tipo: 'grupo',  nome: 'Nome Exato do Grupo' }   -> o WhatsApp conectado precisa participar do grupo
+  //   { tipo: 'eu' }                                    -> sua propria conversa
+  destinos: [
+    { tipo: 'numero', valor: '5531984432363'},
+    // { tipo: 'numero', valor: '5531987871614'},
+    { tipo: 'grupo', nome: 'TORRE DE CONTROLE INTERNO' },
+    // { tipo: 'numero', valor: '5531988887777' },
+  ],
+
+  // Minuto da hora em que envia (ex.: 2 = xx:02, logo apos a captura de xx:00).
+  minutoEnvio: 1,
+
+  // Enviar a imagem mais recente assim que conectar (bom para testar).
+  enviarAoIniciar: true,
+
+  // Avisa (na Area de Trabalho e no WhatsApp) se passar este numero de horas
+  // SEM enviar nenhum print novo - ajuda a perceber rapido se algo travou.
+  horasAvisoInatividade: 2,
+};
+// ===============================================================
+
+const arquivoEstado = path.join(__dirname, 'estado_envio.json');
+// Se rodar passando a palavra "grupos" (ex.: iniciar_envio_whatsapp.bat grupos),
+// ele apenas lista os grupos e sai - util para descobrir o nome exato.
+const MODO_LISTAR_GRUPOS = process.argv.slice(2).some(a => /grupo/i.test(a));
+
+function lerEstado() {
+  try { return JSON.parse(fs.readFileSync(arquivoEstado, 'utf8')); }
+  catch (e) { return { ultimoHash: null, ultimoArquivo: null }; }
+}
+
+function salvarEstado(estado) {
+  fs.writeFileSync(arquivoEstado, JSON.stringify(estado, null, 2));
+}
+
+function listarPngs(dir) {
+  let resultado = [];
+  if (!fs.existsSync(dir)) return resultado;
+  for (const nome of fs.readdirSync(dir)) {
+    const p = path.join(dir, nome);
+    const st = fs.statSync(p);
+    if (st.isDirectory()) {
+      resultado = resultado.concat(listarPngs(p)); // entra nas subpastas (por dia)
+    } else if (nome.toLowerCase().endsWith('.png')) {
+      resultado.push({ caminho: p, mtime: st.mtimeMs });
+    }
+  }
+  return resultado;
+}
+
+function imagemMaisRecente() {
+  const pngs = listarPngs(CONFIG.pastaCapturas);
+  if (pngs.length === 0) return null;
+  pngs.sort((a, b) => b.mtime - a.mtime);
+  return pngs[0].caminho;
+}
+
+function md5(caminho) {
+  return crypto.createHash('md5').update(fs.readFileSync(caminho)).digest('hex');
+}
+
+function agora() {
+  return new Date().toLocaleString('pt-BR');
+}
+
+// ---- AVISO DE INATIVIDADE ----
+// Se passar muito tempo sem nenhum envio novo, grava um aviso na Area de
+// Trabalho (e na pasta, lido pelo verificar_status.bat) e tenta avisar no
+// WhatsApp. Quando voltar a enviar, o aviso e apagado sozinho.
+const arquivoUltimoOk = path.join(__dirname, 'ultimo_envio_ok.txt');
+const arquivoAtencaoLocal = path.join(__dirname, 'ATENCAO_ENVIO_WHATSAPP.txt');
+const desktopDir = path.join(process.env.USERPROFILE || __dirname, 'Desktop');
+const arquivoAtencaoDesktop = path.join(desktopDir, 'ATENCAO_ENVIO_WHATSAPP.txt');
+let ultimoAlertaWppMs = 0;
+
+function lerUltimoOk() {
+  try { return parseInt(fs.readFileSync(arquivoUltimoOk, 'utf8'), 10) || Date.now(); }
+  catch (e) { return Date.now(); } // sem registro ainda: nao alarma
+}
+function limparAtencao() {
+  for (const f of [arquivoAtencaoLocal, arquivoAtencaoDesktop]) {
+    try { fs.rmSync(f, { force: true }); } catch (e) { /* ignora */ }
+  }
+}
+function registrarEnvioOk() {
+  try { fs.writeFileSync(arquivoUltimoOk, String(Date.now())); } catch (e) { /* ignora */ }
+  limparAtencao(); // acabou de enviar com sucesso: nao ha mais alerta pendente
+}
+function escreverAtencao(texto) {
+  for (const f of [arquivoAtencaoLocal, arquivoAtencaoDesktop]) {
+    try { fs.writeFileSync(f, texto + '\r\n'); } catch (e) { /* ignora */ }
+  }
+}
+async function verificarInatividade(client, conectado) {
+  const limiteMs = (CONFIG.horasAvisoInatividade || 2) * 60 * 60 * 1000;
+  const idadeMs = Date.now() - lerUltimoOk();
+  if (idadeMs <= limiteMs) { limparAtencao(); return; } // tudo certo
+  const horas = (idadeMs / 3600000).toFixed(1);
+  const aviso =
+    'ATENCAO: o envio da telemetria esta ha ' + horas + 'h sem mandar print novo.\r\n' +
+    'Verifique:\r\n' +
+    '  1) a captura de tela (a pasta ' + CONFIG.pastaCapturas + ' esta recebendo PNG novo?);\r\n' +
+    '  2) se o WhatsApp continua conectado (pode ter deslogado e precisar de QR Code).\r\n' +
+    'Registrado em ' + agora() + '.';
+  escreverAtencao(aviso);
+  console.log('[' + agora() + '] AVISO de inatividade gravado (' + horas + 'h sem envio).');
+  // Tenta avisar no WhatsApp, no maximo 1 vez por periodo, se estiver conectado.
+  if (conectado && client && destinosResolvidos.length > 0 &&
+      (Date.now() - ultimoAlertaWppMs) > limiteMs) {
+    ultimoAlertaWppMs = Date.now();
+    const msg = 'ATENCAO (automatico): a telemetria esta ha ' + horas +
+                'h sem enviar print novo. Verifique a captura e a conexao do WhatsApp.';
+    for (const d of destinosResolvidos) {
+      try { await client.sendMessage(d.chatId, msg); }
+      catch (e) { /* se nao conseguir, o aviso na Area de Trabalho ja foi gravado */ }
+    }
+  }
+}
+
+let destinosResolvidos = []; // [{ rotulo, chatId }]
+
+async function resolverUm(client, d) {
+  if (d.tipo === 'eu') {
+    return { rotulo: 'voce mesmo', chatId: client.info.wid._serialized };
+  }
+  if (d.tipo === 'numero') {
+    const limpo = String(d.valor).replace(/\D/g, '');
+    const numeroId = await client.getNumberId(limpo);
+    if (!numeroId) {
+      throw new Error(`numero ${d.valor} nao encontrado no WhatsApp ` +
+        `(precisa ter codigo do pais 55 + DDD + numero)`);
+    }
+    return { rotulo: 'numero ' + d.valor, chatId: numeroId._serialized };
+  }
+  if (d.tipo === 'grupo') {
+    const chats = await client.getChats();
+    const g = chats.find(c => c.isGroup && c.name === d.nome);
+    if (!g) {
+      throw new Error(`grupo "${d.nome}" nao encontrado ` +
+        `(confira o nome exato e se este WhatsApp participa do grupo)`);
+    }
+    return { rotulo: 'grupo ' + d.nome, chatId: g.id._serialized };
+  }
+  throw new Error('tipo de destino desconhecido: ' + JSON.stringify(d));
+}
+
+async function resolverDestinos(client) {
+  const resultado = [];
+  for (const d of CONFIG.destinos) {
+    try {
+      const r = await resolverUm(client, d);
+      console.log(`[${agora()}] Destino OK: ${r.rotulo}`);
+      resultado.push(r);
+    } catch (e) {
+      console.log(`[${agora()}] ERRO no destino ${JSON.stringify(d)}: ${e.message}`);
+    }
+  }
+  return resultado;
+}
+
+let enviando = false; // trava para nao enviar duas vezes ao mesmo tempo
+
+async function enviarSeNovo(client) {
+  if (enviando) {
+    console.log(`[${agora()}] Envio ja em andamento - ignorado (evita duplicar).`);
+    return;
+  }
+  enviando = true;
+  try {
+    const caminho = imagemMaisRecente();
+    if (!caminho) {
+      console.log(`[${agora()}] Nenhuma imagem encontrada em: ${CONFIG.pastaCapturas}`);
+      return;
+    }
+    const hash = md5(caminho);
+    const estado = lerEstado();
+    if (hash === estado.ultimoHash) {
+      console.log(`[${agora()}] Imagem igual a anterior - nao reenviado: ${path.basename(caminho)}`);
+      return;
+    }
+    if (destinosResolvidos.length === 0) {
+      console.log(`[${agora()}] Nenhum destino valido configurado - nada enviado.`);
+      return;
+    }
+    // Reserva como "enviada" ANTES de mandar: se algo disparar de novo,
+    // ja vera esta imagem como enviada e nao duplica.
+    salvarEstado({ ultimoHash: hash, ultimoArquivo: path.basename(caminho) });
+    const media = MessageMedia.fromFilePath(caminho);
+    const legenda = 'Telemetria - ' + agora();
+    let algumOk = false;
+    for (const d of destinosResolvidos) {
+      try {
+        await client.sendMessage(d.chatId, media, { caption: legenda });
+        algumOk = true;
+        console.log(`[${agora()}] ENVIADO para ${d.rotulo}: ${path.basename(caminho)}`);
+      } catch (e) {
+        console.log(`[${agora()}] ERRO ao enviar para ${d.rot

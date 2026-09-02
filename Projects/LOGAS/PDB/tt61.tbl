@@ -1,0 +1,9 @@
+// TT conversion table
+// v6.1->7.0
+SCHDR	    //shdr;		/* secondary block header */
+DESC	    //desc;		/* block descriptor */
+EGUREC	    //egu;		/* egu info (analog) */
+INT32	    //time;
+DOUBLE 	    //cur_val;		/* current value as a double- for display only */
+PDATA	    //pdata;		/* current value (for chaining + calc) */
+#EGU_DESC   //LongEguDesc;	/* for longer egu tagnames - new to raptor*/

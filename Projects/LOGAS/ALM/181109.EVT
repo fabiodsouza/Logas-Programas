@@ -1,0 +1,14 @@
+09/11/2018 04:56:52 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  09/11/2018 05:00:07
+--------------------------------------------------------
+
+09/11/2018 05:00:19 [FIXTOHIST.EXE] 05:00:19 09/11/2018 assertion failed hRet == S_OK file HTL_MAIN-IH.C line 1211
+
+[DATA (Intel byte order): 0x64 0x0 ]
+
+09/11/2018 05:00:30 [fix.exe] Proficy iFIX Software is running!
+

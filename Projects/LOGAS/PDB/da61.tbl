@@ -1,0 +1,24 @@
+// DA Conversion table
+// Raptor   09/01/97	sethu	Added LongEguDesc and OtherAlarm
+// v6.1 to 7.0
+
+	PBHDR		//phdr;		/* primary block header */
+	DESC		//desc;		/* block descriptor */
+	FIELDINFO	//suspend;	/* alarm suspend tag */
+	GETFROM		//remote_ack;	/* remote alarm ack tag */
+
+	ALARM_DEF	//alarm;		/* alarm structure */
+	EGUREC		//egurec;		/* egu info (analog) */
+	IO_INFO		//da_io;		/* IOREC + IODNAME */
+	UCHAR		//options;	/* input invert */
+	UCHAR		//spare;		/* spare byte for word alignment */
+	PDATA		//last_value;	/* last good value if in AUTO, else */
+   			//		/* current operator request if in MANUAL */
+
+	PDATA		//cur_value;	/* current value of block */
+	#UINT16		//Flags;
+	#UINT16[6]	//spare1[6]
+
+	#EGU_DESC	//LongEguDesc;	/* for longer egu tagnames - new to raptor*/
+	#ALARM_DEF	//OtherAlarm;	/* for 'other' alarm filtering - new to raptor */
+	

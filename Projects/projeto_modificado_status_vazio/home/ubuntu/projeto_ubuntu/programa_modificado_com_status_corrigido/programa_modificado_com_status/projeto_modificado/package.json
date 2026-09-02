@@ -1,0 +1,16 @@
+{
+  "name": "sistema-gestao-modais",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão de Manutenção convertido para desktop com Electron.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Manus",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^29.0.0"
+  }
+}
+

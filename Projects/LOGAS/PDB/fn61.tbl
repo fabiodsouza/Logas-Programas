@@ -1,0 +1,7 @@
+// FN block conversion table
+// v6.1->7.0
+//#define		FN_NOUTPUTS	4		/* number of outputs */
+
+SCHDR	    //shdr;		    /* secondary block header */
+GETFROM[4]  //put[FN_NOUTPUTS];	    /* names of fields to put */
+#DESC	    //desc;		    // jss022097

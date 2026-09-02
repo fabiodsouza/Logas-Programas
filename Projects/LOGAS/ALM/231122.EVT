@@ -1,0 +1,103 @@
+22/11/2023 14:27:53 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:28:22
+--------------------------------------------------------
+
+22/11/2023 14:28:27 [fix.exe] Proficy iFIX Software is running!
+
+22/11/2023 14:29:22 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:29:22
+--------------------------------------------------------
+
+22/11/2023 14:29:27 [fix.exe] Proficy iFIX Demo System Running!
+
+22/11/2023 14:29:32 [IOCNTRL.EXE] Failed to launch driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+
+22/11/2023 14:30:29 [IOCNTRL.EXE] Failed to destroy driver [MBE]:    Process: C:\PROGRAM FILES (X86)\PROFICY\PROFICY IFIX\IOCNTRL.EXE   Win32 error: Não é possível criar outro semáforo de sistema.
+22/11/2023 14:30:32 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:31:33
+--------------------------------------------------------
+
+22/11/2023 14:31:37 [fix.exe] Proficy iFIX Software is running!
+
+22/11/2023 14:33:11 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:33:21
+--------------------------------------------------------
+
+22/11/2023 14:33:25 [fix.exe] Proficy iFIX Software is running!
+
+22/11/2023 14:34:45 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:35:08
+--------------------------------------------------------
+
+22/11/2023 14:35:12 [fix.exe] Proficy iFIX Software is running!
+
+22/11/2023 14:36:33 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:36:35
+--------------------------------------------------------
+
+22/11/2023 14:36:40 [fix.exe] Proficy iFIX Demo System Running!
+
+22/11/2023 14:49:42 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 14:50:37
+--------------------------------------------------------
+
+22/11/2023 14:50:41 [fix.exe] Proficy iFIX Software is running!
+
+22/11/2023 15:08:41 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 15:09:08
+--------------------------------------------------------
+
+22/11/2023 15:09:13 [fix.exe] Proficy iFIX Demo System Running!
+
+22/11/2023 15:10:02 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 15:10:39
+--------------------------------------------------------
+
+22/11/2023 15:10:44 [fix.exe] Proficy iFIX Demo System Running!
+
+22/11/2023 15:17:54 [fix.exe] Proficy iFIX Software shutdown
+
+
+
+--------------------------------------------------------
+PROFICY iFIX, EVENT LOG  22/11/2023 15:18:17
+--------------------------------------------------------
+
+22/11/2023 15:18:21 [fix.exe] Proficy iFIX Software is running!
+

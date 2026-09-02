@@ -1,0 +1,24 @@
+{
+  "dados_js": "C:/painel/dados.js",
+  "min_padrao": 30,
+  "min": {},
+  "buffer_h": 1,
+  "fallback_barh": 20,
+  "max_bar": 260,
+  "max_queda_barh": 100,
+  "salto_troca": 25,
+  "m3_por_bar": {},
+  "viagem_h": {
+    "ALSCO": 0.67,
+    "BELGO": 2,
+    "EXTRUMINAS": 2,
+    "M.PEQUI": 2,
+    "VDL": 2,
+    "MG STEEL": 1.5,
+    "VILMA": 0.5,
+    "G.PERDÕES": 4,
+    "JD CANADÁ": 1,
+    "FORTLEV": 1,
+    "ORLÂNDIA": 2.5
+  }
+}

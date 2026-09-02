@@ -1,0 +1,80 @@
+ENVIO DA TELEMETRIA NO WHATSAPP - de hora em hora, sem repetir
+==============================================================
+
+O que faz:
+- Conecta no WhatsApp por QR Code (igual ao WhatsApp Web).
+- A cada hora pega a imagem MAIS RECENTE da pasta de capturas.
+- Se a imagem for igual a ultima enviada, NAO reenvia (evita repetir).
+- Envia com uma legenda de data/hora.
+
+
+ANTES DE COMECAR
+----------------
+- Precisa do Node.js instalado (voce ja tem). Se faltar: https://nodejs.org
+- Precisa de internet na maquina onde este envio vai rodar.
+- O programa de captura deve estar salvando as imagens normalmente.
+
+
+PASSO 1 - Conferir a pasta das capturas
+---------------------------------------
+Abra o arquivo  index.js  e veja a linha:
+
+    pastaCapturas: path.join(__dirname, '..', 'capturas'),
+
+Por padrao ele procura a pasta "capturas" UM NIVEL ACIMA desta pasta
+(ou seja, espera que "envio_whatsapp" esteja ao lado de "capturas").
+
+Se as imagens estiverem em outro lugar, troque por um caminho fixo, ex.:
+
+    pastaCapturas: 'C:\\captura_telemetria\\capturas',
+
+(use barras duplas \\ no caminho)
+
+
+PASSO 2 - Definir o destino
+---------------------------
+Ainda no index.js, no bloco CONFIG:
+
+  Para TESTE (enviar para voce mesmo):
+      destino: 'eu',
+
+  Para enviar a um GRUPO:
+      destino: 'grupo',
+      nomeGrupo: 'NOME EXATO DO GRUPO',   <- igual aparece no WhatsApp
+
+Obs.: o WhatsApp que voce vai conectar precisa participar do grupo.
+
+
+PASSO 3 - Iniciar
+-----------------
+- De dois cliques em  iniciar_envio_whatsapp.bat
+- Na primeira vez ele instala as dependencias (demora alguns minutos).
+- Vai aparecer um QR Code na janela. No celular:
+      WhatsApp > Aparelhos conectados > Conectar um aparelho
+  e aponte para o QR.
+- Conectou: ele ja envia a imagem mais recente (teste) e depois
+  passa a enviar automaticamente todo xx:02 (logo apos a captura de xx:00).
+
+Para PARAR: feche a janela.
+Da proxima vez NAO precisa escanear de novo (a sessao fica salva na
+subpasta "sessao_whatsapp").
+
+
+AJUSTES OPCIONAIS (no index.js)
+-------------------------------
+  minutoEnvio: 2        -> muda o minuto do envio dentro da hora
+  enviarAoIniciar: true -> envia assim que conecta (deixe false depois do teste, se quiser)
+
+
+ARQUIVOS GERADOS
+----------------
+  sessao_whatsapp\   -> dados da sessao do WhatsApp (nao apague, senao pede QR de novo)
+  estado_envio.json  -> guarda qual foi a ultima imagem enviada (controle do "sem repetir")
+  node_modules\      -> dependencias instaladas
+
+
+PASSAR PARA A MAQUINA DE CAPTURA (depois do teste)
+--------------------------------------------------
+Quando validar aqui, e so copiar a pasta "envio_whatsapp" para a maquina
+de captura, ajustar "pastaCapturas" se necessario, rodar o .bat e
+escanear o QR uma vez la. (Essa maquina precisa ter internet e Node.js.)

@@ -1,0 +1,11 @@
+# Vigia do ENVIO: se o "node index.js" nao estiver rodando, reabre oculto.
+$ErrorActionPreference = 'SilentlyContinue'
+$dir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+
+$proc = Get-CimInstance Win32_Process -Filter "Name='node.exe'" |
+        Where-Object { $_.CommandLine -like '*index.js*' }
+
+if (-not $proc) {
+    Start-Process -FilePath 'node.exe' -ArgumentList 'index.js' `
+        -WorkingDirectory $dir -WindowStyle Hidden
+}
